@@ -2,16 +2,16 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>שגרת הערב — משפחת רועי, אילנה, ליאם ורובי</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;600;700;800&display=swap">
 <style>
   :root{
     --bg:#0A1219;
     --surface:#121F2A;
     --surface-2:#182A38;
-    --surface-3:#1E3444;
     --border: rgba(234,243,242,.09);
     --border-strong: rgba(234,243,242,.16);
     --ink:#EAF3F2;
@@ -25,208 +25,437 @@
     --sky:#5BB7FF;
     --violet:#A996FF;
 
-    --radius-lg:22px;
-    --radius-md:16px;
-    --shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+    --radius-md:14px;
+
+    /* one knob controlling how big everything gets, tied to viewport height
+       so a slide never outgrows the screen it is shown on */
+    --u: clamp(11px, 1.35vh + .35vw, 17px);
   }
 
   *{ box-sizing:border-box; }
+
+  /* ---------- the deck itself ---------- */
   html{
+    height:100%;
     background:var(--bg);
-    scroll-snap-type:y proximity;
-    scroll-behavior:smooth;
+    /* mandatory, not proximity — this is what makes it a deck and not a page */
+    scroll-snap-type: y mandatory;
+    /* NB: do not add scroll-behavior:smooth here. It fights mandatory snapping
+       in Chromium — the scroll drifts and settles mid-slide instead of landing
+       on one. The snap itself already animates the transition. */
+    overflow-y:scroll;
+    scrollbar-width:none;
   }
+  html::-webkit-scrollbar{ display:none; }
+
   body{
     margin:0;
+    color:var(--ink);
+    font-family:'Rubik','Segoe UI',system-ui,sans-serif;
+    font-size:var(--u);
+    -webkit-font-smoothing:antialiased;
     background:
       radial-gradient(60vw 40vh at 85% -8%, rgba(255,122,69,.10), transparent 60%),
       radial-gradient(55vw 45vh at -5% 10%, rgba(51,214,192,.09), transparent 60%),
       var(--bg);
-    color:var(--ink);
-    font-family:'Rubik','Segoe UI',system-ui,sans-serif;
-    -webkit-font-smoothing:antialiased;
+    background-attachment:fixed;
   }
+
+  .slide{
+    height:100dvh;
+    scroll-snap-align:start;
+    /* refuse to skip past a slide on one fast flick */
+    scroll-snap-stop:always;
+    display:grid;
+    place-items:center;
+    padding: clamp(28px, 6vh, 60px) clamp(16px, 5vw, 40px);
+    position:relative;
+  }
+  .inner{
+    width:100%;
+    max-width:960px;
+    max-height:100%;
+    overflow:auto;            /* safety valve on very short screens */
+    scrollbar-width:none;
+  }
+  .inner::-webkit-scrollbar{ display:none; }
+
   h1,h2,h3{ font-family:'Secular One','Rubik',sans-serif; font-weight:400; margin:0; }
   p{ margin:0; }
-  a{ color:inherit; }
   ::selection{ background:var(--ember); color:#1a0a03; }
+  /* keep clock times reading left-to-right inside the RTL flow */
+  .num{ direction:ltr; unicode-bidi:isolate; font-variant-numeric:tabular-nums; }
 
-  /* ---------- sticky nav ---------- */
-  .nav{
-    position:sticky; top:0; z-index:20;
-    display:flex; align-items:center; gap:14px;
-    padding:12px 20px; background:rgba(10,18,25,.86);
-    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--border);
+  /* ---------- fixed deck chrome ---------- */
+  .rail{
+    position:fixed; inset-inline-end: clamp(10px,1.6vw,20px); top:50%;
+    transform:translateY(-50%); z-index:30;
+    display:flex; flex-direction:column; gap:11px; align-items:center;
   }
-  .nav .title{ font-family:'Secular One'; font-size:15px; flex:none; white-space:nowrap; }
-  .nav .links{ display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; }
-  .nav .links::-webkit-scrollbar{ display:none; }
-  .nav a.pill{
-    flex:none; text-decoration:none; font-size:12.5px; font-weight:600;
-    color:var(--ink-dim); background:var(--surface); border:1px solid var(--border);
-    padding:6px 12px; border-radius:999px; white-space:nowrap;
-    transition: color .15s, border-color .15s;
+  .rail a{
+    width:9px; height:9px; border-radius:50%;
+    background:var(--ink-faint); opacity:.5;
+    transition:opacity .18s, transform .18s, background .18s;
+    position:relative;
   }
-  .nav a.pill:hover{ color:var(--ink); border-color:var(--border-strong); }
+  .rail a:hover, .rail a:focus-visible{ opacity:1; transform:scale(1.5); background:var(--mint); }
+  .rail a::after{
+    content:attr(data-label);
+    position:absolute; inset-inline-end:18px; top:50%; transform:translateY(-50%);
+    background:var(--surface-2); border:1px solid var(--border-strong);
+    color:var(--ink); font-size:11.5px; font-weight:600; font-family:'Rubik',sans-serif;
+    padding:4px 9px; border-radius:7px; white-space:nowrap;
+    opacity:0; pointer-events:none; transition:opacity .18s;
+  }
+  .rail a:hover::after, .rail a:focus-visible::after{ opacity:1; }
 
-  /* ---------- slide sections ---------- */
-  section{
-    scroll-snap-align:start;
-    min-height:100vh;
-    display:flex; flex-direction:column; justify-content:center;
-    padding:64px 20px;
+  .count{
+    position:fixed; inset-inline-start: clamp(12px,2vw,24px);
+    bottom: clamp(12px,2.4vh,22px); z-index:30;
+    font-family:'Secular One'; font-size:12.5px; color:var(--ink-faint);
+    letter-spacing:.08em;
   }
-  .inner{ max-width:880px; margin:0 auto; width:100%; }
 
-  /* hero */
-  .hero .eyebrow{
+  .progress{
+    position:fixed; top:0; inset-inline:0; height:3px; z-index:31;
+    pointer-events:none;
+  }
+  .progress i{
+    display:block; height:100%; transform-origin:right; transform:scaleX(0);
+    background:linear-gradient(to left, var(--mint), var(--gold), var(--ember));
+  }
+  /* zero-JS progress bar; simply stays empty where unsupported */
+  @supports (animation-timeline: scroll()){
+    .progress i{
+      animation: fill linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+  @keyframes fill{ from{ transform:scaleX(0);} to{ transform:scaleX(1);} }
+
+  /* ---------- hero ---------- */
+  .eyebrow{
     display:inline-flex; align-items:center; gap:8px;
-    font-size:12.5px; font-weight:700; letter-spacing:.06em;
+    font-size:.82em; font-weight:700; letter-spacing:.06em;
     color:var(--gold); background:rgba(255,201,71,.12);
     border:1px solid rgba(255,201,71,.28);
-    padding:5px 12px; border-radius:999px;
+    padding:5px 13px; border-radius:999px;
   }
-  .hero h1{ font-size:clamp(32px,6vw,52px); margin:18px 0 10px; text-wrap:balance; }
-  .hero .sub{ color:var(--ink-dim); font-size:16px; line-height:1.65; max-width:52ch; }
-  .party{ display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
+  .hero h1{
+    font-size: clamp(34px, 7.2vh + 1.2vw, 76px);
+    line-height:1.08; margin:.38em 0 .22em; text-wrap:balance;
+  }
+  .hero .sub{ color:var(--ink-dim); font-size:1.06em; line-height:1.6; max-width:46ch; }
+  .party{ display:flex; flex-wrap:wrap; gap:9px; margin-top:1.9em; }
   .chip{
     display:flex; align-items:center; gap:9px;
     background:var(--surface-2); border:1px solid var(--border-strong);
-    border-radius:999px; padding:6px 14px 6px 8px;
+    border-radius:999px; padding:5px 15px 5px 6px;
   }
   .chip .dot{
-    width:30px; height:30px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Secular One'; font-size:14px; color:#0A1219; flex:none;
+    width:2em; height:2em; border-radius:50%;
+    display:grid; place-items:center;
+    font-family:'Secular One'; font-size:.9em; color:#0A1219; flex:none;
   }
-  .chip span{ font-size:13.5px; font-weight:600; }
-  .scrolltip{ margin-top:44px; color:var(--ink-faint); font-size:12.5px; display:flex; align-items:center; gap:8px; }
-  .scrolltip svg{ width:14px; height:14px; animation:bob 1.8s ease-in-out infinite; }
-  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(4px);} }
-  @media (prefers-reduced-motion: reduce){ .scrolltip svg{ animation:none; } }
+  .chip .who{ font-size:.94em; font-weight:600; }
+  .hint{
+    margin-top:2.4em; color:var(--ink-faint); font-size:.85em;
+    display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+  }
+  .key{
+    display:inline-grid; place-items:center; min-width:1.9em; height:1.9em;
+    padding:0 .45em; border:1px solid var(--border-strong); border-radius:6px;
+    background:var(--surface-2); font-size:.92em; color:var(--ink-dim);
+  }
 
-  /* day panel */
-  .card{
-    background:var(--surface); border:1px solid var(--border);
-    border-radius: var(--radius-lg); padding:30px 30px 32px;
-    box-shadow: var(--shadow);
-  }
-  .panel-head{ display:flex; align-items:flex-start; gap:16px; }
-  .panel-head .badge{
-    flex:none; width:56px; height:56px; border-radius:16px;
+  /* ---------- day slides ---------- */
+  .day-head{ display:flex; align-items:center; gap:.95em; margin-bottom:1.5em; }
+  .day-head .badge{
+    flex:none; width:3.5em; height:3.5em; border-radius:1em;
     background: color-mix(in srgb, var(--c) 20%, var(--surface-2));
     border:1px solid color-mix(in srgb, var(--c) 45%, transparent);
-    display:flex; align-items:center; justify-content:center; color:var(--c);
+    display:grid; place-items:center; color:var(--c);
   }
-  .panel-head .badge svg{ width:30px; height:30px; }
-  .panel-head .kicker{ font-size:12.5px; font-weight:700; letter-spacing:.04em; color:var(--c); }
-  .panel-head h2{ font-size:26px; margin-top:2px; }
-  .panel-head .tag{ font-size:13.5px; color:var(--ink-dim); margin-top:4px; }
+  .day-head .badge svg{ width:1.9em; height:1.9em; }
+  .day-head .kicker{ font-size:.8em; font-weight:700; letter-spacing:.05em; color:var(--c); }
+  .day-head h2{ font-size: clamp(21px, 3.6vh + .5vw, 40px); line-height:1.15; margin-top:.1em; }
+  .day-head .tag{ font-size:.9em; color:var(--ink-dim); margin-top:.3em; }
 
-  .items{ list-style:none; margin:26px 0 0; padding:0; display:flex; flex-direction:column; gap:10px; }
-  .item{
-    display:flex; align-items:flex-start; gap:14px;
-    background:var(--surface-2); border:1px solid var(--border);
-    border-radius: var(--radius-md); padding:15px 16px;
+  /* the time rail — the clock is now the loudest thing on the slide */
+  .sched{ list-style:none; margin:0; padding:0; }
+  .step{
+    display:grid;
+    grid-template-columns: auto 1.5em 1fr;
+    align-items:start;
+    column-gap:.85em;
   }
-  .item .mark{
-    flex:none; width:12px; height:12px; border-radius:50%; margin-top:6px;
-    background:var(--c); box-shadow:0 0 0 4px color-mix(in srgb, var(--c) 20%, transparent);
+  .step .time{
+    font-family:'Secular One';
+    font-size: clamp(22px, 4.4vh + .3vw, 44px);
+    line-height:1;
+    color:var(--c);
+    padding-top:.06em;
   }
-  .item-body{ flex:1; min-width:0; display:flex; flex-wrap:wrap; gap:4px 14px; align-items:baseline; }
-  .item-time{
-    font-family:'Secular One'; font-size:16px; color:var(--c);
-    font-variant-numeric:tabular-nums; flex:none;
+  .spine{ display:flex; flex-direction:column; align-items:center; height:100%; }
+  .spine .bead{
+    width:.72em; height:.72em; border-radius:50%; background:var(--c); flex:none;
+    box-shadow:0 0 0 .28em color-mix(in srgb, var(--c) 18%, transparent);
+    margin-top:.42em;
   }
-  .item-title{ font-size:15.5px; font-weight:600; }
-  .item-desc{ flex-basis:100%; font-size:13.5px; color:var(--ink-dim); line-height:1.55; margin-top:1px; }
+  .spine .wire{ width:2px; flex:1; background:linear-gradient(var(--border-strong), transparent); margin-top:.4em; }
+  .step:last-child .spine .wire{ display:none; }
+  .step .what{ padding-bottom:1.15em; }
+  .step .what b{ display:block; font-size:1.06em; font-weight:600; line-height:1.35; }
+  .step .what span{ display:block; font-size:.88em; color:var(--ink-dim); line-height:1.5; margin-top:.22em; }
 
   .tip{
-    margin-top:22px; display:flex; gap:12px; align-items:flex-start;
+    margin-top:.5em; display:flex; gap:.8em; align-items:flex-start;
     background: color-mix(in srgb, var(--c) 12%, var(--surface-2));
     border:1px solid color-mix(in srgb, var(--c) 32%, transparent);
-    border-radius: var(--radius-md); padding:15px 16px;
+    border-radius: var(--radius-md); padding:.9em 1em;
   }
-  .tip svg{ flex:none; width:20px; height:20px; color:var(--c); margin-top:2px; }
-  .tip p{ font-size:14px; line-height:1.6; }
+  .tip svg{ flex:none; width:1.35em; height:1.35em; color:var(--c); margin-top:.15em; }
+  .tip p{ font-size:.94em; line-height:1.55; }
   .tip b{ color:var(--c); }
 
-  /* rules */
-  .rules-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:26px; }
+  /* ---------- week overview ---------- */
+  .ov .lead{ color:var(--ink-dim); font-size:.95em; margin-top:.4em; }
+  .track-wrap{ margin-top:1.2em; }
+  .axis{
+    position:relative; height:1.5em; margin-inline-start:5.6em;
+    border-bottom:1px solid var(--border-strong);
+  }
+  /* NB: anchor ticks and marks with the physical `right`, not inset-inline-start.
+     The tick labels carry .num (direction:ltr) so their inline-start would flip
+     to the left edge while the unlabelled marks stayed right — mirroring the
+     two against each other. Earlier = right, matching the RTL reading order. */
+  .axis i{
+    position:absolute; top:0; right:var(--x); transform:translateX(50%);
+    font-size:.8em; color:var(--ink-faint); font-style:normal;
+  }
+  .trow{
+    display:grid; grid-template-columns:5.6em 1fr; align-items:center;
+    gap:.5em; padding:.42em 0;
+  }
+  .trow .lbl{ font-size:.88em; font-weight:600; color:var(--ink-dim); text-align:start; }
+  .trow .track{
+    position:relative; height:2.1em;
+    background:linear-gradient(to left, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    border-radius:999px;
+  }
+  .trow .track b{
+    position:absolute; top:50%; right:var(--x); transform:translate(50%,-50%);
+    width:.85em; height:.85em; border-radius:50%; background:var(--m);
+    box-shadow:0 0 0 .25em color-mix(in srgb, var(--m) 20%, transparent);
+  }
+  .trow .track b::after{
+    content:attr(data-t);
+    position:absolute; top:-1.6em; right:50%; transform:translateX(50%);
+    font-size:.68em; color:var(--ink-faint); font-family:'Secular One';
+    opacity:0; transition:opacity .16s; white-space:nowrap;
+    direction:ltr; unicode-bidi:isolate;
+  }
+  .trow:hover .track b::after{ opacity:1; }
+  .legend{ display:flex; flex-wrap:wrap; gap:.55em 1.1em; margin-top:1.4em; }
+  .legend div{ display:flex; align-items:center; gap:.45em; font-size:.85em; color:var(--ink-dim); }
+  .legend i{ width:.7em; height:.7em; border-radius:50%; background:var(--m); flex:none; }
+
+  /* ---------- rules ---------- */
+  .rules-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:.8em; }
   .rule-card{
     background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md);
-    padding:18px; display:flex; flex-direction:column; gap:11px;
+    padding:1.05em; display:flex; flex-direction:column; gap:.6em;
   }
   .rule-num{
-    width:32px; height:32px; border-radius:9px; background:color-mix(in srgb, var(--violet) 22%, var(--surface-2));
-    color:var(--violet); display:flex; align-items:center; justify-content:center;
-    font-family:'Secular One'; font-size:15px;
+    width:2.1em; height:2.1em; border-radius:.55em;
+    background:color-mix(in srgb, var(--violet) 22%, var(--surface-2));
+    color:var(--violet); display:grid; place-items:center;
+    font-family:'Secular One'; font-size:.95em;
   }
-  .rule-card h3{ font-size:16px; }
-  .rule-card p{ font-size:13.5px; color:var(--ink-dim); line-height:1.6; }
+  .rule-card h3{ font-size:1.02em; }
+  .rule-card p{ font-size:.87em; color:var(--ink-dim); line-height:1.55; }
 
-  /* closing */
+  /* ---------- closing ---------- */
   .closing{ text-align:center; }
   .closing .badge{
-    width:64px; height:64px; border-radius:20px; margin:0 auto 22px;
+    width:4em; height:4em; border-radius:1.2em; margin:0 auto 1.2em;
     background: color-mix(in srgb, var(--gold) 22%, var(--surface-2));
     border:1px solid color-mix(in srgb, var(--gold) 45%, transparent);
-    display:flex; align-items:center; justify-content:center; color:var(--gold);
+    display:grid; place-items:center; color:var(--gold);
   }
-  .closing .badge svg{ width:34px; height:34px; }
-  .closing h2{ font-size:clamp(26px,4.4vw,36px); text-wrap:balance; }
-  .closing p{ color:var(--ink-dim); font-size:15.5px; line-height:1.7; max-width:52ch; margin:16px auto 0; }
+  .closing .badge svg{ width:2.2em; height:2.2em; }
+  .closing h2{ font-size: clamp(26px, 5vh + .6vw, 52px); text-wrap:balance; line-height:1.15; }
+  .closing p{ color:var(--ink-dim); font-size:1.02em; line-height:1.65; max-width:50ch; margin:1em auto 0; }
   .closing .foot{
-    margin:30px auto 0; display:inline-flex; align-items:center; gap:9px;
+    margin:1.9em auto 0; display:inline-flex; align-items:center; gap:.6em;
     background:var(--surface-2); border:1px solid var(--border-strong);
-    padding:10px 20px; border-radius:999px; font-size:13.5px; font-weight:600;
+    padding:.65em 1.3em; border-radius:999px; font-size:.9em; font-weight:600;
   }
-  .closing .foot svg{ width:17px; height:17px; color:var(--gold); }
+  .closing .foot svg{ width:1.1em; height:1.1em; color:var(--gold); }
 
-  @media (max-width:560px){
-    .card{ padding:22px 18px 26px; }
-    section{ padding:48px 16px; }
+  /* ---------- phones ---------- */
+  @media (max-width:600px){
+    /* the rail's 9px dots sit right where the Hebrew headline ends — on a
+       narrow screen you swipe between slides anyway, so drop it */
+    .rail{ display:none; }
+    .hero h1{ font-size: clamp(30px, 4.6vh + 2.8vw, 46px); }
+    .slide{ padding: clamp(24px,5vh,44px) 18px; }
+    .day-head{ gap:.7em; margin-bottom:1.2em; }
+    .day-head .badge{ width:2.9em; height:2.9em; border-radius:.85em; }
+    .day-head .badge svg{ width:1.55em; height:1.55em; }
+    .step{ grid-template-columns:auto 1.2em 1fr; column-gap:.6em; }
+    /* the five-day chart needs a roomier label column at this width */
+    .axis{ margin-inline-start:4.4em; }
+    .trow{ grid-template-columns:4.4em 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .progress i{ animation:none; }
+    .rail a{ transition:none; }
+  }
+
+  /* ---------- fridge copy: one slide per printed page ---------- */
+  @media print{
+    @page{ size:A4 landscape; margin:12mm; }
+    :root{ --u:12px; }
+    html{ scroll-snap-type:none; overflow:visible; height:auto; background:#fff; }
+    body{ background:#fff; color:#101820; }
+    .rail,.count,.progress,.hint{ display:none !important; }
+    .slide{
+      height:auto; min-height:0; padding:0 0 10mm; display:block;
+      page-break-after:always; break-after:page;
+    }
+    .slide:last-of-type{ page-break-after:auto; break-after:auto; }
+    .inner{ max-height:none; overflow:visible; max-width:none; }
+    .day-head .tag,.step .what span,.ov .lead,.rule-card p,.closing p,.trow .lbl,.legend div{ color:#4a5b66; }
+    .step .what b,.rule-card h3,.chip .who,.hero .sub{ color:#101820; }
+    .tip,.rule-card,.chip,.closing .foot{ background:#f2f5f7; border-color:#c9d4da; }
+    .trow .track{ background:#eef2f4; }
+    .trow .track b::after{ opacity:1; color:#4a5b66; }
   }
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <span class="title">🌙 שגרת הערב</span>
-  <div class="links">
-    <a class="pill" href="#weekday">יום רגיל</a>
-    <a class="pill" href="#training">יום אימון</a>
-    <a class="pill" href="#thursday">חמישי</a>
-    <a class="pill" href="#friday">שישי</a>
-    <a class="pill" href="#saturday">שבת</a>
-    <a class="pill" href="#rules">כללי הברזל</a>
-  </div>
+<div class="progress"><i></i></div>
+
+<nav class="rail" aria-label="ניווט בין שקפים">
+  <a href="#s1" data-label="פתיחה" aria-label="פתיחה"></a>
+  <a href="#s2" data-label="מבט על השבוע" aria-label="מבט על השבוע"></a>
+  <a href="#s3" data-label="יום רגיל" aria-label="יום רגיל"></a>
+  <a href="#s4" data-label="יום אימון" aria-label="יום אימון"></a>
+  <a href="#s5" data-label="חמישי" aria-label="חמישי"></a>
+  <a href="#s6" data-label="שישי" aria-label="שישי"></a>
+  <a href="#s7" data-label="שבת" aria-label="שבת"></a>
+  <a href="#s8" data-label="כללי הברזל" aria-label="כללי הברזל"></a>
+  <a href="#s9" data-label="סיום" aria-label="סיום"></a>
 </nav>
 
-<!-- ===== HERO ===== -->
-<section class="hero" id="top">
+<!-- ===== 1 · HERO ===== -->
+<section class="slide hero" id="s1">
+  <div class="count num">01 / 09</div>
   <div class="inner">
     <span class="eyebrow">עונה 2 · שגרת הערב הרשמית</span>
     <h1>האמנה החדשה בבית</h1>
     <p class="sub">לוח שגרת הערב של המשפחה — מה קורה, באיזו שעה, וכל הטיפים שמקלים על זה.</p>
     <div class="party">
-      <div class="chip"><span class="dot" style="background:var(--mint)">ר</span><span>רועי</span></div>
-      <div class="chip"><span class="dot" style="background:var(--pink)">א</span><span>אילנה</span></div>
-      <div class="chip"><span class="dot" style="background:var(--ember)">ל</span><span>ליאם · 14</span></div>
-      <div class="chip"><span class="dot" style="background:var(--gold)">ר</span><span>רובי · 12</span></div>
+      <div class="chip"><span class="dot" style="background:var(--mint)">ר</span><span class="who">רועי</span></div>
+      <div class="chip"><span class="dot" style="background:var(--pink)">א</span><span class="who">אילנה</span></div>
+      <div class="chip"><span class="dot" style="background:var(--ember)">ל</span><span class="who">ליאם · <span class="num">14</span></span></div>
+      <div class="chip"><span class="dot" style="background:var(--gold)">ר</span><span class="who">רובי · <span class="num">12</span></span></div>
     </div>
-    <div class="scrolltip">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      <span>גללו למטה או בחרו יום למעלה</span>
+    <div class="hint">
+      <span class="key">↓</span><span class="key">↑</span>
+      <span>או רווח — למעבר בין שקפים</span>
     </div>
   </div>
 </section>
 
-<!-- ===== DAY 1: WEEKDAY ===== -->
-<section id="weekday">
-  <div class="inner card" style="--c:var(--mint)">
-    <div class="panel-head">
+<!-- ===== 2 · WEEK OVERVIEW ===== -->
+<section class="slide" id="s2">
+  <div class="count num">02 / 09</div>
+  <div class="inner ov" style="--c:var(--violet)">
+    <div class="day-head">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></div>
+      <div>
+        <div class="kicker">0 · מבט על</div>
+        <h2>כל השבוע במבט אחד</h2>
+        <div class="tag">איפה כל ערב מתחיל, ואיפה הוא נגמר</div>
+      </div>
+    </div>
+
+    <div class="track-wrap">
+      <div class="axis">
+        <i class="num" style="--x:4%">19:00</i>
+        <i class="num" style="--x:24.4%">20:00</i>
+        <i class="num" style="--x:44.8%">21:00</i>
+        <i class="num" style="--x:65.4%">22:00</i>
+        <i class="num" style="--x:85.8%">23:00</i>
+      </div>
+
+      <div class="trow">
+        <div class="lbl">יום רגיל</div>
+        <div class="track">
+          <b style="--m:var(--pink); --x:14.2%" data-t="19:30"></b>
+          <b style="--m:var(--gold); --x:44.8%" data-t="21:00"></b>
+          <b style="--m:var(--sky);  --x:65.4%" data-t="22:00"></b>
+        </div>
+      </div>
+
+      <div class="trow">
+        <div class="lbl">יום אימון</div>
+        <div class="track">
+          <b style="--m:var(--mint);  --x:4%"    data-t="19:00"></b>
+          <b style="--m:var(--pink);  --x:34.6%" data-t="20:30"></b>
+          <b style="--m:var(--gold);  --x:55.2%" data-t="21:30"></b>
+          <b style="--m:var(--sky);   --x:65.4%" data-t="22:00"></b>
+        </div>
+      </div>
+
+      <div class="trow">
+        <div class="lbl">חמישי</div>
+        <div class="track">
+          <b style="--m:var(--ember); --x:24.4%" data-t="20:00"></b>
+          <b style="--m:var(--gold);  --x:44.8%" data-t="21:00"></b>
+          <b style="--m:var(--pink);  --x:65.4%" data-t="22:00"></b>
+          <b style="--m:var(--sky);   --x:75.6%" data-t="22:30"></b>
+        </div>
+      </div>
+
+      <div class="trow">
+        <div class="lbl">שישי</div>
+        <div class="track">
+          <b style="--m:var(--ember); --x:24.4%" data-t="20:00"></b>
+          <b style="--m:var(--pink);  --x:85.8%" data-t="23:00"></b>
+          <b style="--m:var(--sky);   --x:96%"  data-t="23:30"></b>
+        </div>
+      </div>
+
+      <div class="trow">
+        <div class="lbl">שבת</div>
+        <div class="track">
+          <b style="--m:var(--pink); --x:14.2%" data-t="19:30"></b>
+          <b style="--m:var(--gold); --x:44.8%" data-t="21:00"></b>
+          <b style="--m:var(--sky);  --x:65.4%" data-t="22:00"></b>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div><i style="--m:var(--mint)"></i>חזרה הביתה</div>
+      <div><i style="--m:var(--ember)"></i>ארוחה</div>
+      <div><i style="--m:var(--pink)"></i>כיבוי מסכים</div>
+      <div><i style="--m:var(--gold)"></i>סגירת מטבח</div>
+      <div><i style="--m:var(--sky)"></i>מקלחת וחדר</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3 · WEEKDAY ===== -->
+<section class="slide" id="s3">
+  <div class="count num">03 / 09</div>
+  <div class="inner" style="--c:var(--mint)">
+    <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/><circle cx="17" cy="6" r=".6" fill="currentColor" stroke="none"/><circle cx="19.5" cy="9.5" r=".4" fill="currentColor" stroke="none"/></svg></div>
       <div>
         <div class="kicker">1 · יום רגיל</div>
@@ -234,10 +463,10 @@
         <div class="tag">שגרת ערב סטנדרטית</div>
       </div>
     </div>
-    <ul class="items">
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">19:30</span><span class="item-title">כיבוי מסכים ותחילת ארוחת ערב</span><span class="item-desc">שעה אחרונה להתחיל להכין/להגיש (מותר לאכול מול הטלוויזיה)</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">21:00</span><span class="item-title">סגירת מטבח מלאה</span><span class="item-desc">צלחות בכיור, אוכל במקרר, השיש נקי</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">22:00</span><span class="item-title">מקלחת ולחדר</span><span class="item-desc">סגירת מקלחות וכניסה לחדרים לקראת השינה</span></div></li>
+    <ul class="sched">
+      <li class="step"><div class="time num">19:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כיבוי מסכים ותחילת ארוחת ערב</b><span>שעה אחרונה להתחיל להכין/להגיש (מותר לאכול מול הטלוויזיה)</span></div></li>
+      <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח מלאה</b><span>צלחות בכיור, אוכל במקרר, השיש נקי</span></div></li>
+      <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ולחדר</b><span>סגירת מקלחות וכניסה לחדרים לקראת השינה</span></div></li>
     </ul>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
@@ -246,10 +475,11 @@
   </div>
 </section>
 
-<!-- ===== DAY 2: TRAINING ===== -->
-<section id="training">
-  <div class="inner card" style="--c:var(--ember)">
-    <div class="panel-head">
+<!-- ===== 4 · TRAINING ===== -->
+<section class="slide" id="s4">
+  <div class="count num">04 / 09</div>
+  <div class="inner" style="--c:var(--ember)">
+    <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 5 13h5l-1 9 9-13h-6l1-7z"/></svg></div>
       <div>
         <div class="kicker">2 · יום אימון</div>
@@ -257,11 +487,11 @@
         <div class="tag">מצב סאיין — אנרגיה מעל 9000</div>
       </div>
     </div>
-    <ul class="items">
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">19:00</span><span class="item-title">חזרה ומקלחת מיידית</span><span class="item-desc">חוזרים מהמכון עד 19:00 לכל המאוחר וישר להתקלח</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">20:30</span><span class="item-title">אחרי מקלחת, מסכים כבויים וארוחה</span><span class="item-desc">כולם כבר נקיים, מתחילים ארוחת ערב / שייק</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">21:30</span><span class="item-title">סגירת מטבח מלאה</span><span class="item-desc">מצרכים במקרר, שיש נקי</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">22:00</span><span class="item-title">כולם בתוך החדרים</span><span class="item-desc">התאוששות שרירים בלילה — בדיוק כמו בין קרבות</span></div></li>
+    <ul class="sched">
+      <li class="step"><div class="time num">19:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>חזרה ומקלחת מיידית</b><span>חוזרים מהמכון עד 19:00 לכל המאוחר וישר להתקלח</span></div></li>
+      <li class="step"><div class="time num">20:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>אחרי מקלחת, מסכים כבויים וארוחה</b><span>כולם כבר נקיים, מתחילים ארוחת ערב / שייק</span></div></li>
+      <li class="step"><div class="time num">21:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח מלאה</b><span>מצרכים במקרר, שיש נקי</span></div></li>
+      <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כולם בתוך החדרים</b><span>התאוששות שרירים בלילה — בדיוק כמו בין קרבות</span></div></li>
     </ul>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
@@ -270,10 +500,11 @@
   </div>
 </section>
 
-<!-- ===== DAY 3: THURSDAY ===== -->
-<section id="thursday">
-  <div class="inner card" style="--c:var(--gold)">
-    <div class="panel-head">
+<!-- ===== 5 · THURSDAY ===== -->
+<section class="slide" id="s5">
+  <div class="count num">05 / 09</div>
+  <div class="inner" style="--c:var(--gold)">
+    <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="9" rx="2.5"/><circle cx="8.5" cy="7.2" r="2"/><circle cx="15.5" cy="7.2" r="2"/></svg></div>
       <div>
         <div class="kicker">3 · יום חמישי</div>
@@ -281,11 +512,11 @@
         <div class="tag">ערב חופש מוקדם</div>
       </div>
     </div>
-    <ul class="items">
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">20:00</span><span class="item-title">ארוחת ערב</span><span class="item-desc">שעה אחרונה להתחיל להכין ולהגיש</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">21:00</span><span class="item-title">סגירת מטבח</span><span class="item-desc">ניקוי השיש והחזרת המצרכים למקום</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">22:00</span><span class="item-title">כיבוי מסכים</span><span class="item-desc">זמן חופשי רגוע, בלי למשוך אל תוך הלילה</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">22:30</span><span class="item-title">מקלחת ולחדר</span><span class="item-desc">התארגנות סופית לקראת שינה</span></div></li>
+    <ul class="sched">
+      <li class="step"><div class="time num">20:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>ארוחת ערב</b><span>שעה אחרונה להתחיל להכין ולהגיש</span></div></li>
+      <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח</b><span>ניקוי השיש והחזרת המצרכים למקום</span></div></li>
+      <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כיבוי מסכים</b><span>זמן חופשי רגוע, בלי למשוך אל תוך הלילה</span></div></li>
+      <li class="step"><div class="time num">22:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ולחדר</b><span>התארגנות סופית לקראת שינה</span></div></li>
     </ul>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
@@ -294,10 +525,11 @@
   </div>
 </section>
 
-<!-- ===== DAY 4: FRIDAY ===== -->
-<section id="friday">
-  <div class="inner card" style="--c:var(--pink)">
-    <div class="panel-head">
+<!-- ===== 6 · FRIDAY ===== -->
+<section class="slide" id="s6">
+  <div class="count num">06 / 09</div>
+  <div class="inner" style="--c:var(--pink)">
+    <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/><path d="M7 5.5 8 7M17 5.5 16 7M4.5 12h2M17.5 12h2"/></svg></div>
       <div>
         <div class="kicker">4 · יום שישי</div>
@@ -305,10 +537,10 @@
         <div class="tag">ד׳וה מוד</div>
       </div>
     </div>
-    <ul class="items">
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">20:00</span><span class="item-title">ארוחה אצל סבא וסבתא</span><span class="item-desc">ערב שישי כיפי וטעים לכל המשפחה</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">23:00</span><span class="item-title">חזרה הביתה, ללא מסכים</span><span class="item-desc">אין לפתוח מחשב או טלוויזיה</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">23:30</span><span class="item-title">מקלחת ומיטה</span><span class="item-desc">מקלחת זריזה וישר למיטה</span></div></li>
+    <ul class="sched">
+      <li class="step"><div class="time num">20:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>ארוחה אצל סבא וסבתא</b><span>ערב שישי כיפי וטעים לכל המשפחה</span></div></li>
+      <li class="step"><div class="time num">23:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>חזרה הביתה, ללא מסכים</b><span>אין לפתוח מחשב או טלוויזיה</span></div></li>
+      <li class="step"><div class="time num">23:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ומיטה</b><span>מקלחת זריזה וישר למיטה</span></div></li>
     </ul>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
@@ -317,10 +549,11 @@
   </div>
 </section>
 
-<!-- ===== DAY 5: SATURDAY ===== -->
-<section id="saturday">
-  <div class="inner card" style="--c:var(--sky)">
-    <div class="panel-head">
+<!-- ===== 7 · SATURDAY ===== -->
+<section class="slide" id="s7">
+  <div class="count num">07 / 09</div>
+  <div class="inner" style="--c:var(--sky)">
+    <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7.5" width="16" height="9" rx="2.2"/><path d="M20.5 10.5h1.4v3h-1.4"/><path d="M6 12h1.6l1.4-2 1.6 4 1.3-2H13"/></svg></div>
       <div>
         <div class="kicker">5 · יום שבת</div>
@@ -328,10 +561,10 @@
         <div class="tag">מטרה: 100% סוללה עד יום ראשון</div>
       </div>
     </div>
-    <ul class="items">
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">19:30</span><span class="item-title">כיבוי מסכים וארוחה</span><span class="item-desc">התחלה מוקדמת כדי להיערך בזמן לשבוע הלימודים החדש</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">21:00</span><span class="item-title">סגירת מטבח</span><span class="item-desc">פינוי המטבח והשארת שיש צחור ונקי</span></div></li>
-      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">22:00</span><span class="item-title">מקלחת ולחדר</span><span class="item-desc">התארגנות סופית לקראת שינה טובה</span></div></li>
+    <ul class="sched">
+      <li class="step"><div class="time num">19:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כיבוי מסכים וארוחה</b><span>התחלה מוקדמת כדי להיערך בזמן לשבוע הלימודים החדש</span></div></li>
+      <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח</b><span>פינוי המטבח והשארת שיש צחור ונקי</span></div></li>
+      <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ולחדר</b><span>התארגנות סופית לקראת שינה טובה</span></div></li>
     </ul>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
@@ -340,10 +573,11 @@
   </div>
 </section>
 
-<!-- ===== RULES ===== -->
-<section id="rules">
-  <div class="inner card" style="--c:var(--violet)">
-    <div class="panel-head">
+<!-- ===== 8 · RULES ===== -->
+<section class="slide" id="s8">
+  <div class="count num">08 / 09</div>
+  <div class="inner" style="--c:var(--violet)">
+    <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9 12.2l2 2 4-4.4"/></svg></div>
       <div>
         <div class="kicker">6 · כללי הברזל</div>
@@ -363,8 +597,9 @@
   </div>
 </section>
 
-<!-- ===== CLOSING ===== -->
-<section>
+<!-- ===== 9 · CLOSING ===== -->
+<section class="slide" id="s9">
+  <div class="count num">09 / 09</div>
   <div class="inner closing">
     <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M6 4h12v3a6 6 0 0 1-12 0V4Z"/><path d="M6 5H4a2 2 0 0 0 0 4h2M18 5h2a2 2 0 0 1 0 4h-2"/></svg></div>
     <h2>שתהיה לנו שגרה מנצחת!</h2>
