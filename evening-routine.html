@@ -211,6 +211,38 @@
   .step .what b{ display:block; font-size:1.06em; font-weight:600; line-height:1.35; }
   .step .what span{ display:block; font-size:.88em; color:var(--ink-dim); line-height:1.5; margin-top:.22em; }
 
+  /* ---------- picture panel ----------
+     Holds a picture you supply. Set --img on the .art element, e.g.
+        <div class="art" style="--img:url('images/friday.jpg')">
+     The image paints on TOP of a layered accent gradient, so a file that is
+     missing (or deliberately kept out of the public repo via .gitignore)
+     degrades to an intentional coloured tile instead of a broken-image icon.
+     When a real picture is added, drop the <span> label or keep it as a
+     caption — it sits over the image with a shadow either way. */
+  .day-body{ display:grid; grid-template-columns:1fr; gap:1.1em; align-items:start; }
+  @media (min-width:900px){
+    .day-body{ grid-template-columns:1fr minmax(200px,27%); }
+  }
+  .art{
+    position:relative; overflow:hidden;
+    border-radius:var(--radius-md);
+    aspect-ratio:4/3; max-height:30vh; width:100%;
+    border:1px solid color-mix(in srgb, var(--c) 32%, transparent);
+    background-image:
+      var(--img, none),
+      radial-gradient(130% 110% at 75% 8%, color-mix(in srgb, var(--c) 38%, transparent), transparent 68%),
+      linear-gradient(165deg, var(--surface-2), var(--surface));
+    background-size:cover, auto, auto;
+    background-position:center;
+    background-repeat:no-repeat;
+    display:grid; place-items:end start;
+  }
+  .art span{
+    font-family:'Secular One'; font-size:clamp(17px,3.2vh,28px);
+    color:var(--ink); margin:.5em .65em; line-height:1;
+    text-shadow:0 2px 12px rgba(0,0,0,.6);
+  }
+
   .tip{
     margin-top:.5em; display:flex; gap:.8em; align-items:flex-start;
     background: color-mix(in srgb, var(--c) 12%, var(--surface-2));
@@ -307,6 +339,9 @@
     .day-head .badge{ width:2.9em; height:2.9em; border-radius:.85em; }
     .day-head .badge svg{ width:1.55em; height:1.55em; }
     .step{ grid-template-columns:auto 1.2em 1fr; column-gap:.6em; }
+    /* a wide, short band under the schedule — keeps the height budget intact */
+    .day-body{ gap:.8em; }
+    .art{ aspect-ratio:16/7; max-height:15vh; }
     /* the five-day chart needs a roomier label column at this width */
     .axis{ margin-inline-start:4.4em; }
     .trow{ grid-template-columns:4.4em 1fr; }
@@ -333,6 +368,9 @@
     .day-head .tag,.step .what span,.ov .lead,.rule-card p,.closing p,.trow .lbl,.legend div{ color:#4a5b66; }
     .step .what b,.rule-card h3,.chip .who,.hero .sub{ color:#101820; }
     .tip,.rule-card,.chip,.closing .foot{ background:#f2f5f7; border-color:#c9d4da; }
+    /* the panel is a screen device; on paper it would just eat toner */
+    .day-body{ display:block; }
+    .art{ display:none; }
     .trow .track{ background:#eef2f4; }
     .trow .track b::after{ opacity:1; color:#4a5b66; }
   }
@@ -466,11 +504,13 @@
         <div class="tag">שגרת ערב סטנדרטית</div>
       </div>
     </div>
-    <ul class="sched">
+    <div class="day-body"><ul class="sched">
       <li class="step"><div class="time num">19:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כיבוי מסכים ותחילת ארוחת ערב</b><span>שעה אחרונה להתחיל להכין/להגיש (מותר לאכול מול הטלוויזיה)</span></div></li>
       <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח מלאה</b><span>צלחות בכיור, אוכל במקרר, השיש נקי</span></div></li>
       <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ולחדר</b><span>סגירת מקלחות וכניסה לחדרים לקראת השינה</span></div></li>
     </ul>
+      <div class="art"><span>א׳–ד׳</span></div>
+    </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
       <p><b>טיפ פוקימון:</b> גם צ׳ריזארד הכי חזק צריך לישון בפוקיבול שלו בזמן — אחרת הלהבה שלו כבה למחרת בבוקר.</p>
@@ -490,12 +530,14 @@
         <div class="tag">מצב סאיין — אנרגיה מעל 9000</div>
       </div>
     </div>
-    <ul class="sched">
+    <div class="day-body"><ul class="sched">
       <li class="step"><div class="time num">19:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>חזרה ומקלחת מיידית</b><span>חוזרים מהמכון עד 19:00 לכל המאוחר וישר להתקלח</span></div></li>
       <li class="step"><div class="time num">20:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>אחרי מקלחת, מסכים כבויים וארוחה</b><span>כולם כבר נקיים, מתחילים ארוחת ערב / שייק</span></div></li>
       <li class="step"><div class="time num">21:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח מלאה</b><span>מצרכים במקרר, שיש נקי</span></div></li>
       <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כולם בתוך החדרים</b><span>התאוששות שרירים בלילה — בדיוק כמו בין קרבות</span></div></li>
     </ul>
+      <div class="art"><span>יום אימון</span></div>
+    </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
       <p><b>חוק האימון:</b> מקלחת ישר ב-19:00 מטעינה אתכם לארוחת ערב רגועה — בלי לבזבז אנרגיית קי על הספה.</p>
@@ -515,12 +557,14 @@
         <div class="tag">ערב חופש מוקדם</div>
       </div>
     </div>
-    <ul class="sched">
+    <div class="day-body"><ul class="sched">
       <li class="step"><div class="time num">20:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>ארוחת ערב</b><span>שעה אחרונה להתחיל להכין ולהגיש</span></div></li>
       <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח</b><span>ניקוי השיש והחזרת המצרכים למקום</span></div></li>
       <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כיבוי מסכים</b><span>זמן חופשי רגוע, בלי למשוך אל תוך הלילה</span></div></li>
       <li class="step"><div class="time num">22:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ולחדר</b><span>התארגנות סופית לקראת שינה</span></div></li>
     </ul>
+      <div class="art"><span>חמישי</span></div>
+    </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
       <p><b>חוק הלגו:</b> כל בלוק בבניין תומך בבלוק שמעליו — שעת שינה ב-22:30 היא הבלוק שמחזיק את כל הסופ״ש. בלי הבלוק הזה, הכול קורס.</p>
@@ -540,11 +584,13 @@
         <div class="tag">מצב ד׳וה</div>
       </div>
     </div>
-    <ul class="sched">
+    <div class="day-body"><ul class="sched">
       <li class="step"><div class="time num">20:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>ארוחה אצל סבא וסבתא</b><span>ערב שישי כיפי וטעים לכל המשפחה</span></div></li>
       <li class="step"><div class="time num">23:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>חזרה הביתה, ללא מסכים</b><span>אין לפתוח מחשב או טלוויזיה</span></div></li>
       <li class="step"><div class="time num">23:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ומיטה</b><span>מקלחת זריזה וישר למיטה</span></div></li>
     </ul>
+      <div class="art"><span>שישי</span></div>
+    </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
       <p><b>הומר סימפסון אומר:</b> ד׳וה! הדבר היחיד שכדאי לעשות ב-23:00 זה לקפוץ למיטה, לא לחפש דונאטס במקרר.</p>
@@ -564,11 +610,13 @@
         <div class="tag">מטרה: 100% סוללה עד יום ראשון</div>
       </div>
     </div>
-    <ul class="sched">
+    <div class="day-body"><ul class="sched">
       <li class="step"><div class="time num">19:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כיבוי מסכים וארוחה</b><span>התחלה מוקדמת כדי להיערך בזמן לשבוע הלימודים החדש</span></div></li>
       <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח</b><span>פינוי המטבח והשארת שיש צחור ונקי</span></div></li>
       <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ולחדר</b><span>התארגנות סופית לקראת שינה טובה</span></div></li>
     </ul>
+      <div class="art"><span>שבת</span></div>
+    </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
       <p><b>סטטוס פיקאצ׳ו:</b> סוללה ב-100% ביום ראשון בבוקר דורשת כיבוי מסכים ב-19:30 בשבת — אחרת הופעה חלשה במגרש.</p>
