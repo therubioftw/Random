@@ -238,7 +238,9 @@
        (e.g. "center 28%") to keep the part that matters — usually a face. */
     background-position:var(--pos, center);
     background-repeat:no-repeat;
-    display:grid; place-items:end start;
+    /* --cap flips the caption to the other bottom corner, for pictures whose
+       subject sits where the caption would otherwise land on top of it */
+    display:grid; place-items:var(--cap, end start);
   }
   /* scrim: the caption is light text and a photo's bottom corner can be any
      colour at all, so darken behind it rather than relying on a text-shadow */
@@ -549,7 +551,7 @@
       <li class="step"><div class="time num">21:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח מלאה</b><span>מצרכים במקרר, שיש נקי</span></div></li>
       <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כולם בתוך החדרים</b><span>התאוששות שרירים בלילה — בדיוק כמו בין קרבות</span></div></li>
     </ul>
-      <div class="art"><span>יום אימון</span></div>
+      <div class="art" style="--img:url('images/training.jpg')"><span>יום אימון</span></div>
     </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
@@ -576,7 +578,7 @@
       <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כיבוי מסכים</b><span>זמן חופשי רגוע, בלי למשוך אל תוך הלילה</span></div></li>
       <li class="step"><div class="time num">22:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ולחדר</b><span>התארגנות סופית לקראת שינה</span></div></li>
     </ul>
-      <div class="art"><span>חמישי</span></div>
+      <div class="art" style="--img:url('images/thursday.jpg')"><span>חמישי</span></div>
     </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
@@ -602,7 +604,7 @@
       <li class="step"><div class="time num">23:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>חזרה הביתה, ללא מסכים</b><span>אין לפתוח מחשב או טלוויזיה</span></div></li>
       <li class="step"><div class="time num">23:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ומיטה</b><span>מקלחת זריזה וישר למיטה</span></div></li>
     </ul>
-      <div class="art"><span>שישי</span></div>
+      <div class="art" style="--img:url('images/friday.jpg'); --pos:100% center; --cap:end end"><span>שישי</span></div>
     </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
@@ -628,7 +630,7 @@
       <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח</b><span>פינוי המטבח והשארת שיש צחור ונקי</span></div></li>
       <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ולחדר</b><span>התארגנות סופית לקראת שינה טובה</span></div></li>
     </ul>
-      <div class="art"><span>שבת</span></div>
+      <div class="art" style="--img:url('images/saturday.jpg')"><span>שבת</span></div>
     </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
