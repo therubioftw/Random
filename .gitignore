@@ -4,3 +4,6 @@
 # panels fall back to a coloured tile when a file is absent, so the public page
 # still looks right — your local copy shows the pictures.
 images/
+
+# Self-contained copy with the pictures baked in — for the family, not for the web.
+evening-routine-kids.html
