@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שגרת הערב — משפחת רועי, אילנה, ליאם ורובי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --bg:#0A1219;
+    --surface:#121F2A;
+    --surface-2:#182A38;
+    --surface-3:#1E3444;
+    --border: rgba(234,243,242,.09);
+    --border-strong: rgba(234,243,242,.16);
+    --ink:#EAF3F2;
+    --ink-dim:#93ABB6;
+    --ink-faint:#5D7986;
+
+    --mint:#33D6C0;
+    --ember:#FF8552;
+    --gold:#FFC947;
+    --pink:#FF6B88;
+    --sky:#5BB7FF;
+    --violet:#A996FF;
+
+    --radius-lg:22px;
+    --radius-md:16px;
+    --shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+  }
+
+  *{ box-sizing:border-box; }
+  html{
+    background:var(--bg);
+    scroll-snap-type:y proximity;
+    scroll-behavior:smooth;
+  }
+  body{
+    margin:0;
+    background:
+      radial-gradient(60vw 40vh at 85% -8%, rgba(255,122,69,.10), transparent 60%),
+      radial-gradient(55vw 45vh at -5% 10%, rgba(51,214,192,.09), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Rubik','Segoe UI',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:'Secular One','Rubik',sans-serif; font-weight:400; margin:0; }
+  p{ margin:0; }
+  a{ color:inherit; }
+  ::selection{ background:var(--ember); color:#1a0a03; }
+
+  /* ---------- sticky nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; gap:14px;
+    padding:12px 20px; background:rgba(10,18,25,.86);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav .title{ font-family:'Secular One'; font-size:15px; flex:none; white-space:nowrap; }
+  .nav .links{ display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; }
+  .nav .links::-webkit-scrollbar{ display:none; }
+  .nav a.pill{
+    flex:none; text-decoration:none; font-size:12.5px; font-weight:600;
+    color:var(--ink-dim); background:var(--surface); border:1px solid var(--border);
+    padding:6px 12px; border-radius:999px; white-space:nowrap;
+    transition: color .15s, border-color .15s;
+  }
+  .nav a.pill:hover{ color:var(--ink); border-color:var(--border-strong); }
+
+  /* ---------- slide sections ---------- */
+  section{
+    scroll-snap-align:start;
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:64px 20px;
+  }
+  .inner{ max-width:880px; margin:0 auto; width:100%; }
+
+  /* hero */
+  .hero .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12.5px; font-weight:700; letter-spacing:.06em;
+    color:var(--gold); background:rgba(255,201,71,.12);
+    border:1px solid rgba(255,201,71,.28);
+    padding:5px 12px; border-radius:999px;
+  }
+  .hero h1{ font-size:clamp(32px,6vw,52px); margin:18px 0 10px; text-wrap:balance; }
+  .hero .sub{ color:var(--ink-dim); font-size:16px; line-height:1.65; max-width:52ch; }
+  .party{ display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
+  .chip{
+    display:flex; align-items:center; gap:9px;
+    background:var(--surface-2); border:1px solid var(--border-strong);
+    border-radius:999px; padding:6px 14px 6px 8px;
+  }
+  .chip .dot{
+    width:30px; height:30px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Secular One'; font-size:14px; color:#0A1219; flex:none;
+  }
+  .chip span{ font-size:13.5px; font-weight:600; }
+  .scrolltip{ margin-top:44px; color:var(--ink-faint); font-size:12.5px; display:flex; align-items:center; gap:8px; }
+  .scrolltip svg{ width:14px; height:14px; animation:bob 1.8s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(4px);} }
+  @media (prefers-reduced-motion: reduce){ .scrolltip svg{ animation:none; } }
+
+  /* day panel */
+  .card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius: var(--radius-lg); padding:30px 30px 32px;
+    box-shadow: var(--shadow);
+  }
+  .panel-head{ display:flex; align-items:flex-start; gap:16px; }
+  .panel-head .badge{
+    flex:none; width:56px; height:56px; border-radius:16px;
+    background: color-mix(in srgb, var(--c) 20%, var(--surface-2));
+    border:1px solid color-mix(in srgb, var(--c) 45%, transparent);
+    display:flex; align-items:center; justify-content:center; color:var(--c);
+  }
+  .panel-head .badge svg{ width:30px; height:30px; }
+  .panel-head .kicker{ font-size:12.5px; font-weight:700; letter-spacing:.04em; color:var(--c); }
+  .panel-head h2{ font-size:26px; margin-top:2px; }
+  .panel-head .tag{ font-size:13.5px; color:var(--ink-dim); margin-top:4px; }
+
+  .items{ list-style:none; margin:26px 0 0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .item{
+    display:flex; align-items:flex-start; gap:14px;
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius: var(--radius-md); padding:15px 16px;
+  }
+  .item .mark{
+    flex:none; width:12px; height:12px; border-radius:50%; margin-top:6px;
+    background:var(--c); box-shadow:0 0 0 4px color-mix(in srgb, var(--c) 20%, transparent);
+  }
+  .item-body{ flex:1; min-width:0; display:flex; flex-wrap:wrap; gap:4px 14px; align-items:baseline; }
+  .item-time{
+    font-family:'Secular One'; font-size:16px; color:var(--c);
+    font-variant-numeric:tabular-nums; flex:none;
+  }
+  .item-title{ font-size:15.5px; font-weight:600; }
+  .item-desc{ flex-basis:100%; font-size:13.5px; color:var(--ink-dim); line-height:1.55; margin-top:1px; }
+
+  .tip{
+    margin-top:22px; display:flex; gap:12px; align-items:flex-start;
+    background: color-mix(in srgb, var(--c) 12%, var(--surface-2));
+    border:1px solid color-mix(in srgb, var(--c) 32%, transparent);
+    border-radius: var(--radius-md); padding:15px 16px;
+  }
+  .tip svg{ flex:none; width:20px; height:20px; color:var(--c); margin-top:2px; }
+  .tip p{ font-size:14px; line-height:1.6; }
+  .tip b{ color:var(--c); }
+
+  /* rules */
+  .rules-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:26px; }
+  .rule-card{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:18px; display:flex; flex-direction:column; gap:11px;
+  }
+  .rule-num{
+    width:32px; height:32px; border-radius:9px; background:color-mix(in srgb, var(--violet) 22%, var(--surface-2));
+    color:var(--violet); display:flex; align-items:center; justify-content:center;
+    font-family:'Secular One'; font-size:15px;
+  }
+  .rule-card h3{ font-size:16px; }
+  .rule-card p{ font-size:13.5px; color:var(--ink-dim); line-height:1.6; }
+
+  /* closing */
+  .closing{ text-align:center; }
+  .closing .badge{
+    width:64px; height:64px; border-radius:20px; margin:0 auto 22px;
+    background: color-mix(in srgb, var(--gold) 22%, var(--surface-2));
+    border:1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+    display:flex; align-items:center; justify-content:center; color:var(--gold);
+  }
+  .closing .badge svg{ width:34px; height:34px; }
+  .closing h2{ font-size:clamp(26px,4.4vw,36px); text-wrap:balance; }
+  .closing p{ color:var(--ink-dim); font-size:15.5px; line-height:1.7; max-width:52ch; margin:16px auto 0; }
+  .closing .foot{
+    margin:30px auto 0; display:inline-flex; align-items:center; gap:9px;
+    background:var(--surface-2); border:1px solid var(--border-strong);
+    padding:10px 20px; border-radius:999px; font-size:13.5px; font-weight:600;
+  }
+  .closing .foot svg{ width:17px; height:17px; color:var(--gold); }
+
+  @media (max-width:560px){
+    .card{ padding:22px 18px 26px; }
+    section{ padding:48px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="title">🌙 שגרת הערב</span>
+  <div class="links">
+    <a class="pill" href="#weekday">יום רגיל</a>
+    <a class="pill" href="#training">יום אימון</a>
+    <a class="pill" href="#thursday">חמישי</a>
+    <a class="pill" href="#friday">שישי</a>
+    <a class="pill" href="#saturday">שבת</a>
+    <a class="pill" href="#rules">כללי הברזל</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="inner">
+    <span class="eyebrow">עונה 2 · שגרת הערב הרשמית</span>
+    <h1>האמנה החדשה בבית</h1>
+    <p class="sub">לוח שגרת הערב של המשפחה — מה קורה, באיזו שעה, וכל הטיפים שמקלים על זה.</p>
+    <div class="party">
+      <div class="chip"><span class="dot" style="background:var(--mint)">ר</span><span>רועי</span></div>
+      <div class="chip"><span class="dot" style="background:var(--pink)">א</span><span>אילנה</span></div>
+      <div class="chip"><span class="dot" style="background:var(--ember)">ל</span><span>ליאם · 14</span></div>
+      <div class="chip"><span class="dot" style="background:var(--gold)">ר</span><span>רובי · 12</span></div>
+    </div>
+    <div class="scrolltip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      <span>גללו למטה או בחרו יום למעלה</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DAY 1: WEEKDAY ===== -->
+<section id="weekday">
+  <div class="inner card" style="--c:var(--mint)">
+    <div class="panel-head">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/><circle cx="17" cy="6" r=".6" fill="currentColor" stroke="none"/><circle cx="19.5" cy="9.5" r=".4" fill="currentColor" stroke="none"/></svg></div>
+      <div>
+        <div class="kicker">1 · יום רגיל</div>
+        <h2>ימים א׳–ד׳ (ללא אימון)</h2>
+        <div class="tag">שגרת ערב סטנדרטית</div>
+      </div>
+    </div>
+    <ul class="items">
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">19:30</span><span class="item-title">כיבוי מסכים ותחילת ארוחת ערב</span><span class="item-desc">שעה אחרונה להתחיל להכין/להגיש (מותר לאכול מול הטלוויזיה)</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">21:00</span><span class="item-title">סגירת מטבח מלאה</span><span class="item-desc">צלחות בכיור, אוכל במקרר, השיש נקי</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">22:00</span><span class="item-title">מקלחת ולחדר</span><span class="item-desc">סגירת מקלחות וכניסה לחדרים לקראת השינה</span></div></li>
+    </ul>
+    <div class="tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
+      <p><b>טיפ פוקימון:</b> גם צ׳ריזארד הכי חזק צריך לישון בפוקיבול שלו בזמן — אחרת הלהבה שלו כבה למחרת בבוקר.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DAY 2: TRAINING ===== -->
+<section id="training">
+  <div class="inner card" style="--c:var(--ember)">
+    <div class="panel-head">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 5 13h5l-1 9 9-13h-6l1-7z"/></svg></div>
+      <div>
+        <div class="kicker">2 · יום אימון</div>
+        <h2>ימים א׳–ד׳ (חד״כ / חוג / כושר)</h2>
+        <div class="tag">מצב סאיין — אנרגיה מעל 9000</div>
+      </div>
+    </div>
+    <ul class="items">
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">19:00</span><span class="item-title">חזרה ומקלחת מיידית</span><span class="item-desc">חוזרים מהמכון עד 19:00 לכל המאוחר וישר להתקלח</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">20:30</span><span class="item-title">אחרי מקלחת, מסכים כבויים וארוחה</span><span class="item-desc">כולם כבר נקיים, מתחילים ארוחת ערב / שייק</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">21:30</span><span class="item-title">סגירת מטבח מלאה</span><span class="item-desc">מצרכים במקרר, שיש נקי</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">22:00</span><span class="item-title">כולם בתוך החדרים</span><span class="item-desc">התאוששות שרירים בלילה — בדיוק כמו בין קרבות</span></div></li>
+    </ul>
+    <div class="tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
+      <p><b>חוק האימון:</b> מקלחת ישר ב-19:00 מטעינה אתכם לארוחת ערב רגועה — בלי לבזבז אנרגיית קי על הספה.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DAY 3: THURSDAY ===== -->
+<section id="thursday">
+  <div class="inner card" style="--c:var(--gold)">
+    <div class="panel-head">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="9" rx="2.5"/><circle cx="8.5" cy="7.2" r="2"/><circle cx="15.5" cy="7.2" r="2"/></svg></div>
+      <div>
+        <div class="kicker">3 · יום חמישי</div>
+        <h2>תחילת הסופ״ש</h2>
+        <div class="tag">ערב חופש מוקדם</div>
+      </div>
+    </div>
+    <ul class="items">
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">20:00</span><span class="item-title">ארוחת ערב</span><span class="item-desc">שעה אחרונה להתחיל להכין ולהגיש</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">21:00</span><span class="item-title">סגירת מטבח</span><span class="item-desc">ניקוי השיש והחזרת המצרכים למקום</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">22:00</span><span class="item-title">כיבוי מסכים</span><span class="item-desc">זמן חופשי רגוע, בלי למשוך אל תוך הלילה</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">22:30</span><span class="item-title">מקלחת ולחדר</span><span class="item-desc">התארגנות סופית לקראת שינה</span></div></li>
+    </ul>
+    <div class="tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
+      <p><b>חוק הלגו:</b> כל בלוק בבניין תומך בבלוק שמעליו — שעת שינה ב-22:30 היא הבלוק שמחזיק את כל הסופ״ש. בלי הבלוק הזה, הכול קורס.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DAY 4: FRIDAY ===== -->
+<section id="friday">
+  <div class="inner card" style="--c:var(--pink)">
+    <div class="panel-head">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/><path d="M7 5.5 8 7M17 5.5 16 7M4.5 12h2M17.5 12h2"/></svg></div>
+      <div>
+        <div class="kicker">4 · יום שישי</div>
+        <h2>ערב משפחתי אצל הסבים</h2>
+        <div class="tag">ד׳וה מוד</div>
+      </div>
+    </div>
+    <ul class="items">
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">20:00</span><span class="item-title">ארוחה אצל סבא וסבתא</span><span class="item-desc">ערב שישי כיפי וטעים לכל המשפחה</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">23:00</span><span class="item-title">חזרה הביתה, ללא מסכים</span><span class="item-desc">אין לפתוח מחשב או טלוויזיה</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">23:30</span><span class="item-title">מקלחת ומיטה</span><span class="item-desc">מקלחת זריזה וישר למיטה</span></div></li>
+    </ul>
+    <div class="tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
+      <p><b>הומר סימפסון אומר:</b> ד׳וה! הדבר היחיד שכדאי לעשות ב-23:00 זה לקפוץ למיטה, לא לחפש דונאטס במקרר.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DAY 5: SATURDAY ===== -->
+<section id="saturday">
+  <div class="inner card" style="--c:var(--sky)">
+    <div class="panel-head">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7.5" width="16" height="9" rx="2.2"/><path d="M20.5 10.5h1.4v3h-1.4"/><path d="M6 12h1.6l1.4-2 1.6 4 1.3-2H13"/></svg></div>
+      <div>
+        <div class="kicker">5 · יום שבת</div>
+        <h2>טעינה לקראת השבוע</h2>
+        <div class="tag">מטרה: 100% סוללה עד יום ראשון</div>
+      </div>
+    </div>
+    <ul class="items">
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">19:30</span><span class="item-title">כיבוי מסכים וארוחה</span><span class="item-desc">התחלה מוקדמת כדי להיערך בזמן לשבוע הלימודים החדש</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">21:00</span><span class="item-title">סגירת מטבח</span><span class="item-desc">פינוי המטבח והשארת שיש צחור ונקי</span></div></li>
+      <li class="item"><span class="mark"></span><div class="item-body"><span class="item-time">22:00</span><span class="item-title">מקלחת ולחדר</span><span class="item-desc">התארגנות סופית לקראת שינה טובה</span></div></li>
+    </ul>
+    <div class="tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
+      <p><b>סטטוס פיקאצ׳ו:</b> סוללה ב-100% ביום ראשון בבוקר דורשת כיבוי מסכים ב-19:30 בשבת — אחרת הופעה חלשה במגרש.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RULES ===== -->
+<section id="rules">
+  <div class="inner card" style="--c:var(--violet)">
+    <div class="panel-head">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9 12.2l2 2 4-4.4"/></svg></div>
+      <div>
+        <div class="kicker">6 · כללי הברזל</div>
+        <h2>כללי הברזל של הבית</h2>
+        <div class="tag">שלושה חוקים שלא זזים מהם</div>
+      </div>
+    </div>
+    <div class="rules-grid">
+      <div class="rule-card"><div class="rule-num">1</div><h3>חוק החד״כ והמקלחת</h3><p>בימי אימון — חזרה עד 19:00 וישר למקלחת. ב-20:30 כולם נקיים, המסכים כבויים ומתחילים לאכול.</p></div>
+      <div class="rule-card"><div class="rule-num">2</div><h3>סגירת מטבח = שיש צחור</h3><p>21:00 בימי חול / 21:30 בחד״כ: צלחות בכיור, אוכל במקרר, שיש מבריק. לא מתחילים להכין אוכל בשעת הסגירה!</p></div>
+      <div class="rule-card"><div class="rule-num">3</div><h3>מסכים ומקלחות</h3><p>אכילה מול מסך מותרת רק בזמן הארוחה. ב-22:00 (בימי חול ואימון) כולם כבר במקלחות ובחדרים.</p></div>
+    </div>
+    <div class="tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
+      <p><b>אזהרת בארט סימפסון:</b> מי שמפר את החוקים כותב 100 פעם על הלוח: "אני אשמור על שגרת הערב בבית!"</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section>
+  <div class="inner closing">
+    <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M6 4h12v3a6 6 0 0 1-12 0V4Z"/><path d="M6 5H4a2 2 0 0 0 0 4h2M18 5h2a2 2 0 0 1 0 4h-2"/></svg></div>
+    <h2>שתהיה לנו שגרה מנצחת!</h2>
+    <p>כשהכללים ברורים ומדויקים — מרוויחים יותר זמן בכיף, ישנים טוב יותר וגדלים חזקים כמו... טוב, כמעט כמו סאיין ברמה 9000.</p>
+    <div class="foot">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+      <span>בית משפחת רועי, אילנה, ליאם ורובי · עונה 2</span>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
