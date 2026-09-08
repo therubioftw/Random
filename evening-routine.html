@@ -233,14 +233,25 @@
       radial-gradient(130% 110% at 75% 8%, color-mix(in srgb, var(--c) 38%, transparent), transparent 68%),
       linear-gradient(165deg, var(--surface-2), var(--surface));
     background-size:cover, auto, auto;
-    background-position:center;
+    /* --pos tunes the crop per picture. The panel is much wider than it is
+       tall on phones, so `cover` slices off the top and bottom; nudge this
+       (e.g. "center 28%") to keep the part that matters — usually a face. */
+    background-position:var(--pos, center);
     background-repeat:no-repeat;
     display:grid; place-items:end start;
   }
+  /* scrim: the caption is light text and a photo's bottom corner can be any
+     colour at all, so darken behind it rather than relying on a text-shadow */
+  .art::after{
+    content:''; position:absolute; inset:auto 0 0 0; height:58%;
+    background:linear-gradient(to top, rgba(5,11,17,.82), rgba(5,11,17,.35) 45%, transparent);
+    pointer-events:none;
+  }
   .art span{
+    position:relative; z-index:1;
     font-family:'Secular One'; font-size:clamp(17px,3.2vh,28px);
-    color:var(--ink); margin:.5em .65em; line-height:1;
-    text-shadow:0 2px 12px rgba(0,0,0,.6);
+    color:#fff; margin:.5em .65em; line-height:1;
+    text-shadow:0 1px 6px rgba(0,0,0,.5);
   }
 
   .tip{
@@ -339,9 +350,11 @@
     .day-head .badge{ width:2.9em; height:2.9em; border-radius:.85em; }
     .day-head .badge svg{ width:1.55em; height:1.55em; }
     .step{ grid-template-columns:auto 1.2em 1fr; column-gap:.6em; }
-    /* a wide, short band under the schedule — keeps the height budget intact */
+    /* a band under the schedule. 16/7 was too letterboxed — it cropped away
+       more than half the height of a squarish picture. Day slides only use
+       ~480-530px of the ~730px available here, so the panel can afford this. */
     .day-body{ gap:.8em; }
-    .art{ aspect-ratio:16/7; max-height:15vh; }
+    .art{ aspect-ratio:3/2; max-height:28vh; }
     /* the five-day chart needs a roomier label column at this width */
     .axis{ margin-inline-start:4.4em; }
     .trow{ grid-template-columns:4.4em 1fr; }
@@ -509,7 +522,7 @@
       <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח מלאה</b><span>צלחות בכיור, אוכל במקרר, השיש נקי</span></div></li>
       <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ולחדר</b><span>סגירת מקלחות וכניסה לחדרים לקראת השינה</span></div></li>
     </ul>
-      <div class="art"><span>א׳–ד׳</span></div>
+      <div class="art" style="--img:url('images/weekday.jpg'); --pos:center 28%"><span>א׳–ד׳</span></div>
     </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
