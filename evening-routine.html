@@ -109,8 +109,11 @@
   }
   .rail a:hover::after, .rail a:focus-visible::after{ opacity:1; }
 
+  /* absolute, NOT fixed: there is one .count per slide, so fixed positioning
+     would lift all nine out of flow onto the same viewport spot and stack them
+     into unreadable overlap. Absolute anchors each one to its own .slide. */
   .count{
-    position:fixed; inset-inline-start: clamp(12px,2vw,24px);
+    position:absolute; inset-inline-start: clamp(12px,2vw,24px);
     bottom: clamp(12px,2.4vh,22px); z-index:30;
     font-family:'Secular One'; font-size:12.5px; color:var(--ink-faint);
     letter-spacing:.08em;
@@ -534,7 +537,7 @@
       <div>
         <div class="kicker">4 · יום שישי</div>
         <h2>ערב משפחתי אצל הסבים</h2>
-        <div class="tag">ד׳וה מוד</div>
+        <div class="tag">מצב ד׳וה</div>
       </div>
     </div>
     <ul class="sched">
