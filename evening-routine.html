@@ -110,7 +110,7 @@
   .rail a:hover::after, .rail a:focus-visible::after{ opacity:1; }
 
   /* absolute, NOT fixed: there is one .count per slide, so fixed positioning
-     would lift all nine out of flow onto the same viewport spot and stack them
+     would lift them all out of flow onto the same viewport spot and stack them
      into unreadable overlap. Absolute anchors each one to its own .slide. */
   .count{
     position:absolute; inset-inline-start: clamp(12px,2vw,24px);
@@ -316,8 +316,8 @@
   }
   .rule-num{
     width:2.1em; height:2.1em; border-radius:.55em;
-    background:color-mix(in srgb, var(--violet) 22%, var(--surface-2));
-    color:var(--violet); display:grid; place-items:center;
+    background:color-mix(in srgb, var(--c) 22%, var(--surface-2));
+    color:var(--c); display:grid; place-items:center;
     font-family:'Secular One'; font-size:.95em;
   }
   .rule-card h3{ font-size:1.02em; }
@@ -404,12 +404,13 @@
   <a href="#s6" data-label="שישי" aria-label="שישי"></a>
   <a href="#s7" data-label="שבת" aria-label="שבת"></a>
   <a href="#s8" data-label="כללי הברזל" aria-label="כללי הברזל"></a>
-  <a href="#s9" data-label="סיום" aria-label="סיום"></a>
+  <a href="#s9" data-label="שלישי ושבת" aria-label="שלישי ושבת"></a>
+  <a href="#s10" data-label="סיום" aria-label="סיום"></a>
 </nav>
 
 <!-- ===== 1 · HERO ===== -->
 <section class="slide hero" id="s1">
-  <div class="count num">01 / 09</div>
+  <div class="count num">01 / 10</div>
   <div class="inner">
     <span class="eyebrow">עונה 2 · שגרת הערב הרשמית</span>
     <h1>האמנה החדשה בבית</h1>
@@ -429,7 +430,7 @@
 
 <!-- ===== 2 · WEEK OVERVIEW ===== -->
 <section class="slide" id="s2">
-  <div class="count num">02 / 09</div>
+  <div class="count num">02 / 10</div>
   <div class="inner ov" style="--c:var(--violet)">
     <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></div>
@@ -452,19 +453,19 @@
       <div class="trow">
         <div class="lbl">יום רגיל</div>
         <div class="track">
-          <b style="--m:var(--pink); --x:14.2%" data-t="19:30"></b>
-          <b style="--m:var(--gold); --x:44.8%" data-t="21:00"></b>
-          <b style="--m:var(--sky);  --x:65.4%" data-t="22:00"></b>
+          <b style="--m:var(--pink);   --x:14.2%" data-t="19:30"></b>
+          <b style="--m:var(--sky);    --x:44.8%" data-t="21:00"></b>
+          <b style="--m:var(--violet); --x:55.2%" data-t="21:30"></b>
         </div>
       </div>
 
       <div class="trow">
         <div class="lbl">יום אימון</div>
         <div class="track">
-          <b style="--m:var(--mint);  --x:4%"    data-t="19:00"></b>
-          <b style="--m:var(--pink);  --x:34.6%" data-t="20:30"></b>
-          <b style="--m:var(--gold);  --x:55.2%" data-t="21:30"></b>
-          <b style="--m:var(--sky);   --x:65.4%" data-t="22:00"></b>
+          <b style="--m:var(--mint);   --x:4%"    data-t="19:00"></b>
+          <b style="--m:var(--pink);   --x:24.4%" data-t="20:00"></b>
+          <b style="--m:var(--sky);    --x:44.8%" data-t="21:00"></b>
+          <b style="--m:var(--violet); --x:55.2%" data-t="21:30"></b>
         </div>
       </div>
 
@@ -502,14 +503,15 @@
       <div><i style="--m:var(--ember)"></i>ארוחה</div>
       <div><i style="--m:var(--pink)"></i>כיבוי מסכים</div>
       <div><i style="--m:var(--gold)"></i>סגירת מטבח</div>
-      <div><i style="--m:var(--sky)"></i>מקלחת וחדר</div>
+      <div><i style="--m:var(--sky)"></i>במיטה</div>
+      <div><i style="--m:var(--violet)"></i>ישנים</div>
     </div>
   </div>
 </section>
 
 <!-- ===== 3 · WEEKDAY ===== -->
 <section class="slide" id="s3">
-  <div class="count num">03 / 09</div>
+  <div class="count num">03 / 10</div>
   <div class="inner" style="--c:var(--mint)">
     <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/><circle cx="17" cy="6" r=".6" fill="currentColor" stroke="none"/><circle cx="19.5" cy="9.5" r=".4" fill="currentColor" stroke="none"/></svg></div>
@@ -521,8 +523,8 @@
     </div>
     <div class="day-body"><ul class="sched">
       <li class="step"><div class="time num">19:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כיבוי מסכים ותחילת ארוחת ערב</b><span>שעה אחרונה להתחיל להכין/להגיש (מותר לאכול מול הטלוויזיה)</span></div></li>
-      <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח מלאה</b><span>צלחות בכיור, אוכל במקרר, השיש נקי</span></div></li>
-      <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מקלחת ולחדר</b><span>סגירת מקלחות וכניסה לחדרים לקראת השינה</span></div></li>
+      <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>במיטה — אחרי מקלחת</b><span>עד השעה הזאת המקלחת כבר נגמרה והמטבח סגור. ב-21:00 שוכבים במיטה</span></div></li>
+      <li class="step"><div class="time num">21:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>ישנים</b><span>אורות כבויים — ב-21:30 כבר ישנים, לא מתחילים להתארגן עכשיו</span></div></li>
     </ul>
       <div class="art" style="--img:url('images/weekday.jpg'); --pos:center 28%"><span>א׳–ד׳</span></div>
     </div>
@@ -535,7 +537,7 @@
 
 <!-- ===== 4 · TRAINING ===== -->
 <section class="slide" id="s4">
-  <div class="count num">04 / 09</div>
+  <div class="count num">04 / 10</div>
   <div class="inner" style="--c:var(--ember)">
     <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 5 13h5l-1 9 9-13h-6l1-7z"/></svg></div>
@@ -547,9 +549,9 @@
     </div>
     <div class="day-body"><ul class="sched">
       <li class="step"><div class="time num">19:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>חזרה ומקלחת מיידית</b><span>חוזרים מהמכון עד 19:00 לכל המאוחר וישר להתקלח</span></div></li>
-      <li class="step"><div class="time num">20:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>אחרי מקלחת, מסכים כבויים וארוחה</b><span>כולם כבר נקיים, מתחילים ארוחת ערב / שייק</span></div></li>
-      <li class="step"><div class="time num">21:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>סגירת מטבח מלאה</b><span>מצרכים במקרר, שיש נקי</span></div></li>
-      <li class="step"><div class="time num">22:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>כולם בתוך החדרים</b><span>התאוששות שרירים בלילה — בדיוק כמו בין קרבות</span></div></li>
+      <li class="step"><div class="time num">20:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>מסכים כבויים וארוחה</b><span>כולם כבר נקיים אחרי המקלחת, מתחילים ארוחת ערב / שייק</span></div></li>
+      <li class="step"><div class="time num">21:00</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>במיטה — אחרי מקלחת</b><span>המקלחת נגמרה מזמן והמטבח סגור. ב-21:00 שוכבים במיטה</span></div></li>
+      <li class="step"><div class="time num">21:30</div><div class="spine"><span class="bead"></span><span class="wire"></span></div><div class="what"><b>ישנים</b><span>התאוששות שרירים בלילה — בדיוק כמו בין קרבות</span></div></li>
     </ul>
       <div class="art" style="--img:url('images/training.jpg')"><span>יום אימון</span></div>
     </div>
@@ -562,7 +564,7 @@
 
 <!-- ===== 5 · THURSDAY ===== -->
 <section class="slide" id="s5">
-  <div class="count num">05 / 09</div>
+  <div class="count num">05 / 10</div>
   <div class="inner" style="--c:var(--gold)">
     <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="9" rx="2.5"/><circle cx="8.5" cy="7.2" r="2"/><circle cx="15.5" cy="7.2" r="2"/></svg></div>
@@ -589,7 +591,7 @@
 
 <!-- ===== 6 · FRIDAY ===== -->
 <section class="slide" id="s6">
-  <div class="count num">06 / 09</div>
+  <div class="count num">06 / 10</div>
   <div class="inner" style="--c:var(--pink)">
     <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/><path d="M7 5.5 8 7M17 5.5 16 7M4.5 12h2M17.5 12h2"/></svg></div>
@@ -615,7 +617,7 @@
 
 <!-- ===== 7 · SATURDAY ===== -->
 <section class="slide" id="s7">
-  <div class="count num">07 / 09</div>
+  <div class="count num">07 / 10</div>
   <div class="inner" style="--c:var(--sky)">
     <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7.5" width="16" height="9" rx="2.2"/><path d="M20.5 10.5h1.4v3h-1.4"/><path d="M6 12h1.6l1.4-2 1.6 4 1.3-2H13"/></svg></div>
@@ -641,7 +643,7 @@
 
 <!-- ===== 8 · RULES ===== -->
 <section class="slide" id="s8">
-  <div class="count num">08 / 09</div>
+  <div class="count num">08 / 10</div>
   <div class="inner" style="--c:var(--violet)">
     <div class="day-head">
       <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9 12.2l2 2 4-4.4"/></svg></div>
@@ -652,9 +654,9 @@
       </div>
     </div>
     <div class="rules-grid">
-      <div class="rule-card"><div class="rule-num">1</div><h3>חוק החד״כ והמקלחת</h3><p>בימי אימון — חזרה עד 19:00 וישר למקלחת. ב-20:30 כולם נקיים, המסכים כבויים ומתחילים לאכול.</p></div>
-      <div class="rule-card"><div class="rule-num">2</div><h3>סגירת מטבח = שיש צחור</h3><p>21:00 בימי חול / 21:30 בחד״כ: צלחות בכיור, אוכל במקרר, שיש מבריק. לא מתחילים להכין אוכל בשעת הסגירה!</p></div>
-      <div class="rule-card"><div class="rule-num">3</div><h3>מסכים ומקלחות</h3><p>אכילה מול מסך מותרת רק בזמן הארוחה. ב-22:00 (בימי חול ואימון) כולם כבר במקלחות ובחדרים.</p></div>
+      <div class="rule-card"><div class="rule-num">1</div><h3>חוק החד״כ והמקלחת</h3><p>בימי אימון — חזרה עד 19:00 וישר למקלחת. ב-20:00 כולם נקיים, המסכים כבויים ומתחילים לאכול.</p></div>
+      <div class="rule-card"><div class="rule-num">2</div><h3>סגירת מטבח = שיש צחור</h3><p>עד 21:00 המטבח סגור והמקלחות נגמרו: צלחות בכיור, אוכל במקרר, שיש מבריק. לא מתחילים להכין אוכל ברגע האחרון!</p></div>
+      <div class="rule-card"><div class="rule-num">3</div><h3>מסכים ומקלחות</h3><p>אכילה מול מסך מותרת רק בזמן הארוחה. ב-21:00 (בימי חול ואימון) כולם במיטה, וב-21:30 כבר ישנים.</p></div>
     </div>
     <div class="tip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
@@ -663,9 +665,33 @@
   </div>
 </section>
 
-<!-- ===== 9 · CLOSING ===== -->
+<!-- ===== 9 · LATE NIGHTS (TUE / SAT) ===== -->
 <section class="slide" id="s9">
-  <div class="count num">09 / 09</div>
+  <div class="count num">09 / 10</div>
+  <div class="inner" style="--c:var(--ember)">
+    <div class="day-head">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9.5V13l2.5 1.5"/><path d="M5 3.5 2.5 6M19 3.5 21.5 6"/></svg></div>
+      <div>
+        <div class="kicker">7 · ימים מיוחדים</div>
+        <h2>שלישי ושבת — מתאמים מראש</h2>
+        <div class="tag">בלי תיאום מראש לא נשארים ערים ולא קמים באמצע הלילה</div>
+      </div>
+    </div>
+    <div class="rules-grid">
+      <div class="rule-card"><div class="rule-num">!</div><h3>למה זו בעיה</h3><p>אירוע שנמשך עד מאוחר, או קימה באמצע הלילה, מפרק את כל שגרת השינה של השבוע — לא רק של אותו יום.</p></div>
+      <div class="rule-card"><div class="rule-num">✓</div><h3>ההסדר מראש</h3><p>שנת צהריים באותו יום, או הליכה לישון מוקדם במיוחד. מסכמים את זה יום לפני — לא בערב עצמו וגם לא בדיעבד.</p></div>
+      <div class="rule-card"><div class="rule-num">★</div><h3>מה עדיף</h3><p>הכי פשוט לוותר על האירוע של יום שלישי. שבת נשארת אפשרית — אבל רק עם ההסדר מראש.</p></div>
+    </div>
+    <div class="tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg>
+      <p><b>טיפ מאמן:</b> אפילו הפוקימון הכי חזק לא נכנס לקרב בלי לנוח קודם — ערב ארוך בלי הסדר מראש הוא הפסד בטוח למחרת בבוקר.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 10 · CLOSING ===== -->
+<section class="slide" id="s10">
+  <div class="count num">10 / 10</div>
   <div class="inner closing">
     <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M6 4h12v3a6 6 0 0 1-12 0V4Z"/><path d="M6 5H4a2 2 0 0 0 0 4h2M18 5h2a2 2 0 0 1 0 4h-2"/></svg></div>
     <h2>שתהיה לנו שגרה מנצחת!</h2>
