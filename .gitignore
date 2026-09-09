@@ -1,7 +1,0 @@
-# Family photos / character art for evening-routine.html.
-# Kept out of the repo on purpose: the deck is published on GitHub Pages, and
-# pushing copyrighted character images would republish them publicly. The .art
-# panels fall back to a coloured tile when a file is absent, so the public page
-# still looks right — your local copy shows the pictures.
-images/
-
