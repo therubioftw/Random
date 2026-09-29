@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A1219">
+<title>מטלות הבית</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1219; --card:#121F2A; --card2:#182835; --line:#233747;
+    --ink:#EAF2F7; --muted:#8FA3B3;
+    --mint:#33D6C0; --ember:#FF8552; --gold:#FFC947; --pink:#FF6B88; --sky:#5BB7FF; --violet:#A996FF;
+    --kc:var(--mint);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:Rubik,"Segoe UI",Arial,sans-serif; background:var(--bg); color:var(--ink);
+    min-height:100vh; padding-bottom:calc(env(safe-area-inset-bottom) + 32px);
+  }
+  h1,h2,h3,.display{font-family:"Secular One",Rubik,sans-serif;font-weight:400}
+  button{font:inherit;color:inherit;cursor:pointer}
+  [hidden]{display:none !important}
+
+  header{
+    position:sticky;top:0;z-index:5;background:rgba(10,18,25,.92);backdrop-filter:blur(8px);
+    padding:calc(env(safe-area-inset-top) + 14px) 16px 12px;border-bottom:1px solid var(--line);
+  }
+  .hrow{max-width:560px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  header h1{margin:0;font-size:22px}
+  .sync{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+  .dot.live{background:var(--mint)} .dot.err{background:var(--pink)}
+  .wrap{max-width:560px;margin:0 auto;padding:16px}
+
+  .weekbar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin:4px 0 18px}
+  .weekbar b{color:var(--gold);font-weight:600}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+  .sectionTitle{font-size:20px;margin:22px 0 12px}
+
+  /* kid picker */
+  .kids{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .kid{
+    text-align:right;background:var(--card);border:2px solid var(--kc);border-radius:22px;padding:18px 16px;
+    box-shadow:0 0 0 0 var(--kc);transition:transform .12s ease;
+  }
+  .kid:active{transform:scale(.97)}
+  .kid .nm{font-family:"Secular One",sans-serif;font-size:30px;color:var(--kc);line-height:1.1}
+  .kid .big{font-size:40px;font-weight:800;margin-top:10px;line-height:1}
+  .kid .lbl{font-size:13px;color:var(--muted);margin-top:4px}
+  .kid .earned{font-size:13px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted)}
+  .kid .earned b{color:var(--gold)}
+
+  .tip{margin-top:18px;background:var(--card2);border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.5;color:var(--muted)}
+  .tip b{color:var(--violet);display:block;font-weight:600;margin-bottom:2px}
+  .ghost{
+    display:block;width:100%;margin-top:18px;background:none;border:1px dashed var(--line);border-radius:16px;
+    padding:14px;color:var(--muted);font-size:15px
+  }
+
+  /* kid view */
+  .back{background:none;border:none;color:var(--muted);font-size:15px;padding:4px 0;margin-bottom:6px}
+  .kidHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .kidHead h2{margin:0;font-size:34px;color:var(--kc)}
+  .kidHead .cnt{color:var(--muted);font-size:15px}
+  .kidHead .cnt b{color:var(--ink);font-size:22px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .chore{
+    position:relative;text-align:right;background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:14px 14px 12px;min-height:104px;display:flex;flex-direction:column;gap:4px;transition:transform .12s ease,border-color .12s;
+  }
+  .chore:active{transform:scale(.97);border-color:var(--kc)}
+  .chore .em{font-size:24px;line-height:1}
+  .chore .t{font-weight:600;font-size:15px;line-height:1.3}
+  .chore .h{font-size:12px;color:var(--muted);line-height:1.35}
+  .chore .x{
+    position:absolute;top:10px;left:10px;background:var(--kc);color:#0A1219;font-weight:800;font-size:12px;
+    border-radius:999px;padding:2px 8px;
+  }
+  details.more{margin-top:14px}
+  details.more summary{
+    list-style:none;cursor:pointer;color:var(--muted);font-size:15px;padding:12px 4px;
+  }
+  details.more summary::-webkit-details-marker{display:none}
+  details.more summary::before{content:"＋ ";color:var(--kc)}
+  details.more[open] summary::before{content:"－ "}
+  .catTitle{font-size:13px;color:var(--muted);margin:14px 2px 8px}
+
+  .done{list-style:none;margin:0;padding:0}
+  .done li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+  .done li:first-child{border-top:none}
+  .done .when{font-size:12px;color:var(--muted)}
+  .undo{background:none;border:1px solid var(--line);border-radius:10px;padding:4px 10px;font-size:12px;color:var(--muted)}
+  .empty{color:var(--muted);font-size:14px;text-align:center;padding:10px}
+
+  /* parent view */
+  .pin{display:flex;gap:10px}
+  .pin input{
+    flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:14px;color:var(--ink);
+    font-size:20px;padding:12px 14px;text-align:center;letter-spacing:6px;font-family:inherit
+  }
+  .btn{border:none;border-radius:14px;padding:12px 18px;font-weight:700;font-size:15px;background:var(--mint);color:#0A1219}
+  .btn:disabled{opacity:.5}
+  .totals{display:flex;gap:10px}
+  .totals div{flex:1;background:var(--card2);border-radius:14px;padding:12px;text-align:center;font-size:13px;color:var(--muted)}
+  .totals b{display:block;font-size:22px;color:var(--gold);margin-top:2px}
+  .wk h3{margin:0 0 4px;font-size:18px}
+  .wk .sub{font-size:13px;color:var(--muted);margin-bottom:6px}
+  .pk{padding:12px 0;border-top:1px solid var(--line)}
+  .pk .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .pk .nm{font-weight:700;color:var(--kc);font-size:17px}
+  .pk .n{color:var(--muted);font-size:14px}
+  .pk .list{font-size:13px;color:var(--muted);margin:6px 0 10px;line-height:1.6}
+  .dec{display:flex;gap:8px}
+  .dec button{flex:1;border-radius:12px;padding:10px;font-weight:700;font-size:14px;border:1px solid var(--line);background:var(--card2)}
+  .dec .yes{background:rgba(51,214,192,.14);border-color:var(--mint);color:var(--mint)}
+  .dec .no{color:var(--muted)}
+  .verdict{display:flex;justify-content:space-between;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;font-weight:700;font-size:14px}
+  .verdict.yes{background:rgba(51,214,192,.14);color:var(--mint)}
+  .verdict.no{background:var(--card2);color:var(--muted)}
+  .verdict button{background:none;border:none;color:var(--muted);font-size:12px;font-weight:400;text-decoration:underline}
+  .linkish{background:none;border:none;color:var(--muted);font-size:13px;text-decoration:underline;margin-top:6px}
+
+  /* setup */
+  .setup input{
+    width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;color:var(--ink);
+    padding:12px;font-size:14px;direction:ltr;margin:10px 0
+  }
+
+  /* confirm sheet */
+  .sheet{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}
+  .sheet .box{
+    width:100%;max-width:560px;background:var(--card);border-radius:24px 24px 0 0;border-top:3px solid var(--kc);
+    padding:22px 18px calc(env(safe-area-inset-bottom) + 18px);animation:up .18s ease-out
+  }
+  @keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+  .sheet .q{color:var(--muted);font-size:14px}
+  .sheet .what{font-family:"Secular One",sans-serif;font-size:24px;margin:4px 0 18px}
+  .sheet .acts{display:flex;gap:10px}
+  .sheet .acts button{flex:1;border:none;border-radius:16px;padding:15px;font-size:16px;font-weight:700}
+  .sheet .ok{background:var(--kc);color:#0A1219}
+  .sheet .cancel{background:var(--card2)}
+
+  .toast{
+    position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;
+    opacity:0;pointer-events:none;transition:.2s ease;z-index:30;max-width:calc(100% - 32px);text-align:center
+  }
+  .toast.show{opacity:1;transform:translateX(-50%)}
+  .toast.bad{background:var(--pink)}
+
+  @media (max-width:360px){ .grid{grid-template-columns:1fr} .kid .nm{font-size:26px} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hrow">
+    <h1>מטלות הבית 🏠</h1>
+    <div class="sync"><span class="dot" id="dot"></span><span id="syncText">מתחבר…</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- setup (only until the sheet URL is set) -->
+  <section id="vSetup" class="card setup" hidden>
+    <h2 style="margin:0">חסר חיבור לגיליון</h2>
+    <p style="color:var(--muted);font-size:14px">הדביקו כאן את כתובת ה־Web App של Apps Script (מסתיימת ב־/exec).</p>
+    <input id="apiInput" placeholder="https://script.google.com/macros/s/…/exec">
+    <button class="btn" id="apiSave">שמירה</button>
+  </section>
+
+  <!-- home: pick your name -->
+  <section id="vHome">
+    <div class="weekbar"><span id="weekRange"></span><b id="countdown"></b></div>
+    <h2 class="sectionTitle" style="margin-top:0">מי סיים מטלה?</h2>
+    <div class="kids" id="kidCards"></div>
+    <div class="tip" id="tip"></div>
+    <button class="ghost" id="toParent">💰 הסיכום השבועי של אמא</button>
+  </section>
+
+  <!-- one kid: pick the chore -->
+  <section id="vKid" hidden>
+    <button class="back" id="back1">→ חזרה</button>
+    <div class="kidHead"><h2 id="kName"></h2><div class="cnt"><b id="kCount">0</b> מטלות השבוע</div></div>
+    <h3 class="sectionTitle">המטלות שלי</h3>
+    <div class="grid" id="myChores"></div>
+    <details class="more" id="moreBox"><summary>מטלות נוספות</summary><div id="otherChores"></div></details>
+    <h3 class="sectionTitle">מה עשיתי השבוע</h3>
+    <div class="card" style="padding:6px 16px"><ul class="done" id="doneList"></ul></div>
+  </section>
+
+  <!-- parent: weekly tally -->
+  <section id="vParent" hidden>
+    <button class="back" id="back2">→ חזרה</button>
+    <h2 class="sectionTitle" style="margin-top:0">הסיכום השבועי</h2>
+    <div id="pinBox" class="card">
+      <p style="margin:0 0 12px;color:var(--muted);font-size:14px">הקוד של אמא</p>
+      <div class="pin"><input id="pinInput" type="password" inputmode="numeric" autocomplete="off"><button class="btn" id="pinBtn">כניסה</button></div>
+    </div>
+    <div id="parentBody" hidden>
+      <div class="totals" id="totals"></div>
+      <div id="weeks" style="margin-top:14px"></div>
+      <button class="linkish" id="logout">יציאה ממצב הורה</button>
+    </div>
+  </section>
+</main>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="box">
+    <div class="q" id="sheetQ"></div>
+    <div class="what" id="sheetWhat"></div>
+    <div class="acts"><button class="ok" id="sheetOk"></button><button class="cancel" id="sheetCancel">ביטול</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG — the deployed Apps Script Web App URL (…/exec).
+   Leave empty to set it in-app on first run.
+   ============================================================ */
+var DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbxXGwBa8-kC4qWvHHeu4epntCCUQsJ1QX7VqZ8odR6g9RmdbiEHCsFaM2hHykpxe4p6/exec";
+
+var API_URL = store('apiUrl') || DEFAULT_API_URL;
+var POLL_MS = 10000;
+var KID_COLOR = { 'ליאם':'var(--sky)', 'רובי':'var(--pink)' };
+var DAYS = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+var PRAISE = [
+  'כל הכבוד, {n}! 💪',
+  'ה־Ki של {n} עלה! ⚡',
+  'Pikachu מאשר, {n} ⚡',
+  'עוד לבנה בקיר, {n} 🧱',
+  'וו־הו! {n} בעניינים 🍩',
+  'אלוף, {n}! 🏆'
+];
+var REMINDERS = [
+  'לתכנן כל יום ערב לפני, ולחשוב שבוע קדימה',
+  'להכין אוכל בריא בזמן',
+  'להטעין פלאפונים וטאבלט',
+  'לעשות שיעורים',
+  'לסדר תיק',
+  'לא לשכוח מפתחות',
+  'לשלוח עדכונים חמודים ותמונות במהלך היום',
+  'להגיד תודה כשמרגישים שצריך, להעריך בני אדם',
+  'לא לריב, להיות אדיבים, לא לחשוב רק על עצמכם'
+];
+
+var TIP = Math.floor(Math.random() * REMINDERS.length);   // new one on every page load, stable between polls
+var data = null, pollTimer = null, pending = null;
+
+/* ---------- helpers ---------- */
+function $(id){ return document.getElementById(id); }
+function store(k, v){
+  try{ if(v === undefined) return localStorage.getItem(k); if(v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); }catch(e){}
+  return null;
+}
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
+function dm(key){ var p = key.split('-'); return (+p[2]) + '.' + (+p[1]); }
+function toast(msg, bad){
+  var t = $('toast'); t.textContent = msg; t.className = 'toast show' + (bad ? ' bad' : '');
+  clearTimeout(toast.t); toast.t = setTimeout(function(){ t.className = 'toast' + (bad ? ' bad' : ''); }, 2600);
+}
+function setSync(s){
+  $('dot').className = 'dot ' + (s === 'live' ? 'live' : s === 'err' ? 'err' : '');
+  $('syncText').textContent = s === 'live' ? 'מסונכרן' : s === 'err' ? 'אין חיבור' : 'מתחבר…';
+}
+function tally(list){
+  var m = {}; list.forEach(function(t){ m[t] = (m[t] || 0) + 1; });
+  return Object.keys(m).map(function(t){ return m[t] > 1 ? esc(t) + ' ×' + m[t] : esc(t); }).join(' · ');
+}
+
+/* ---------- API ---------- */
+function got(d){
+  if(!d || d.ok === false) throw new Error(d && d.error || 'bad response');
+  data = d; setSync('live'); render();
+  store('cachedData', JSON.stringify(d));
+  return d;
+}
+function load(){
+  if(!API_URL){ showSetup(); return; }
+  fetch(API_URL).then(function(r){ return r.json(); }).then(got).catch(function(){ setSync('err'); });
+}
+function post(body){
+  // text/plain keeps it a "simple" request, so Apps Script needs no CORS preflight
+  return fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body) })
+    .then(function(r){ return r.json(); }).then(got);
+}
+
+/* ---------- routing: #, #kid=<name>, #parent ---------- */
+function route(){
+  var h = decodeURIComponent(location.hash.slice(1));
+  var kid = h.indexOf('kid=') === 0 ? h.slice(4) : '';
+  $('vHome').hidden = !!(kid || h === 'parent');
+  $('vKid').hidden = !kid;
+  $('vParent').hidden = h !== 'parent';
+  if(kid) document.documentElement.style.setProperty('--kc', KID_COLOR[kid] || 'var(--mint)');
+  else document.documentElement.style.removeProperty('--kc');
+  render();
+  window.scrollTo(0, 0);
+}
+function currentKid(){
+  var h = decodeURIComponent(location.hash.slice(1));
+  return h.indexOf('kid=') === 0 ? h.slice(4) : '';
+}
+
+/* ---------- render ---------- */
+function render(){
+  if(!data) return;
+  var kid = currentKid();
+  renderHome();
+  if(kid) renderKid(kid);
+  if(location.hash === '#parent') renderParent();
+}
+
+function renderHome(){
+  $('weekRange').textContent = 'שבוע ' + dm(data.week.start) + '–' + dm(data.week.end);
+  var left = 6 - new Date().getDay();
+  $('countdown').textContent = left <= 0 ? 'הסיכום הערב! 🌙' : left === 1 ? 'הסיכום מחר בערב' : 'עוד ' + left + ' ימים לסיכום';
+
+  var box = $('kidCards'); box.innerHTML = '';
+  data.kids.forEach(function(k){
+    var n = data.entries.filter(function(e){ return e.kid === k; }).length;
+    var b = document.createElement('button');
+    b.className = 'kid'; b.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
+    b.innerHTML = '<div class="nm">' + esc(k) + '</div><div class="big">' + n + '</div>' +
+      '<div class="lbl">מטלות השבוע</div>' +
+      '<div class="earned">הרוויח עד היום <b>' + (data.earned[k] || 0) + ' ₪</b></div>';
+    b.onclick = function(){ location.hash = 'kid=' + encodeURIComponent(k); };
+    box.appendChild(b);
+  });
+
+  $('tip').innerHTML = '<b>תזכורת 🧠</b>' + esc(REMINDERS[TIP]);
+}
+
+function choreBtn(c, kid, counts){
+  var b = document.createElement('button'); b.className = 'chore';
+  var n = counts[c.title] || 0;
+  b.innerHTML = (n ? '<span class="x">×' + n + '</span>' : '') +
+    '<span class="em">' + esc(c.emoji) + '</span><span class="t">' + esc(c.title) + '</span>' +
+    (c.hint ? '<span class="h">' + esc(c.hint) + '</span>' : '');
+  b.onclick = function(){
+    ask('סיימת את…', c.title, 'כן, סיימתי ✓', function(){
+      return post({ action:'add', kid:kid, chore:c.title }).then(function(){
+        toast(PRAISE[Math.floor(Math.random() * PRAISE.length)].replace('{n}', kid));
+      });
+    });
+  };
+  return b;
+}
+
+function renderKid(kid){
+  var mine = data.entries.filter(function(e){ return e.kid === kid; });
+  var counts = {}; mine.forEach(function(e){ counts[e.chore] = (counts[e.chore] || 0) + 1; });
+  $('kName').textContent = kid;
+  $('kCount').textContent = mine.length;
+
+  var my = $('myChores'); my.innerHTML = '';
+  data.chores.filter(function(c){ return c.owner === kid; }).forEach(function(c){ my.appendChild(choreBtn(c, kid, counts)); });
+  if(!my.children.length) my.innerHTML = '<div class="empty">עוד לא נבחרו מטלות</div>';
+
+  // everything else, grouped by category
+  var other = $('otherChores'); other.innerHTML = '';
+  var cats = [];
+  data.chores.forEach(function(c){ if(c.owner !== kid && cats.indexOf(c.cat) < 0) cats.push(c.cat); });
+  cats.forEach(function(cat){
+    var t = document.createElement('div'); t.className = 'catTitle'; t.textContent = cat; other.appendChild(t);
+    var g = document.createElement('div'); g.className = 'grid';
+    data.chores.filter(function(c){ return c.cat === cat && c.owner !== kid; }).forEach(function(c){ g.appendChild(choreBtn(c, kid, counts)); });
+    other.appendChild(g);
+  });
+
+  var ul = $('doneList'); ul.innerHTML = '';
+  if(!mine.length){ ul.innerHTML = '<li class="empty" style="display:block">עוד כלום השבוע — זה הזמן 😉</li>'; return; }
+  mine.slice().sort(function(a, b){ return b.ts - a.ts; }).forEach(function(e){
+    var li = document.createElement('li');
+    li.innerHTML = '<div><div>' + esc(e.chore) + '</div><div class="when">יום ' + DAYS[e.day] + ' · ' + esc(e.time) + '</div></div>';
+    var u = document.createElement('button'); u.className = 'undo'; u.textContent = 'בטל';
+    u.onclick = function(){
+      ask('למחוק מהרשימה?', e.chore, 'כן, למחוק', function(){
+        return post({ action:'delete', id:e.id }).then(function(){ toast('נמחק'); });
+      });
+    };
+    li.appendChild(u); ul.appendChild(li);
+  });
+}
+
+function renderParent(){
+  var pin = store('parentPin');
+  $('pinBox').hidden = !!pin;
+  $('parentBody').hidden = !pin;
+  if(!pin) return;
+
+  $('totals').innerHTML = data.kids.map(function(k){
+    return '<div>' + esc(k) + ' הרוויח<b>' + (data.earned[k] || 0) + ' ₪</b></div>';
+  }).join('');
+
+  var box = $('weeks'); box.innerHTML = '';
+  data.history.forEach(function(w, i){
+    var card = document.createElement('div'); card.className = 'card wk';
+    card.innerHTML = '<h3>' + (i === 0 ? 'השבוע' : 'שבוע') + ' ' + dm(w.week) + '–' + dm(w.end) + '</h3>' +
+      (i === 0 ? '<div class="sub">הסיכום במוצאי שבת. אפשר להחליט כבר עכשיו ולשנות אחר כך.</div>' : '');
+    data.kids.forEach(function(k){
+      var s = w.kids[k], row = document.createElement('div');
+      row.className = 'pk'; row.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
+      row.innerHTML = '<div class="row"><span class="nm">' + esc(k) + '</span><span class="n">' + s.count + ' מטלות</span></div>' +
+        '<div class="list">' + (s.count ? tally(s.chores) : 'לא נרשמו מטלות') + '</div>';
+      var act = document.createElement('div');
+      if(s.decision){
+        var yes = s.decision === 'מגיע';
+        act.className = 'verdict ' + (yes ? 'yes' : 'no');
+        act.innerHTML = '<span>' + (yes ? '✓ מגיע ' + data.reward + ' ₪' : '✗ לא השבוע') + '</span>';
+        var ch = document.createElement('button'); ch.textContent = 'שינוי';
+        ch.onclick = function(){ decide(w.week, k, 'clear'); };
+        act.appendChild(ch);
+      } else {
+        act.className = 'dec';
+        var y = document.createElement('button'); y.className = 'yes'; y.textContent = '✓ מגיע ' + data.reward + ' ₪';
+        var n = document.createElement('button'); n.className = 'no'; n.textContent = '✗ לא השבוע';
+        y.onclick = function(){ decide(w.week, k, 'yes'); };
+        n.onclick = function(){ decide(w.week, k, 'no'); };
+        act.appendChild(y); act.appendChild(n);
+      }
+      row.appendChild(act); card.appendChild(row);
+    });
+    box.appendChild(card);
+  });
+}
+
+function decide(week, kid, decision){
+  post({ action:'decide', pin:store('parentPin'), week:week, kid:kid, decision:decision })
+    .then(function(){ toast(decision === 'yes' ? kid + ' קיבל ' + data.reward + ' ₪ 🎉' : 'נשמר'); })
+    .catch(function(e){
+      if(String(e.message).indexOf('pin') >= 0){ store('parentPin', null); renderParent(); toast('הקוד לא נכון', true); }
+      else toast('שגיאה בשמירה — נסו שוב', true);
+    });
+}
+
+/* ---------- confirm sheet ---------- */
+function ask(q, what, okText, run){
+  $('sheetQ').textContent = q; $('sheetWhat').textContent = what; $('sheetOk').textContent = okText;
+  pending = run; $('sheet').hidden = false;
+}
+function closeSheet(){ $('sheet').hidden = true; pending = null; }
+$('sheetCancel').onclick = closeSheet;
+$('sheet').onclick = function(e){ if(e.target === $('sheet')) closeSheet(); };
+$('sheetOk').onclick = function(){
+  if(!pending) return;
+  var btn = $('sheetOk'), label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'שומר…';
+  pending().then(closeSheet).catch(function(){ toast('שגיאה בשמירה — נסו שוב', true); })
+    .finally(function(){ btn.disabled = false; btn.textContent = label; });
+};
+
+/* ---------- parent PIN ---------- */
+$('pinBtn').onclick = function(){
+  var pin = $('pinInput').value.trim(); if(!pin) return;
+  var btn = $('pinBtn'); btn.disabled = true;
+  post({ action:'checkPin', pin:pin })
+    .then(function(){ store('parentPin', pin); $('pinInput').value = ''; renderParent(); })
+    .catch(function(e){ toast(String(e.message).indexOf('no-pin') >= 0 ? 'עוד לא הוגדר קוד בגיליון' : 'הקוד לא נכון', true); })
+    .finally(function(){ btn.disabled = false; });
+};
+$('pinInput').onkeydown = function(e){ if(e.key === 'Enter') $('pinBtn').click(); };
+$('logout').onclick = function(){ store('parentPin', null); renderParent(); };
+
+/* ---------- setup ---------- */
+function showSetup(){ $('vSetup').hidden = false; $('vHome').hidden = true; setSync('err'); }
+$('apiSave').onclick = function(){
+  var u = $('apiInput').value.trim(); if(!/^https:\/\/script\.google\.com\//.test(u)){ toast('כתובת לא תקינה', true); return; }
+  store('apiUrl', u); API_URL = u; $('vSetup').hidden = true; route(); load(); startPolling();
+};
+
+/* ---------- nav + polling ---------- */
+$('toParent').onclick = function(){ location.hash = 'parent'; };
+$('back1').onclick = $('back2').onclick = function(){ location.hash = ''; };
+window.addEventListener('hashchange', route);
+function startPolling(){
+  clearInterval(pollTimer);
+  pollTimer = setInterval(function(){ if(document.visibilityState === 'visible' && $('sheet').hidden) load(); }, POLL_MS);
+}
+document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') load(); });
+
+/* ---------- boot ---------- */
+try{ var c = JSON.parse(store('cachedData') || 'null'); if(c) data = c; }catch(e){}
+route();
+load();
+startPolling();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+</script>
+</body>
+</html>
