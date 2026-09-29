@@ -386,7 +386,21 @@ function store(k, v){
 }
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
 function en(s){ return '<span class="en">' + esc(s) + '</span>'; }
-function fill(t, v){ return esc(t).replace(/\{(\w+)\}/g, function(m, k){ return v[k] != null ? v[k] : m; }); }
+// Escape Hebrew text and isolate every English run in it (with its ! or ?), so a
+// "D'oh!" or "Magikarp" keeps its place and punctuation inside a right-to-left sentence.
+function bidi(s){
+  s = String(s == null ? '' : s);
+  var re = /[A-Za-z][A-Za-z'’\-]*(?: [A-Za-z][A-Za-z'’\-]*)*[!?]*/g, out = '', last = 0, m;
+  while((m = re.exec(s))){ out += esc(s.slice(last, m.index)) + en(m[0]); last = re.lastIndex; }
+  return out + esc(s.slice(last));
+}
+// {placeholders} get pre-built HTML; the text around them goes through bidi()
+function fill(t, v){
+  return String(t).split(/(\{\w+\})/).map(function(part){
+    var k = /^\{(\w+)\}$/.exec(part);
+    return k ? (v[k[1]] != null ? v[k[1]] : part) : bidi(part);
+  }).join('');
+}
 function dm(key){ var p = key.split('-'); return (+p[2]) + '.' + (+p[1]); }
 function addDays(key, n){ var p = key.split('-'); return new Date(Date.UTC(+p[0], +p[1]-1, +p[2]+n)).toISOString().slice(0, 10); }
 function hash(s){ var h = 0; for(var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); }
@@ -418,7 +432,7 @@ function nextReminder(){
 var TIP = nextReminder();
 
 function toast(msg, bad){
-  var t = $('toast'); t.textContent = msg; t.className = 'toast show' + (bad ? ' bad' : '');
+  var t = $('toast'); t.innerHTML = bidi(msg); t.className = 'toast show' + (bad ? ' bad' : '');
   clearTimeout(toast.t); toast.t = setTimeout(function(){ t.className = 'toast' + (bad ? ' bad' : ''); }, 3200);
 }
 function setSync(s){
@@ -427,7 +441,7 @@ function setSync(s){
 }
 function tally(list){
   var m = {}; list.forEach(function(t){ m[t] = (m[t] || 0) + 1; });
-  return Object.keys(m).map(function(t){ return m[t] > 1 ? esc(t) + ' ×' + m[t] : esc(t); }).join(' · ');
+  return Object.keys(m).map(function(t){ return m[t] > 1 ? bidi(t) + ' ×' + m[t] : bidi(t); }).join(' · ');
 }
 
 /* ---------- the week's Pokémon ---------- */
@@ -520,7 +534,7 @@ function renderHome(){
     if(prev && prev.kids[k]){
       var s = prev.kids[k];
       last = s.decision === 'מגיע' ? '<br>שבוע שעבר: ✓ ' + data.reward + ' ₪'
-        : s.decision === 'לא' ? '<br>שבוע שעבר: ✗ D\'oh'
+        : s.decision === 'לא' ? '<br>שבוע שעבר: ✗ ' + en('D\'oh')
         : s.count ? '<br>שבוע שעבר: מחכה לאמא' : '';
     }
 
@@ -537,7 +551,7 @@ function renderHome(){
     box.appendChild(b);
   });
 
-  $('tip').innerHTML = '<b>תזכורת 🧠</b>' + esc(TIP);
+  $('tip').innerHTML = '<b>תזכורת 🧠</b>' + bidi(TIP);
 }
 
 function praiseFor(c, kid){
@@ -549,8 +563,8 @@ function choreBtn(c, kid, counts){
   var b = document.createElement('button'); b.className = 'chore';
   var n = counts[c.title] || 0;
   b.innerHTML = (n ? '<span class="x">×' + n + '</span>' : '') +
-    '<span class="em">' + esc(c.emoji) + '</span><span class="t">' + esc(c.title) + '</span>' +
-    (c.hint ? '<span class="h">' + esc(c.hint) + '</span>' : '');
+    '<span class="em">' + esc(c.emoji) + '</span><span class="t">' + bidi(c.title) + '</span>' +
+    (c.hint ? '<span class="h">' + bidi(c.hint) + '</span>' : '');
   b.onclick = function(){
     ask('סיימת את…', c.title, 'כן, סיימתי ✓', freshPick(SAVING, 'saving'), function(){
       var before = countFor(kid), week = data.week.start;
@@ -591,7 +605,7 @@ function renderKid(kid){
   if(v){
     var yes = v.s.decision === 'מגיע', vl = lineFor(v.w.week, kid)[stageOf(v.s.count)];
     vb.innerHTML = '<div class="card vcard ' + (yes ? 'yes' : 'no') + '"><img src="' + art(vl[1]) + '" alt="">' +
-      '<div><div class="t">' + (yes ? 'אמא אישרה! +' + data.reward + ' ₪ 🎉' : 'D\'oh! הפעם לא') + '</div>' +
+      '<div><div class="t">' + (yes ? 'אמא אישרה! +' + data.reward + ' ₪ 🎉' : bidi('D\'oh! הפעם לא')) + '</div>' +
       '<div class="s">' + (yes ? 'על שבוע ' + dm(v.w.week) + '–' + dm(v.w.end) + ' · ' + chores(v.s.count)
         : 'שבוע חדש, פוקימון חדש, הזדמנות חדשה') + '</div></div></div>';
     var seenKey = 'seen:' + kid + ':' + v.w.week + ':' + v.s.decision;
@@ -608,7 +622,7 @@ function renderKid(kid){
     if(worst && (!ld[worst.title] || data.now - ld[worst.title] > 864e5)){
       var days = ld[worst.title] ? Math.floor((data.now - ld[worst.title]) / 864e5) : 0;
       var lines = worst.nag && worst.nag.length ? worst.nag : null;
-      html = '<div class="t">' + esc(worst.emoji) + ' ' + esc(worst.title) + '</div>' +
+      html = '<div class="t">' + esc(worst.emoji) + ' ' + bidi(worst.title) + '</div>' +
         '<div class="d">' + (days ? 'לא נרשם אצלך כבר ' + days + ' ימים' : 'עוד לא נרשם אצלך אף פעם') + '</div>' +
         '<div class="l">' + (lines ? fill(stablePick(lines, 'nag' + kid + worst.title), { n: esc(kid) }) : paceNag(kid, n, p[0])) + '</div>';
     } else {
@@ -640,7 +654,7 @@ function renderKid(kid){
   }
   mine.slice().sort(function(a, b){ return b.ts - a.ts; }).forEach(function(e){
     var li = document.createElement('li');
-    li.innerHTML = '<div><div>' + esc(e.chore) + '</div><div class="when">יום ' + DAYS[e.day] + ' · ' + esc(e.time) + '</div></div>';
+    li.innerHTML = '<div><div>' + bidi(e.chore) + '</div><div class="when">יום ' + DAYS[e.day] + ' · ' + esc(e.time) + '</div></div>';
     var u = document.createElement('button'); u.className = 'undo'; u.textContent = 'בטל';
     u.onclick = function(){
       ask('למחוק מהרשימה?', e.chore, 'כן, למחוק', 'מוחק…', function(){
@@ -667,7 +681,7 @@ function verdictMoment(kid, yes, p){
   return yes
     ? { art: '<img src="' + art(p[1]) + '" alt="">', title: '+' + data.reward + ' ₪ 🎉', btn: 'יאללה!',
         text: 'אמא אישרה את השבוע, ' + esc(kid) + '. ' + en(p[0]) + ' גאה בך.', confetti: true }
-    : { art: '<div class="big">🍩</div>', title: 'D\'oh!', btn: 'שבוע הבא',
+    : { art: '<div class="big">🍩</div>', title: en('D\'oh!'), btn: 'שבוע הבא',
         text: 'הפעם אמא לא אישרה, ' + esc(kid) + '. יש שבוע חדש ופוקימון חדש — אפשר להתחיל מחדש.', confetti: false };
 }
 function nextOverlay(){
