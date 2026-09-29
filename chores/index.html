@@ -33,7 +33,40 @@
     padding:calc(env(safe-area-inset-top) + 14px) 16px 12px;border-bottom:1px solid var(--line);
   }
   .hrow{max-width:560px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-  header h1{margin:0;font-size:22px}
+  header h1{margin:0;font-size:22px;flex:1}
+  .helpBtn{
+    width:32px;height:32px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);
+    color:var(--gold);font-weight:800;font-size:16px;line-height:1;flex:none
+  }
+
+  /* how-it-works cards: a horizontal scroll-snap deck, like the evening routine one */
+  .help{position:fixed;inset:0;z-index:28;background:var(--bg);display:flex;flex-direction:column}
+  .help .top{display:flex;justify-content:space-between;align-items:center;padding:calc(env(safe-area-inset-top) + 14px) 16px 8px}
+  .help .top b{font-family:"Secular One",sans-serif;font-weight:400;font-size:18px;color:var(--muted)}
+  .help .x{background:none;border:none;font-size:26px;color:var(--muted);padding:4px 8px;line-height:1}
+  .track{flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+  .track::-webkit-scrollbar{display:none}
+  .slide{
+    flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;text-align:center;padding:12px 28px 24px;
+  }
+  .slide .ill{font-size:84px;line-height:1.1;margin-bottom:18px;min-height:96px;display:flex;align-items:center;justify-content:center;gap:4px}
+  .slide .ill img{width:84px;height:84px;object-fit:contain}
+  .slide .ill .arr{font-size:22px;color:var(--muted)}
+  .slide h2{font-size:30px;margin:0 0 12px;color:var(--c,var(--mint))}
+  .slide p{font-size:17px;line-height:1.6;margin:0 0 10px;max-width:420px;color:var(--ink)}
+  .slide p.s{font-size:14px;color:var(--muted)}
+  .slide .steps{list-style:none;padding:0;margin:4px 0 0;text-align:right;font-size:17px;line-height:1.5;max-width:340px}
+  .slide .steps li{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
+  .slide .steps i{
+    flex:none;width:28px;height:28px;border-radius:50%;background:var(--c,var(--mint));color:#0A1219;
+    font-style:normal;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px
+  }
+  .help .foot{display:flex;justify-content:space-between;align-items:center;padding:12px 20px calc(env(safe-area-inset-bottom) + 18px)}
+  .dots{display:flex;gap:7px}
+  .dots span{width:8px;height:8px;border-radius:99px;background:var(--line);transition:.2s}
+  .dots span.on{width:22px;background:var(--gold)}
+  .help .next{min-width:110px}
   .sync{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
   .dot.live{background:var(--mint)} .dot.err{background:var(--pink)}
@@ -212,6 +245,7 @@
 <header>
   <div class="hrow">
     <h1>מטלות הבית 🏠</h1>
+    <button class="helpBtn" id="helpBtn" aria-label="איך זה עובד">?</button>
     <div class="sync"><span class="dot" id="dot"></span><span id="syncText">מתחבר…</span></div>
   </div>
 </header>
@@ -286,6 +320,11 @@
     <p id="ovText"></p>
     <button class="btn" id="ovBtn"></button>
   </div>
+</div>
+<div class="help" id="help" hidden>
+  <div class="top"><b>איך זה עובד</b><button class="x" id="helpX" aria-label="סגירה">✕</button></div>
+  <div class="track" id="helpTrack"></div>
+  <div class="foot"><div class="dots" id="helpDots"></div><button class="btn next" id="helpNext">הבא ←</button></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -705,6 +744,61 @@ function confetti(){
     setTimeout(function(el){ el.remove(); }, 4200, s);
   }
 }
+
+/* ---------- how it works (behind the ? button) ---------- */
+function helpSlides(){
+  var t = target(), half = Math.ceil(t / 2), reward = (data && data.reward) || 10, ex = POKE[0];
+  var evo = ex.map(function(p){ return '<img src="' + art(p[1]) + '" alt="">'; }).join('<span class="arr">←</span>');
+  return [
+    { c:'var(--mint)', ill:'✅', h:'עשיתם מטלה? רושמים!',
+      body:'<ol class="steps"><li><i>1</i>לוחצים על השם שלכם</li><li><i>2</i>לוחצים על המטלה שעשיתם</li>' +
+        '<li><i>3</i>מאשרים — ואמא כבר יודעת</li></ol>' +
+        '<p class="s">המטלות שבחרתם מופיעות למעלה. עשיתם משהו אחר? הכל נמצא ב"מטלות נוספות". טעיתם? "בטל" ברשימה למטה.</p>' },
+    { c:'var(--sky)', ill:evo, h:'הפוקימון של השבוע',
+      body:'<p>כל יום ראשון מקבלים פוקימון חדש. הוא מתאמן כשאתם עושים מטלות:</p>' +
+        '<p>אחרי <b>' + half + '</b> מטלות הוא מתפתח פעם אחת,<br>ואחרי <b>' + t + '</b> — פעם שנייה.</p>' +
+        '<p class="s">במוצאי שבת הפוקימון הולך, וביום ראשון מגיע חדש. אז לא מחכים לסוף השבוע.</p>' },
+    { c:'var(--gold)', ill:'✨', h:'הפתעה נדירה',
+      body:'<p>כל מטלה מספר <b>' + SHINY_EVERY + '</b> בחודש מביאה משהו מיוחד.</p>' +
+        '<p class="s">מה בדיוק? תגיעו ותראו. הספירה מתחילה מחדש בכל ראשון לחודש.</p>' },
+    { c:'var(--pink)', ill:'💰', h:'מוצאי שבת: הסיכום',
+      body:'<p>במוצאי שבת אמא עוברת על השבוע.<br>אם היא מרוצה — <b>' + reward + ' ₪</b>. היא מחליטה, לא הספירה.</p>' +
+        '<p class="s">ואם מפגרים באמצע השבוע? האפליקציה שמה לב. והיא לא שותקת.</p>' },
+    { c:'var(--violet)', ill:'🐶', h:'זהו. זה כל הסוד.',
+      body:'<p>פחות "כמה פעמים צריך לבקש", יותר זמן לדברים כיפיים.</p>' +
+        '<p class="s">שאלות? תשאלו את מודי. הוא לא יענה, אבל הוא יקשיב.</p>' }
+  ];
+}
+var helpIndex = 0, helpObs = null;
+function openHelp(){
+  var slides = helpSlides(), track = $('helpTrack'), dots = $('helpDots');
+  track.innerHTML = slides.map(function(s){
+    return '<section class="slide" style="--c:' + s.c + '"><div class="ill">' + s.ill + '</div><h2>' + s.h + '</h2>' + s.body + '</section>';
+  }).join('');
+  dots.innerHTML = slides.map(function(){ return '<span></span>'; }).join('');
+  $('help').hidden = false;
+  track.scrollLeft = 0;
+  showHelpDot(0);
+  // which card is showing — observed, since RTL scrollLeft differs between browsers
+  if(helpObs) helpObs.disconnect();
+  helpObs = new IntersectionObserver(function(list){
+    list.forEach(function(e){ if(e.isIntersecting) showHelpDot([].indexOf.call(track.children, e.target)); });
+  }, { root: track, threshold: 0.6 });
+  [].forEach.call(track.children, function(s){ helpObs.observe(s); });
+}
+function showHelpDot(i){
+  helpIndex = i;
+  [].forEach.call($('helpDots').children, function(d, j){ d.className = j === i ? 'on' : ''; });
+  $('helpNext').textContent = i === $('helpTrack').children.length - 1 ? 'יאללה!' : 'הבא ←';
+}
+function closeHelp(){ $('help').hidden = true; if(helpObs) helpObs.disconnect(); }
+$('helpBtn').onclick = openHelp;
+$('helpX').onclick = closeHelp;
+$('helpNext').onclick = function(){
+  var slides = $('helpTrack').children;
+  if(helpIndex >= slides.length - 1) closeHelp();
+  else slides[helpIndex + 1].scrollIntoView({ behavior:'smooth', block:'nearest', inline:'start' });
+};
 
 /* ---------- parent ---------- */
 function renderParent(){
