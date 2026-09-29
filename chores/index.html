@@ -320,6 +320,21 @@ var PACE_NAGS = [
   'אפילו Magikarp מתפתח יותר מהר',
   '{p} שאל אם אפשר להחליף מאמן'
 ];
+// empty "what I did this week" list — a fresh start on Sunday, guilt from Monday on
+var EMPTY_SUNDAY = [
+  'שבוע חדש, {p} חדש. מי פותח?',
+  'דף חלק. {p} כבר מחמם מנועים.',
+  'יום ראשון: הזמן הכי טוב להתחיל. {p} מחכה.'
+];
+var EMPTY_LATER = [
+  '{p} עדיין מחכה לאימון הראשון של השבוע',
+  'הרשימה ריקה. גם הכיור שם לב.',
+  'אפס מטלות. {p} מתחיל לשאול שאלות.',
+  'הרשימה הזאת ריקה כמו הצלחת של מודי',
+  'שקט פה. שקט חשוד.',
+  '{p} לא יתפתח מלהסתכל על רשימה ריקה',
+  'אפילו החתולים עשו יותר השבוע. והם ישנים 18 שעות ביום.'
+];
 var SAVING = [
   'מעדכן את אמא…', 'מדווח לאמא…', 'שולח לאמא הוכחה…', 'אמא מקבלת הודעה…',
   'מעיר את אמא…', 'מודי רץ לספר לאמא…', 'אמא בודקת בזכוכית מגדלת…', 'רושם בספר של אמא…'
@@ -618,7 +633,11 @@ function renderKid(kid){
   });
 
   var ul = $('doneList'); ul.innerHTML = '';
-  if(!mine.length){ ul.innerHTML = '<li class="empty" style="display:block">עוד כלום השבוע — זה הזמן 😉</li>'; return; }
+  if(!mine.length){
+    var empty = stablePick(dow() === 0 ? EMPTY_SUNDAY : EMPTY_LATER, 'empty' + kid);
+    ul.innerHTML = '<li class="empty" style="display:block">' + fill(empty, { p: en(p[0]) }) + '</li>';
+    return;
+  }
   mine.slice().sort(function(a, b){ return b.ts - a.ts; }).forEach(function(e){
     var li = document.createElement('li');
     li.innerHTML = '<div><div>' + esc(e.chore) + '</div><div class="when">יום ' + DAYS[e.day] + ' · ' + esc(e.time) + '</div></div>';
