@@ -26,6 +26,7 @@
   h1,h2,h3,.display{font-family:"Secular One",Rubik,sans-serif;font-weight:400}
   button{font:inherit;color:inherit;cursor:pointer}
   [hidden]{display:none !important}
+  .en{direction:ltr;unicode-bidi:isolate}
 
   header{
     position:sticky;top:0;z-index:5;background:rgba(10,18,25,.92);backdrop-filter:blur(8px);
@@ -44,17 +45,26 @@
   .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
   .sectionTitle{font-size:20px;margin:22px 0 12px}
 
+  /* progress bar: fills right→left, tick at the first evolution */
+  .bar{position:relative;height:8px;border-radius:99px;background:var(--line);margin:10px 0 8px}
+  .bar i{position:absolute;top:0;bottom:0;right:0;border-radius:99px;background:var(--kc);transition:width .4s ease}
+  .bar b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--muted);border-radius:2px}
+
   /* kid picker */
   .kids{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .kid{
-    text-align:right;background:var(--card);border:2px solid var(--kc);border-radius:22px;padding:18px 16px;
-    box-shadow:0 0 0 0 var(--kc);transition:transform .12s ease;
+    position:relative;text-align:right;background:var(--card);border:2px solid var(--kc);border-radius:22px;padding:16px 14px;
+    transition:transform .12s ease;display:flex;flex-direction:column;
   }
   .kid:active{transform:scale(.97)}
-  .kid .nm{font-family:"Secular One",sans-serif;font-size:30px;color:var(--kc);line-height:1.1}
-  .kid .big{font-size:40px;font-weight:800;margin-top:10px;line-height:1}
-  .kid .lbl{font-size:13px;color:var(--muted);margin-top:4px}
-  .kid .earned{font-size:13px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted)}
+  .kid .pk{position:absolute;top:8px;left:6px;width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+  .kid .nm{font-family:"Secular One",sans-serif;font-size:28px;color:var(--kc);line-height:1.1}
+  .kid .pn{font-size:12px;color:var(--muted);margin-top:2px}
+  .kid .big{font-size:38px;font-weight:800;margin-top:12px;line-height:1}
+  .kid .big small{font-size:16px;color:var(--muted);font-weight:600}
+  .kid .st{font-size:12.5px;line-height:1.4;color:var(--muted);min-height:36px}
+  .kid .st.nag{color:var(--pink)}
+  .kid .earned{font-size:12.5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);line-height:1.6}
   .kid .earned b{color:var(--gold)}
 
   .tip{margin-top:18px;background:var(--card2);border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.5;color:var(--muted)}
@@ -66,10 +76,25 @@
 
   /* kid view */
   .back{background:none;border:none;color:var(--muted);font-size:15px;padding:4px 0;margin-bottom:6px}
-  .kidHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-  .kidHead h2{margin:0;font-size:34px;color:var(--kc)}
-  .kidHead .cnt{color:var(--muted);font-size:15px}
-  .kidHead .cnt b{color:var(--ink);font-size:22px}
+  .hero{display:flex;gap:14px;align-items:center;border-color:var(--kc)}
+  .hero img{width:110px;height:110px;object-fit:contain;flex:none;filter:drop-shadow(0 6px 12px rgba(0,0,0,.45))}
+  .hero .info{flex:1;min-width:0}
+  .hero h2{margin:0;font-size:32px;color:var(--kc);line-height:1.1}
+  .hero .pn{font-size:14px;color:var(--muted);margin-top:2px}
+  .hero .cnt{font-size:14px;color:var(--muted);margin-top:8px}
+  .hero .cnt b{color:var(--ink);font-size:20px}
+  .countdown{font-size:14px;line-height:1.5;margin-top:2px}
+  .shiny{font-size:12px;color:var(--gold);margin-top:6px}
+  .nagbox{border-color:var(--pink);background:linear-gradient(135deg,rgba(255,107,136,.10),var(--card) 60%)}
+  .nagbox .t{font-weight:700;font-size:16px}
+  .nagbox .d{font-size:13px;color:var(--pink);margin:2px 0 8px}
+  .nagbox .l{font-size:15px;line-height:1.5}
+  .vcard{display:flex;gap:12px;align-items:center}
+  .vcard img{width:64px;height:64px;object-fit:contain;flex:none}
+  .vcard.yes{border-color:var(--mint)} .vcard.no{border-color:var(--line)}
+  .vcard .t{font-weight:700;font-size:17px} .vcard.yes .t{color:var(--mint)}
+  .vcard .s{font-size:13px;color:var(--muted);margin-top:2px}
+
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .chore{
     position:relative;text-align:right;background:var(--card);border:1px solid var(--line);border-radius:18px;
@@ -84,9 +109,7 @@
     border-radius:999px;padding:2px 8px;
   }
   details.more{margin-top:14px}
-  details.more summary{
-    list-style:none;cursor:pointer;color:var(--muted);font-size:15px;padding:12px 4px;
-  }
+  details.more summary{list-style:none;cursor:pointer;color:var(--muted);font-size:15px;padding:12px 4px}
   details.more summary::-webkit-details-marker{display:none}
   details.more summary::before{content:"＋ ";color:var(--kc)}
   details.more[open] summary::before{content:"－ "}
@@ -112,11 +135,11 @@
   .totals b{display:block;font-size:22px;color:var(--gold);margin-top:2px}
   .wk h3{margin:0 0 4px;font-size:18px}
   .wk .sub{font-size:13px;color:var(--muted);margin-bottom:6px}
-  .pk{padding:12px 0;border-top:1px solid var(--line)}
-  .pk .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .pk .nm{font-weight:700;color:var(--kc);font-size:17px}
-  .pk .n{color:var(--muted);font-size:14px}
-  .pk .list{font-size:13px;color:var(--muted);margin:6px 0 10px;line-height:1.6}
+  .pk2{padding:12px 0;border-top:1px solid var(--line)}
+  .pk2 .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .pk2 .nm{font-weight:700;color:var(--kc);font-size:17px}
+  .pk2 .n{color:var(--muted);font-size:14px}
+  .pk2 .list{font-size:13px;color:var(--muted);margin:6px 0 10px;line-height:1.6}
   .dec{display:flex;gap:8px}
   .dec button{flex:1;border-radius:12px;padding:10px;font-weight:700;font-size:14px;border:1px solid var(--line);background:var(--card2)}
   .dec .yes{background:rgba(51,214,192,.14);border-color:var(--mint);color:var(--mint)}
@@ -147,15 +170,41 @@
   .sheet .ok{background:var(--kc);color:#0A1219}
   .sheet .cancel{background:var(--card2)}
 
+  /* big moments: evolution, shiny, Ilana's verdict */
+  .ov{position:fixed;inset:0;z-index:25;background:rgba(5,10,15,.88);display:flex;align-items:center;justify-content:center;padding:24px}
+  .ovBox{width:100%;max-width:380px;text-align:center;animation:pop .25s ease-out}
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+  .ovArt{position:relative;width:220px;height:220px;margin:0 auto}
+  .ovArt img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 24px rgba(0,0,0,.6))}
+  .ovArt .big{font-size:120px;line-height:220px}
+  .ovBox h2{font-size:30px;margin:14px 0 6px;color:var(--gold)}
+  .ovBox p{font-size:17px;line-height:1.5;margin:0 0 22px;color:var(--ink)}
+  .ovBox .btn{min-width:160px;font-size:17px;padding:14px 24px}
+  /* evolution: the old form flickers white and swaps with the new one */
+  .evo .from{animation:evoOut 2.4s ease-in forwards}
+  .evo .to{opacity:0;animation:evoIn 2.4s ease-in forwards}
+  @keyframes evoOut{
+    0%{opacity:1;filter:brightness(1)} 30%{filter:brightness(4)} 40%,50%{opacity:1} 55%{opacity:0} 62%{opacity:1}
+    70%{opacity:0} 76%{opacity:1} 82%,100%{opacity:0;filter:brightness(4)}
+  }
+  @keyframes evoIn{
+    0%,50%{opacity:0;filter:brightness(4)} 55%{opacity:1} 62%{opacity:0} 70%{opacity:1} 76%{opacity:0}
+    82%{opacity:1;filter:brightness(4)} 100%{opacity:1;filter:brightness(1)}
+  }
+  .shinyArt img{animation:sparkle 1.6s ease-in-out infinite alternate}
+  @keyframes sparkle{from{filter:drop-shadow(0 0 6px var(--gold))}to{filter:drop-shadow(0 0 26px var(--gold)) brightness(1.15)}}
+  .confetti{position:fixed;top:-20px;z-index:26;pointer-events:none;font-size:22px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+
   .toast{
     position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%) translateY(20px);
     background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;
-    opacity:0;pointer-events:none;transition:.2s ease;z-index:30;max-width:calc(100% - 32px);text-align:center
+    opacity:0;pointer-events:none;transition:.2s ease;z-index:30;max-width:calc(100% - 32px);text-align:center;line-height:1.4
   }
   .toast.show{opacity:1;transform:translateX(-50%)}
   .toast.bad{background:var(--pink)}
 
-  @media (max-width:360px){ .grid{grid-template-columns:1fr} .kid .nm{font-size:26px} }
+  @media (max-width:360px){ .grid{grid-template-columns:1fr} .kid .nm{font-size:24px} .kid .pk{width:50px;height:50px} }
 </style>
 </head>
 <body>
@@ -176,7 +225,7 @@
     <button class="btn" id="apiSave">שמירה</button>
   </section>
 
-  <!-- home: pick your name -->
+  <!-- home: both brothers, then pick your name -->
   <section id="vHome">
     <div class="weekbar"><span id="weekRange"></span><b id="countdown"></b></div>
     <h2 class="sectionTitle" style="margin-top:0">מי סיים מטלה?</h2>
@@ -185,10 +234,21 @@
     <button class="ghost" id="toParent">💰 הסיכום השבועי של אמא</button>
   </section>
 
-  <!-- one kid: pick the chore -->
+  <!-- one kid: their Pokémon, the nag, pick the chore -->
   <section id="vKid" hidden>
     <button class="back" id="back1">→ חזרה</button>
-    <div class="kidHead"><h2 id="kName"></h2><div class="cnt"><b id="kCount">0</b> מטלות השבוע</div></div>
+    <div id="verdictBox"></div>
+    <div class="card hero">
+      <img id="kArt" alt="">
+      <div class="info">
+        <h2 id="kName"></h2>
+        <div class="pn" id="kPoke"></div>
+        <div class="bar" id="kBar"><i></i><b></b></div>
+        <div class="countdown" id="kCountdown"></div>
+        <div class="shiny" id="kShiny"></div>
+      </div>
+    </div>
+    <div id="nagBox"></div>
     <h3 class="sectionTitle">המטלות שלי</h3>
     <div class="grid" id="myChores"></div>
     <details class="more" id="moreBox"><summary>מטלות נוספות</summary><div id="otherChores"></div></details>
@@ -219,6 +279,14 @@
     <div class="acts"><button class="ok" id="sheetOk"></button><button class="cancel" id="sheetCancel">ביטול</button></div>
   </div>
 </div>
+<div class="ov" id="ov" hidden>
+  <div class="ovBox">
+    <div class="ovArt" id="ovArt"></div>
+    <h2 id="ovTitle"></h2>
+    <p id="ovText"></p>
+    <button class="btn" id="ovBtn"></button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -230,15 +298,31 @@ var DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbxXGwBa8-kC4qWvHH
 
 var API_URL = store('apiUrl') || DEFAULT_API_URL;
 var POLL_MS = 10000;
+var SHINY_EVERY = 25;
 var KID_COLOR = { 'ליאם':'var(--sky)', 'רובי':'var(--pink)' };
 var DAYS = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+var DAY_NAMES = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+
+// fallback praise, for chores with no praise lines in the sheet
 var PRAISE = [
   'כל הכבוד, {n}! 💪',
   'ה־Ki של {n} עלה! ⚡',
-  'Pikachu מאשר, {n} ⚡',
   'עוד לבנה בקיר, {n} 🧱',
   'וו־הו! {n} בעניינים 🍩',
   'אלוף, {n}! 🏆'
+];
+// behind the week's pace — {p} Pokémon, {day} weekday, {c} chores so far
+var PACE_NAGS = [
+  '{p} מתחיל לחשוד שאין לו מאמן',
+  '{p} פיהק. פעמיים.',
+  'יום {day} ו{c}. {p} מאוכזב.',
+  '{p} התחיל לצפות בטלוויזיה במקום להתאמן',
+  'אפילו Magikarp מתפתח יותר מהר',
+  '{p} שאל אם אפשר להחליף מאמן'
+];
+var SAVING = [
+  'מעדכן את אמא…', 'מדווח לאמא…', 'שולח לאמא הוכחה…', 'אמא מקבלת הודעה…',
+  'מעיר את אמא…', 'מודי רץ לספר לאמא…', 'אמא בודקת בזכוכית מגדלת…', 'רושם בספר של אמא…'
 ];
 var REMINDERS = [
   'לתכנן כל יום ערב לפני, ולחשוב שבוע קדימה',
@@ -251,9 +335,33 @@ var REMINDERS = [
   'להגיד תודה כשמרגישים שצריך, להעריך בני אדם',
   'לא לריב, להיות אדיבים, לא לחשוב רק על עצמכם'
 ];
+// three-stage lines: [name, National Dex number] per stage
+var POKE = [
+  [['Charmander',4],['Charmeleon',5],['Charizard',6]],
+  [['Bulbasaur',1],['Ivysaur',2],['Venusaur',3]],
+  [['Squirtle',7],['Wartortle',8],['Blastoise',9]],
+  [['Pichu',172],['Pikachu',25],['Raichu',26]],
+  [['Gastly',92],['Haunter',93],['Gengar',94]],
+  [['Abra',63],['Kadabra',64],['Alakazam',65]],
+  [['Machop',66],['Machoke',67],['Machamp',68]],
+  [['Geodude',74],['Graveler',75],['Golem',76]],
+  [['Dratini',147],['Dragonair',148],['Dragonite',149]],
+  [['Larvitar',246],['Pupitar',247],['Tyranitar',248]],
+  [['Cyndaquil',155],['Quilava',156],['Typhlosion',157]],
+  [['Totodile',158],['Croconaw',159],['Feraligatr',160]],
+  [['Treecko',252],['Grovyle',253],['Sceptile',254]],
+  [['Torchic',255],['Combusken',256],['Blaziken',257]],
+  [['Mudkip',258],['Marshtomp',259],['Swampert',260]],
+  [['Ralts',280],['Kirlia',281],['Gardevoir',282]],
+  [['Bagon',371],['Shelgon',372],['Salamence',373]],
+  [['Beldum',374],['Metang',375],['Metagross',376]],
+  [['Gible',443],['Gabite',444],['Garchomp',445]],
+  [['Chimchar',390],['Monferno',391],['Infernape',392]],
+  [['Piplup',393],['Prinplup',394],['Empoleon',395]],
+  [['Froakie',656],['Frogadier',657],['Greninja',658]]
+];
 
-var TIP = Math.floor(Math.random() * REMINDERS.length);   // new one on every page load, stable between polls
-var data = null, pollTimer = null, pending = null;
+var data = null, pollTimer = null, pending = null, overlays = [];
 
 /* ---------- helpers ---------- */
 function $(id){ return document.getElementById(id); }
@@ -262,10 +370,41 @@ function store(k, v){
   return null;
 }
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
+function en(s){ return '<span class="en">' + esc(s) + '</span>'; }
+function fill(t, v){ return esc(t).replace(/\{(\w+)\}/g, function(m, k){ return v[k] != null ? v[k] : m; }); }
 function dm(key){ var p = key.split('-'); return (+p[2]) + '.' + (+p[1]); }
+function addDays(key, n){ var p = key.split('-'); return new Date(Date.UTC(+p[0], +p[1]-1, +p[2]+n)).toISOString().slice(0, 10); }
+function hash(s){ var h = 0; for(var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); }
+function today(){ var d = new Date(); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
+function chores(n){ return n === 0 ? 'אפס מטלות' : n === 1 ? 'מטלה אחת' : n + ' מטלות'; }
+// same pick all day for the same key, so a line doesn't change on every 10s refresh
+function stablePick(arr, key){ return arr[hash(key + today()) % arr.length]; }
+// random, but never the same line twice in a row for this key
+function freshPick(arr, key){
+  var last = +store('last:' + key), i = Math.floor(Math.random() * arr.length);
+  if(arr.length > 1 && i === last) i = (i + 1 + Math.floor(Math.random() * (arr.length - 1))) % arr.length;
+  store('last:' + key, String(i));
+  return arr[i];
+}
+// shuffled bag: every reminder shows once before any repeats, and never twice in a row
+function nextReminder(){
+  var bag; try{ bag = JSON.parse(store('tipBag') || '[]'); }catch(e){ bag = []; }
+  bag = bag.filter(function(i){ return i < REMINDERS.length; });
+  if(!bag.length){
+    bag = REMINDERS.map(function(_, i){ return i; });
+    for(var i = bag.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)), t = bag[i]; bag[i] = bag[j]; bag[j] = t; }
+    var last = +store('tipLast');
+    if(bag.length > 1 && bag[bag.length - 1] === last){ bag.unshift(bag.pop()); }
+  }
+  var pick = bag.pop();
+  store('tipBag', JSON.stringify(bag)); store('tipLast', String(pick));
+  return REMINDERS[pick];
+}
+var TIP = nextReminder();
+
 function toast(msg, bad){
   var t = $('toast'); t.textContent = msg; t.className = 'toast show' + (bad ? ' bad' : '');
-  clearTimeout(toast.t); toast.t = setTimeout(function(){ t.className = 'toast' + (bad ? ' bad' : ''); }, 2600);
+  clearTimeout(toast.t); toast.t = setTimeout(function(){ t.className = 'toast' + (bad ? ' bad' : ''); }, 3200);
 }
 function setSync(s){
   $('dot').className = 'dot ' + (s === 'live' ? 'live' : s === 'err' ? 'err' : '');
@@ -274,6 +413,33 @@ function setSync(s){
 function tally(list){
   var m = {}; list.forEach(function(t){ m[t] = (m[t] || 0) + 1; });
   return Object.keys(m).map(function(t){ return m[t] > 1 ? esc(t) + ' ×' + m[t] : esc(t); }).join(' · ');
+}
+
+/* ---------- the week's Pokémon ---------- */
+function target(){ return (data && data.target) || 10; }
+function stageOf(n){ return n >= target() ? 2 : n >= Math.ceil(target() / 2) ? 1 : 0; }
+// each kid gets a different line each week, fixed for the whole week
+function lineFor(week, kid){ return POKE[(hash(week) + Math.max(0, data.kids.indexOf(kid)) * 11) % POKE.length]; }
+function art(id, shiny){
+  return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (shiny ? 'shiny/' : '') + id + '.png';
+}
+function countFor(kid){ return data.entries.filter(function(e){ return e.kid === kid; }).length; }
+function weekOf(key){ return (data.history || []).filter(function(w){ return w.week === key; })[0]; }
+function dow(){ return new Date().getDay(); }
+function behind(n){ return n < Math.floor(target() * dow() / 7); }   // expected pace: target spread over the week
+function toNext(n){ var st = stageOf(n); return st === 0 ? Math.ceil(target() / 2) - n : st === 1 ? target() - n : 0; }
+function paceNag(kid, n, p){ return fill(stablePick(PACE_NAGS, 'pace' + kid), { p: en(p), day: DAY_NAMES[dow()], c: chores(n) }); }
+function daysLeftText(){
+  var left = 6 - dow();
+  return left <= 0 ? 'הסיכום הערב' : left === 1 ? 'הסיכום מחר בערב' : 'עוד ' + left + ' ימים לסיכום';
+}
+
+// Ilana's latest verdict for this kid: this week's, or last week's through Sunday
+function verdictFor(kid){
+  var cur = weekOf(data.week.start), prev = weekOf(addDays(data.week.start, -7));
+  if(cur && cur.kids[kid] && cur.kids[kid].decision) return { w: cur, s: cur.kids[kid] };
+  if(dow() === 0 && prev && prev.kids[kid] && prev.kids[kid].decision) return { w: prev, s: prev.kids[kid] };
+  return null;
 }
 
 /* ---------- API ---------- */
@@ -295,11 +461,10 @@ function post(body){
 
 /* ---------- routing: #, #kid=<name>, #parent ---------- */
 function route(){
-  var h = decodeURIComponent(location.hash.slice(1));
-  var kid = h.indexOf('kid=') === 0 ? h.slice(4) : '';
-  $('vHome').hidden = !!(kid || h === 'parent');
+  var kid = currentKid(), h = location.hash;
+  $('vHome').hidden = !!(kid || h === '#parent');
   $('vKid').hidden = !kid;
-  $('vParent').hidden = h !== 'parent';
+  $('vParent').hidden = h !== '#parent';
   if(kid) document.documentElement.style.setProperty('--kc', KID_COLOR[kid] || 'var(--mint)');
   else document.documentElement.style.removeProperty('--kc');
   render();
@@ -319,24 +484,50 @@ function render(){
   if(location.hash === '#parent') renderParent();
 }
 
+function setBar(el, n){
+  el.querySelector('i').style.width = Math.min(100, n / target() * 100) + '%';
+  el.querySelector('b').style.right = (Math.ceil(target() / 2) / target() * 100) + '%';
+}
+
 function renderHome(){
   $('weekRange').textContent = 'שבוע ' + dm(data.week.start) + '–' + dm(data.week.end);
-  var left = 6 - new Date().getDay();
-  $('countdown').textContent = left <= 0 ? 'הסיכום הערב! 🌙' : left === 1 ? 'הסיכום מחר בערב' : 'עוד ' + left + ' ימים לסיכום';
+  $('countdown').textContent = dow() === 6 ? 'הסיכום הערב! 🌙' : daysLeftText();
 
   var box = $('kidCards'); box.innerHTML = '';
   data.kids.forEach(function(k){
-    var n = data.entries.filter(function(e){ return e.kid === k; }).length;
+    var n = countFor(k), line = lineFor(data.week.start, k), st = stageOf(n), p = line[st];
+    var status, nag = false;
+    if(behind(n)){ status = paceNag(k, n, p[0]); nag = true; }
+    else if(st < 2) status = 'עוד ' + chores(toNext(n)) + ' עד ' + en(line[st + 1][0]);
+    else status = en(p[0]) + ' מלא 🔥';
+
+    var prev = weekOf(addDays(data.week.start, -7)), last = '';
+    if(prev && prev.kids[k]){
+      var s = prev.kids[k];
+      last = s.decision === 'מגיע' ? '<br>שבוע שעבר: ✓ ' + data.reward + ' ₪'
+        : s.decision === 'לא' ? '<br>שבוע שעבר: ✗ D\'oh'
+        : s.count ? '<br>שבוע שעבר: מחכה לאמא' : '';
+    }
+
     var b = document.createElement('button');
     b.className = 'kid'; b.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
-    b.innerHTML = '<div class="nm">' + esc(k) + '</div><div class="big">' + n + '</div>' +
-      '<div class="lbl">מטלות השבוע</div>' +
-      '<div class="earned">הרוויח עד היום <b>' + (data.earned[k] || 0) + ' ₪</b></div>';
+    b.innerHTML = '<img class="pk" src="' + art(p[1]) + '" alt="">' +
+      '<div class="nm">' + esc(k) + '</div><div class="pn">' + en(p[0]) + '</div>' +
+      '<div class="big">' + n + '<small>/' + target() + '</small></div>' +
+      '<div class="bar"><i></i><b></b></div>' +
+      '<div class="st' + (nag ? ' nag' : '') + '">' + status + '</div>' +
+      '<div class="earned">הרוויח עד היום <b>' + (data.earned[k] || 0) + ' ₪</b>' + last + '</div>';
+    setBar(b.querySelector('.bar'), n);
     b.onclick = function(){ location.hash = 'kid=' + encodeURIComponent(k); };
     box.appendChild(b);
   });
 
-  $('tip').innerHTML = '<b>תזכורת 🧠</b>' + esc(REMINDERS[TIP]);
+  $('tip').innerHTML = '<b>תזכורת 🧠</b>' + esc(TIP);
+}
+
+function praiseFor(c, kid){
+  var lines = c && c.praise && c.praise.length ? c.praise : PRAISE;
+  return freshPick(lines, 'praise:' + (c ? c.title : '')).replace(/\{n\}/g, kid);
 }
 
 function choreBtn(c, kid, counts){
@@ -346,9 +537,14 @@ function choreBtn(c, kid, counts){
     '<span class="em">' + esc(c.emoji) + '</span><span class="t">' + esc(c.title) + '</span>' +
     (c.hint ? '<span class="h">' + esc(c.hint) + '</span>' : '');
   b.onclick = function(){
-    ask('סיימת את…', c.title, 'כן, סיימתי ✓', function(){
+    ask('סיימת את…', c.title, 'כן, סיימתי ✓', freshPick(SAVING, 'saving'), function(){
+      var before = countFor(kid), week = data.week.start;
       return post({ action:'add', kid:kid, chore:c.title }).then(function(){
-        toast(PRAISE[Math.floor(Math.random() * PRAISE.length)].replace('{n}', kid));
+        toast(praiseFor(c, kid));
+        var after = countFor(kid), line = lineFor(week, kid), m = (data.month || {})[kid] || 0;
+        if(stageOf(after) > stageOf(before)) overlays.push(evolution(kid, line[stageOf(before)], line[stageOf(after)]));
+        if(data.month && m > 0 && m % SHINY_EVERY === 0) overlays.push(shiny(kid, line[stageOf(after)], m));
+        nextOverlay();
       });
     });
   };
@@ -357,9 +553,54 @@ function choreBtn(c, kid, counts){
 
 function renderKid(kid){
   var mine = data.entries.filter(function(e){ return e.kid === kid; });
+  var n = mine.length, line = lineFor(data.week.start, kid), st = stageOf(n), p = line[st];
   var counts = {}; mine.forEach(function(e){ counts[e.chore] = (counts[e.chore] || 0) + 1; });
+
+  // hero: this week's Pokémon and the road to the next evolution
   $('kName').textContent = kid;
-  $('kCount').textContent = mine.length;
+  $('kArt').src = art(p[1]);
+  $('kPoke').innerHTML = en(p[0]) + ' · שלב ' + (st + 1) + ' מתוך 3 · <b style="color:var(--ink)">' + n + '/' + target() + '</b>';
+  setBar($('kBar'), n);
+  var left = toNext(n);
+  $('kCountdown').innerHTML = daysLeftText() + '. ' + (st < 2
+    ? 'עוד ' + chores(left) + ' ו־' + en(p[0]) + ' מתפתח ל־' + en(line[st + 1][0]) + '!'
+    : en(p[0]) + ' מלא. עכשיו רק לא לבזבז את זה 😎');
+  if(data.month){
+    var m = data.month[kid] || 0, r = SHINY_EVERY - (m % SHINY_EVERY);
+    $('kShiny').textContent = '✨ עוד ' + chores(r) + ' החודש עד להפתעה נדירה';
+  } else $('kShiny').textContent = '';
+
+  // Ilana's verdict — a card while it's fresh, and the big reveal once per phone
+  var v = verdictFor(kid), vb = $('verdictBox');
+  vb.innerHTML = '';
+  if(v){
+    var yes = v.s.decision === 'מגיע', vl = lineFor(v.w.week, kid)[stageOf(v.s.count)];
+    vb.innerHTML = '<div class="card vcard ' + (yes ? 'yes' : 'no') + '"><img src="' + art(vl[1]) + '" alt="">' +
+      '<div><div class="t">' + (yes ? 'אמא אישרה! +' + data.reward + ' ₪ 🎉' : 'D\'oh! הפעם לא') + '</div>' +
+      '<div class="s">' + (yes ? 'על שבוע ' + dm(v.w.week) + '–' + dm(v.w.end) + ' · ' + chores(v.s.count)
+        : 'שבוע חדש, פוקימון חדש, הזדמנות חדשה') + '</div></div></div>';
+    var seenKey = 'seen:' + kid + ':' + v.w.week + ':' + v.s.decision;
+    if(!store(seenKey)){ store(seenKey, '1'); overlays.push(verdictMoment(kid, yes, vl)); nextOverlay(); }
+  }
+
+  // nag: behind the week's pace → name the own chore this kid has neglected longest
+  var nb = $('nagBox'); nb.innerHTML = '';
+  if(behind(n)){
+    var own = data.chores.filter(function(c){ return c.owner === kid; });
+    var ld = (data.lastDone || {})[kid] || {};
+    own.sort(function(a, b){ return (ld[a.title] || 0) - (ld[b.title] || 0); });
+    var worst = own[0], html;
+    if(worst && (!ld[worst.title] || data.now - ld[worst.title] > 864e5)){
+      var days = ld[worst.title] ? Math.floor((data.now - ld[worst.title]) / 864e5) : 0;
+      var lines = worst.nag && worst.nag.length ? worst.nag : null;
+      html = '<div class="t">' + esc(worst.emoji) + ' ' + esc(worst.title) + '</div>' +
+        '<div class="d">' + (days ? 'לא נרשם אצלך כבר ' + days + ' ימים' : 'עוד לא נרשם אצלך אף פעם') + '</div>' +
+        '<div class="l">' + (lines ? fill(stablePick(lines, 'nag' + kid + worst.title), { n: esc(kid) }) : paceNag(kid, n, p[0])) + '</div>';
+    } else {
+      html = '<div class="t">⚠️ ' + DAY_NAMES[dow()] + ', ' + chores(n) + '</div><div class="l">' + paceNag(kid, n, p[0]) + '</div>';
+    }
+    nb.innerHTML = '<div class="card nagbox">' + html + '</div>';
+  }
 
   var my = $('myChores'); my.innerHTML = '';
   data.chores.filter(function(c){ return c.owner === kid; }).forEach(function(c){ my.appendChild(choreBtn(c, kid, counts)); });
@@ -383,7 +624,7 @@ function renderKid(kid){
     li.innerHTML = '<div><div>' + esc(e.chore) + '</div><div class="when">יום ' + DAYS[e.day] + ' · ' + esc(e.time) + '</div></div>';
     var u = document.createElement('button'); u.className = 'undo'; u.textContent = 'בטל';
     u.onclick = function(){
-      ask('למחוק מהרשימה?', e.chore, 'כן, למחוק', function(){
+      ask('למחוק מהרשימה?', e.chore, 'כן, למחוק', 'מוחק…', function(){
         return post({ action:'delete', id:e.id }).then(function(){ toast('נמחק'); });
       });
     };
@@ -391,6 +632,48 @@ function renderKid(kid){
   });
 }
 
+/* ---------- big moments ---------- */
+function evolution(kid, from, to){
+  return { art: '<div class="evo"><img class="from" src="' + art(from[1]) + '" alt=""><img class="to" src="' + art(to[1]) + '" alt=""></div>',
+    title: 'מה?! ' + en(from[0]) + ' מתפתח!', btn: 'יששש!',
+    after: { title: en(to[0]) + '! 🎉', text: esc(kid) + ', ' + en(from[0]) + ' התפתח ל־' + en(to[0]) + '. כל הכבוד למאמן.' },
+    text: '…', confetti: false };
+}
+function shiny(kid, p, m){
+  return { art: '<div class="shinyArt"><img src="' + art(p[1], true) + '" alt=""></div>',
+    title: '✨ שייני! ✨', btn: 'וואו',
+    text: 'מטלה מספר ' + m + ' החודש, ' + esc(kid) + '! ' + en(p[0]) + ' שייני — נדיר כמו חדר מסודר.', confetti: true };
+}
+function verdictMoment(kid, yes, p){
+  return yes
+    ? { art: '<img src="' + art(p[1]) + '" alt="">', title: '+' + data.reward + ' ₪ 🎉', btn: 'יאללה!',
+        text: 'אמא אישרה את השבוע, ' + esc(kid) + '. ' + en(p[0]) + ' גאה בך.', confetti: true }
+    : { art: '<div class="big">🍩</div>', title: 'D\'oh!', btn: 'שבוע הבא',
+        text: 'הפעם אמא לא אישרה, ' + esc(kid) + '. יש שבוע חדש ופוקימון חדש — אפשר להתחיל מחדש.', confetti: false };
+}
+function nextOverlay(){
+  if(!$('ov').hidden || !overlays.length) return;
+  var o = overlays.shift();
+  $('ovArt').innerHTML = o.art; $('ovTitle').innerHTML = o.title; $('ovText').innerHTML = o.text; $('ovBtn').textContent = o.btn;
+  $('ov').hidden = false;
+  if(o.after) setTimeout(function(){ $('ovTitle').innerHTML = o.after.title; $('ovText').innerHTML = o.after.text; confetti(); }, 2400);
+  if(o.confetti) confetti();
+}
+$('ovBtn').onclick = function(){ $('ov').hidden = true; nextOverlay(); };
+function confetti(){
+  var bits = ['🎉','✨','⭐','🟡','🔵','🔴','🟢'];
+  for(var i = 0; i < 36; i++){
+    var s = document.createElement('span'); s.className = 'confetti';
+    s.textContent = bits[i % bits.length];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.animationDuration = (1.8 + Math.random() * 1.6) + 's';
+    s.style.animationDelay = Math.random() * .5 + 's';
+    document.body.appendChild(s);
+    setTimeout(function(el){ el.remove(); }, 4200, s);
+  }
+}
+
+/* ---------- parent ---------- */
 function renderParent(){
   var pin = store('parentPin');
   $('pinBox').hidden = !!pin;
@@ -408,8 +691,8 @@ function renderParent(){
       (i === 0 ? '<div class="sub">הסיכום במוצאי שבת. אפשר להחליט כבר עכשיו ולשנות אחר כך.</div>' : '');
     data.kids.forEach(function(k){
       var s = w.kids[k], row = document.createElement('div');
-      row.className = 'pk'; row.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
-      row.innerHTML = '<div class="row"><span class="nm">' + esc(k) + '</span><span class="n">' + s.count + ' מטלות</span></div>' +
+      row.className = 'pk2'; row.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
+      row.innerHTML = '<div class="row"><span class="nm">' + esc(k) + '</span><span class="n">' + chores(s.count) + '</span></div>' +
         '<div class="list">' + (s.count ? tally(s.chores) : 'לא נרשמו מטלות') + '</div>';
       var act = document.createElement('div');
       if(s.decision){
@@ -443,18 +726,18 @@ function decide(week, kid, decision){
 }
 
 /* ---------- confirm sheet ---------- */
-function ask(q, what, okText, run){
+function ask(q, what, okText, busyText, run){
   $('sheetQ').textContent = q; $('sheetWhat').textContent = what; $('sheetOk').textContent = okText;
-  pending = run; $('sheet').hidden = false;
+  pending = { run:run, busy:busyText }; $('sheet').hidden = false;
 }
 function closeSheet(){ $('sheet').hidden = true; pending = null; }
 $('sheetCancel').onclick = closeSheet;
 $('sheet').onclick = function(e){ if(e.target === $('sheet')) closeSheet(); };
 $('sheetOk').onclick = function(){
   if(!pending) return;
-  var btn = $('sheetOk'), label = btn.textContent;
-  btn.disabled = true; btn.textContent = 'שומר…';
-  pending().then(closeSheet).catch(function(){ toast('שגיאה בשמירה — נסו שוב', true); })
+  var btn = $('sheetOk'), label = btn.textContent, p = pending;
+  btn.disabled = true; btn.textContent = p.busy;
+  p.run().then(closeSheet).catch(function(){ toast('שגיאה בשמירה — נסו שוב', true); })
     .finally(function(){ btn.disabled = false; btn.textContent = label; });
 };
 
