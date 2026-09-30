@@ -263,8 +263,23 @@ function state() {
     if (!(lastDone[x.kid][x.chore] >= x.ts)) lastDone[x.kid][x.chore] = x.ts;
   });
 
+  // the whole log, compact, for the trainer card: [seconds, kid index, chore title index]
+  var titles = [], titleAt = {};
+  var all = log.map(function (x) {
+    var i = titleAt[x.chore];
+    if (i === undefined) { i = titleAt[x.chore] = titles.length; titles.push(x.chore); }
+    return [Math.round(x.ts / 1000), KIDS.indexOf(x.kid), i];
+  });
+  // every decision Ilana ever made: { week: { kid: 'מגיע' | 'לא' } }
+  var decided = {};
+  Object.keys(decisions).forEach(function (key) {
+    var p = key.split('|');
+    (decided[p[0]] = decided[p[0]] || {})[p[1]] = decisions[key].decision;
+  });
+
   return {
     ok: true, kids: KIDS, reward: REWARD, earned: earned,
+    all: all, titles: titles, decided: decided,
     target: Number(setting('יעד שבועי', DEFAULT_TARGET)) || DEFAULT_TARGET,
     now: now.getTime(), month: month, lastDone: lastDone,
     week: { start: week, end: addDays(week, 6) },

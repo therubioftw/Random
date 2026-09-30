@@ -4,7 +4,7 @@
    - Other static assets (icons) are cache-first for speed.
    - API calls to Apps Script are never touched — always live.
    Bump CACHE whenever icons/manifest change so installed devices re-fetch them. */
-var CACHE = 'chores-v3';
+var CACHE = 'chores-v4';
 var SHELL = ['./', './index.html', './manifest.json', './icon-pokeball-192.png', './icon-pokeball-512.png'];
 
 self.addEventListener('install', function (e) {

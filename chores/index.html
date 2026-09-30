@@ -155,6 +155,64 @@
   .undo{background:none;border:1px solid var(--line);border-radius:10px;padding:4px 10px;font-size:12px;color:var(--muted)}
   .empty{color:var(--muted);font-size:14px;text-align:center;padding:10px}
 
+  /* streaks */
+  .fire{color:var(--ember);font-family:Rubik,sans-serif;font-size:15px;font-weight:800;margin-inline-start:6px;vertical-align:middle}
+  .streakLine{font-size:13px;margin-top:4px;color:var(--ember);line-height:1.4}
+  .streakLine.risk{color:var(--pink);font-weight:600}
+  .cardLinks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  .cardLinks button{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 6px;font-size:14px;color:var(--ink)}
+  .cardLinks small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+  .kid .nm,.kid .pn{margin-inline-end:58px}
+
+  /* trainer card */
+  .cardHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .cardHead h2{margin:0;font-size:32px;color:var(--kc)}
+  .cardHead div{font-size:13px;color:var(--muted)}
+  .streakPanel{display:flex;gap:14px;align-items:center}
+  .streakPanel .n{font-size:40px;font-weight:800;color:var(--ember);line-height:1;text-align:center;min-width:64px}
+  .streakPanel .n small{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-top:4px}
+  .streakPanel .txt{flex:1;font-size:14px;line-height:1.5}
+  .streakPanel .pz{display:flex;align-items:center;gap:0;flex:none}
+  .streakPanel .pz img{width:60px;height:60px;image-rendering:pixelated}
+  .streakPanel .pz .arr{color:var(--muted);font-size:14px}
+  img.sil{filter:brightness(0);opacity:.45}
+  .tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;margin:4px 0 14px}
+  .tabs button{flex:1;border:none;background:none;border-radius:10px;padding:9px 4px;font-size:14px;color:var(--muted);font-weight:600}
+  .tabs button.on{background:var(--kc);color:#0A1219}
+  .dexSum{display:flex;gap:8px;margin-bottom:12px}
+  .dexSum div{flex:1;background:var(--card2);border-radius:12px;padding:10px 6px;text-align:center;font-size:12px;color:var(--muted)}
+  .dexSum b{display:block;font-size:20px;color:var(--ink)}
+  .shelfT{font-size:15px;margin:16px 2px 8px}
+  .dex{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+  .dex .t{position:relative;aspect-ratio:1;background:var(--card);border:1px solid transparent;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0}
+  .dex .t img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+  .dex .t.no img{filter:brightness(0);opacity:.3}
+  .dex .t.sh{border-color:var(--gold);box-shadow:0 0 10px rgba(255,201,71,.35)}
+  .dex .t.gold{background:linear-gradient(160deg,rgba(255,201,71,.18),var(--card))}
+  .empty.s{font-size:13px;text-align:right;padding:4px 2px}
+  .trophy{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+  .trophy:first-child{border-top:none}
+  .trophy .m{font-size:30px;flex:none;width:40px;text-align:center}
+  .trophy.lock .m{filter:grayscale(1);opacity:.35}
+  .trophy .i{flex:1;min-width:0}
+  .trophy .nm2{font-weight:700;font-size:15px}
+  .trophy.lock .nm2{color:var(--muted)}
+  .trophy .d{font-size:12.5px;color:var(--muted);margin-top:1px}
+  .trophy .bar{height:6px;margin:7px 0 0}
+  .trophy .c{font-size:12px;color:var(--muted);flex:none}
+  .statGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+  .stat b{display:block;font-size:26px;font-weight:800;line-height:1.1}
+  .stat span{font-size:12.5px;color:var(--muted)}
+  .chart{display:flex;align-items:flex-end;gap:5px;height:120px;padding-top:16px}
+  .chart div{flex:1;background:var(--kc);border-radius:5px 5px 0 0;min-height:3px;position:relative;opacity:.9}
+  .chart div span{position:absolute;top:-16px;left:0;right:0;text-align:center;font-size:10px;color:var(--muted)}
+  .chartX{display:flex;gap:5px;font-size:9px;color:var(--muted);margin-top:5px}
+  .chartX span{flex:1;text-align:center}
+  .facts{list-style:none;padding:0;margin:0;font-size:14.5px;line-height:1.5}
+  .facts li{padding:8px 0;border-top:1px solid var(--line)}
+  .facts li:first-child{border-top:none}
+
   /* parent view */
   .pin{display:flex;gap:10px}
   .pin input{
@@ -264,6 +322,7 @@
     <div class="weekbar"><span id="weekRange"></span><b id="countdown"></b></div>
     <h2 class="sectionTitle" style="margin-top:0">מי סיים מטלה?</h2>
     <div class="kids" id="kidCards"></div>
+    <div class="cardLinks" id="cardLinks"></div>
     <div class="tip" id="tip"></div>
     <button class="ghost" id="toParent">💰 הסיכום השבועי של אמא</button>
   </section>
@@ -280,6 +339,8 @@
         <div class="bar" id="kBar"><i></i><b></b></div>
         <div class="countdown" id="kCountdown"></div>
         <div class="shiny" id="kShiny"></div>
+        <div class="streakLine" id="kStreak"></div>
+        <button class="linkish" id="kCardBtn">🏆 כרטיס המאמן שלי</button>
       </div>
     </div>
     <div id="nagBox"></div>
@@ -291,6 +352,17 @@
   </section>
 
   <!-- parent: weekly tally -->
+  <!-- trainer card: Pokédex, trophies, stats — both kids can open both cards -->
+  <section id="vCard" hidden>
+    <button class="back" id="back3">→ חזרה</button>
+    <div class="cardHead"><h2 id="cName"></h2><div id="cSince"></div></div>
+    <div class="card streakPanel" id="cStreak"></div>
+    <div class="tabs" id="cTabs">
+      <button data-t="dex">פוקדקס</button><button data-t="trophies">גביעים</button><button data-t="stats">סטטיסטיקה</button>
+    </div>
+    <div id="cBody"></div>
+  </section>
+
   <section id="vParent" hidden>
     <button class="back" id="back2">→ חזרה</button>
     <h2 class="sectionTitle" style="margin-top:0">הסיכום השבועי</h2>
@@ -390,7 +462,7 @@ var REMINDERS = [
   'לא לריב, להיות אדיבים, לא לחשוב רק על עצמכם'
 ];
 // three-stage lines: [name, National Dex number] per stage
-var POKE = [
+var POKE_OLD = [
   [['Charmander',4],['Charmeleon',5],['Charizard',6]],
   [['Bulbasaur',1],['Ivysaur',2],['Venusaur',3]],
   [['Squirtle',7],['Wartortle',8],['Blastoise',9]],
@@ -415,7 +487,512 @@ var POKE = [
   [['Froakie',656],['Frogadier',657],['Greninja',658]]
 ];
 
-var data = null, pollTimer = null, pending = null, overlays = [];
+// Pokémon pools, generated from PokéAPI's species table (linear evolution chains):
+// LINES3 evolve twice (the weekly Pokémon), LINES2 evolve once (streak prizes),
+// LEGENDS are single-stage legendaries and mythicals (shiny prizes).
+var LINES3 = [
+  [['Bulbasaur',1],['Ivysaur',2],['Venusaur',3]],
+  [['Charmander',4],['Charmeleon',5],['Charizard',6]],
+  [['Squirtle',7],['Wartortle',8],['Blastoise',9]],
+  [['Caterpie',10],['Metapod',11],['Butterfree',12]],
+  [['Weedle',13],['Kakuna',14],['Beedrill',15]],
+  [['Pidgey',16],['Pidgeotto',17],['Pidgeot',18]],
+  [['Nidoran♀',29],['Nidorina',30],['Nidoqueen',31]],
+  [['Nidoran♂',32],['Nidorino',33],['Nidoking',34]],
+  [['Zubat',41],['Golbat',42],['Crobat',169]],
+  [['Mankey',56],['Primeape',57],['Annihilape',979]],
+  [['Abra',63],['Kadabra',64],['Alakazam',65]],
+  [['Machop',66],['Machoke',67],['Machamp',68]],
+  [['Bellsprout',69],['Weepinbell',70],['Victreebel',71]],
+  [['Geodude',74],['Graveler',75],['Golem',76]],
+  [['Magnemite',81],['Magneton',82],['Magnezone',462]],
+  [['Gastly',92],['Haunter',93],['Gengar',94]],
+  [['Rhyhorn',111],['Rhydon',112],['Rhyperior',464]],
+  [['Horsea',116],['Seadra',117],['Kingdra',230]],
+  [['Porygon',137],['Porygon2',233],['Porygon-Z',474]],
+  [['Dratini',147],['Dragonair',148],['Dragonite',149]],
+  [['Chikorita',152],['Bayleef',153],['Meganium',154]],
+  [['Cyndaquil',155],['Quilava',156],['Typhlosion',157]],
+  [['Totodile',158],['Croconaw',159],['Feraligatr',160]],
+  [['Pichu',172],['Pikachu',25],['Raichu',26]],
+  [['Cleffa',173],['Clefairy',35],['Clefable',36]],
+  [['Igglybuff',174],['Jigglypuff',39],['Wigglytuff',40]],
+  [['Togepi',175],['Togetic',176],['Togekiss',468]],
+  [['Mareep',179],['Flaaffy',180],['Ampharos',181]],
+  [['Hoppip',187],['Skiploom',188],['Jumpluff',189]],
+  [['Teddiursa',216],['Ursaring',217],['Ursaluna',901]],
+  [['Swinub',220],['Piloswine',221],['Mamoswine',473]],
+  [['Elekid',239],['Electabuzz',125],['Electivire',466]],
+  [['Magby',240],['Magmar',126],['Magmortar',467]],
+  [['Larvitar',246],['Pupitar',247],['Tyranitar',248]],
+  [['Treecko',252],['Grovyle',253],['Sceptile',254]],
+  [['Torchic',255],['Combusken',256],['Blaziken',257]],
+  [['Mudkip',258],['Marshtomp',259],['Swampert',260]],
+  [['Zigzagoon',263],['Linoone',264],['Obstagoon',862]],
+  [['Lotad',270],['Lombre',271],['Ludicolo',272]],
+  [['Seedot',273],['Nuzleaf',274],['Shiftry',275]],
+  [['Slakoth',287],['Vigoroth',288],['Slaking',289]],
+  [['Whismur',293],['Loudred',294],['Exploud',295]],
+  [['Azurill',298],['Marill',183],['Azumarill',184]],
+  [['Aron',304],['Lairon',305],['Aggron',306]],
+  [['Trapinch',328],['Vibrava',329],['Flygon',330]],
+  [['Duskull',355],['Dusclops',356],['Dusknoir',477]],
+  [['Spheal',363],['Sealeo',364],['Walrein',365]],
+  [['Bagon',371],['Shelgon',372],['Salamence',373]],
+  [['Beldum',374],['Metang',375],['Metagross',376]],
+  [['Turtwig',387],['Grotle',388],['Torterra',389]],
+  [['Chimchar',390],['Monferno',391],['Infernape',392]],
+  [['Piplup',393],['Prinplup',394],['Empoleon',395]],
+  [['Starly',396],['Staravia',397],['Staraptor',398]],
+  [['Shinx',403],['Luxio',404],['Luxray',405]],
+  [['Budew',406],['Roselia',315],['Roserade',407]],
+  [['Mime Jr.',439],['Mr. Mime',122],['Mr. Rime',866]],
+  [['Happiny',440],['Chansey',113],['Blissey',242]],
+  [['Gible',443],['Gabite',444],['Garchomp',445]],
+  [['Snivy',495],['Servine',496],['Serperior',497]],
+  [['Tepig',498],['Pignite',499],['Emboar',500]],
+  [['Oshawott',501],['Dewott',502],['Samurott',503]],
+  [['Lillipup',506],['Herdier',507],['Stoutland',508]],
+  [['Pidove',519],['Tranquill',520],['Unfezant',521]],
+  [['Roggenrola',524],['Boldore',525],['Gigalith',526]],
+  [['Timburr',532],['Gurdurr',533],['Conkeldurr',534]],
+  [['Tympole',535],['Palpitoad',536],['Seismitoad',537]],
+  [['Sewaddle',540],['Swadloon',541],['Leavanny',542]],
+  [['Venipede',543],['Whirlipede',544],['Scolipede',545]],
+  [['Sandile',551],['Krokorok',552],['Krookodile',553]],
+  [['Gothita',574],['Gothorita',575],['Gothitelle',576]],
+  [['Solosis',577],['Duosion',578],['Reuniclus',579]],
+  [['Vanillite',582],['Vanillish',583],['Vanilluxe',584]],
+  [['Klink',599],['Klang',600],['Klinklang',601]],
+  [['Tynamo',602],['Eelektrik',603],['Eelektross',604]],
+  [['Litwick',607],['Lampent',608],['Chandelure',609]],
+  [['Axew',610],['Fraxure',611],['Haxorus',612]],
+  [['Pawniard',624],['Bisharp',625],['Kingambit',983]],
+  [['Deino',633],['Zweilous',634],['Hydreigon',635]],
+  [['Chespin',650],['Quilladin',651],['Chesnaught',652]],
+  [['Fennekin',653],['Braixen',654],['Delphox',655]],
+  [['Froakie',656],['Frogadier',657],['Greninja',658]],
+  [['Fletchling',661],['Fletchinder',662],['Talonflame',663]],
+  [['Scatterbug',664],['Spewpa',665],['Vivillon',666]],
+  [['Flabébé',669],['Floette',670],['Florges',671]],
+  [['Honedge',679],['Doublade',680],['Aegislash',681]],
+  [['Goomy',704],['Sliggoo',705],['Goodra',706]],
+  [['Rowlet',722],['Dartrix',723],['Decidueye',724]],
+  [['Litten',725],['Torracat',726],['Incineroar',727]],
+  [['Popplio',728],['Brionne',729],['Primarina',730]],
+  [['Pikipek',731],['Trumbeak',732],['Toucannon',733]],
+  [['Grubbin',736],['Charjabug',737],['Vikavolt',738]],
+  [['Bounsweet',761],['Steenee',762],['Tsareena',763]],
+  [['Jangmo-o',782],['Hakamo-o',783],['Kommo-o',784]],
+  [['Grookey',810],['Thwackey',811],['Rillaboom',812]],
+  [['Scorbunny',813],['Raboot',814],['Cinderace',815]],
+  [['Sobble',816],['Drizzile',817],['Inteleon',818]],
+  [['Rookidee',821],['Corvisquire',822],['Corviknight',823]],
+  [['Blipbug',824],['Dottler',825],['Orbeetle',826]],
+  [['Rolycoly',837],['Carkol',838],['Coalossal',839]],
+  [['Hatenna',856],['Hattrem',857],['Hatterene',858]],
+  [['Impidimp',859],['Morgrem',860],['Grimmsnarl',861]],
+  [['Dreepy',885],['Drakloak',886],['Dragapult',887]],
+  [['Sprigatito',906],['Floragato',907],['Meowscarada',908]],
+  [['Fuecoco',909],['Crocalor',910],['Skeledirge',911]],
+  [['Quaxly',912],['Quaxwell',913],['Quaquaval',914]],
+  [['Pawmi',921],['Pawmo',922],['Pawmot',923]],
+  [['Smoliv',928],['Dolliv',929],['Arboliva',930]],
+  [['Nacli',932],['Naclstack',933],['Garganacl',934]],
+  [['Tinkatink',957],['Tinkatuff',958],['Tinkaton',959]],
+  [['Frigibax',996],['Arctibax',997],['Baxcalibur',998]]
+];
+var LINES2 = [
+  [['Rattata',19],['Raticate',20]],
+  [['Spearow',21],['Fearow',22]],
+  [['Ekans',23],['Arbok',24]],
+  [['Sandshrew',27],['Sandslash',28]],
+  [['Vulpix',37],['Ninetales',38]],
+  [['Paras',46],['Parasect',47]],
+  [['Venonat',48],['Venomoth',49]],
+  [['Diglett',50],['Dugtrio',51]],
+  [['Psyduck',54],['Golduck',55]],
+  [['Growlithe',58],['Arcanine',59]],
+  [['Tentacool',72],['Tentacruel',73]],
+  [['Ponyta',77],['Rapidash',78]],
+  [['Farfetch’d',83],['Sirfetch’d',865]],
+  [['Doduo',84],['Dodrio',85]],
+  [['Seel',86],['Dewgong',87]],
+  [['Grimer',88],['Muk',89]],
+  [['Shellder',90],['Cloyster',91]],
+  [['Onix',95],['Steelix',208]],
+  [['Drowzee',96],['Hypno',97]],
+  [['Krabby',98],['Kingler',99]],
+  [['Voltorb',100],['Electrode',101]],
+  [['Exeggcute',102],['Exeggutor',103]],
+  [['Cubone',104],['Marowak',105]],
+  [['Lickitung',108],['Lickilicky',463]],
+  [['Koffing',109],['Weezing',110]],
+  [['Tangela',114],['Tangrowth',465]],
+  [['Goldeen',118],['Seaking',119]],
+  [['Staryu',120],['Starmie',121]],
+  [['Magikarp',129],['Gyarados',130]],
+  [['Omanyte',138],['Omastar',139]],
+  [['Kabuto',140],['Kabutops',141]],
+  [['Sentret',161],['Furret',162]],
+  [['Hoothoot',163],['Noctowl',164]],
+  [['Ledyba',165],['Ledian',166]],
+  [['Spinarak',167],['Ariados',168]],
+  [['Chinchou',170],['Lanturn',171]],
+  [['Natu',177],['Xatu',178]],
+  [['Aipom',190],['Ambipom',424]],
+  [['Sunkern',191],['Sunflora',192]],
+  [['Yanma',193],['Yanmega',469]],
+  [['Murkrow',198],['Honchkrow',430]],
+  [['Misdreavus',200],['Mismagius',429]],
+  [['Girafarig',203],['Farigiraf',981]],
+  [['Pineco',204],['Forretress',205]],
+  [['Dunsparce',206],['Dudunsparce',982]],
+  [['Gligar',207],['Gliscor',472]],
+  [['Snubbull',209],['Granbull',210]],
+  [['Qwilfish',211],['Overqwil',904]],
+  [['Slugma',218],['Magcargo',219]],
+  [['Corsola',222],['Cursola',864]],
+  [['Remoraid',223],['Octillery',224]],
+  [['Houndour',228],['Houndoom',229]],
+  [['Phanpy',231],['Donphan',232]],
+  [['Stantler',234],['Wyrdeer',899]],
+  [['Smoochum',238],['Jynx',124]],
+  [['Poochyena',261],['Mightyena',262]],
+  [['Taillow',276],['Swellow',277]],
+  [['Wingull',278],['Pelipper',279]],
+  [['Surskit',283],['Masquerain',284]],
+  [['Shroomish',285],['Breloom',286]],
+  [['Makuhita',296],['Hariyama',297]],
+  [['Nosepass',299],['Probopass',476]],
+  [['Skitty',300],['Delcatty',301]],
+  [['Meditite',307],['Medicham',308]],
+  [['Electrike',309],['Manectric',310]],
+  [['Gulpin',316],['Swalot',317]],
+  [['Carvanha',318],['Sharpedo',319]],
+  [['Wailmer',320],['Wailord',321]],
+  [['Numel',322],['Camerupt',323]],
+  [['Spoink',325],['Grumpig',326]],
+  [['Cacnea',331],['Cacturne',332]],
+  [['Swablu',333],['Altaria',334]],
+  [['Barboach',339],['Whiscash',340]],
+  [['Corphish',341],['Crawdaunt',342]],
+  [['Baltoy',343],['Claydol',344]],
+  [['Lileep',345],['Cradily',346]],
+  [['Anorith',347],['Armaldo',348]],
+  [['Feebas',349],['Milotic',350]],
+  [['Shuppet',353],['Banette',354]],
+  [['Wynaut',360],['Wobbuffet',202]],
+  [['Bidoof',399],['Bibarel',400]],
+  [['Kricketot',401],['Kricketune',402]],
+  [['Cranidos',408],['Rampardos',409]],
+  [['Shieldon',410],['Bastiodon',411]],
+  [['Combee',415],['Vespiquen',416]],
+  [['Buizel',418],['Floatzel',419]],
+  [['Cherubi',420],['Cherrim',421]],
+  [['Shellos',422],['Gastrodon',423]],
+  [['Drifloon',425],['Drifblim',426]],
+  [['Buneary',427],['Lopunny',428]],
+  [['Glameow',431],['Purugly',432]],
+  [['Chingling',433],['Chimecho',358]],
+  [['Stunky',434],['Skuntank',435]],
+  [['Bronzor',436],['Bronzong',437]],
+  [['Bonsly',438],['Sudowoodo',185]],
+  [['Munchlax',446],['Snorlax',143]],
+  [['Riolu',447],['Lucario',448]],
+  [['Hippopotas',449],['Hippowdon',450]],
+  [['Skorupi',451],['Drapion',452]],
+  [['Croagunk',453],['Toxicroak',454]],
+  [['Finneon',456],['Lumineon',457]],
+  [['Mantyke',458],['Mantine',226]],
+  [['Snover',459],['Abomasnow',460]],
+  [['Patrat',504],['Watchog',505]],
+  [['Purrloin',509],['Liepard',510]],
+  [['Pansage',511],['Simisage',512]],
+  [['Pansear',513],['Simisear',514]],
+  [['Panpour',515],['Simipour',516]],
+  [['Munna',517],['Musharna',518]],
+  [['Blitzle',522],['Zebstrika',523]],
+  [['Woobat',527],['Swoobat',528]],
+  [['Drilbur',529],['Excadrill',530]],
+  [['Cottonee',546],['Whimsicott',547]],
+  [['Petilil',548],['Lilligant',549]],
+  [['Basculin',550],['Basculegion',902]],
+  [['Darumaka',554],['Darmanitan',555]],
+  [['Dwebble',557],['Crustle',558]],
+  [['Scraggy',559],['Scrafty',560]],
+  [['Tirtouga',564],['Carracosta',565]],
+  [['Archen',566],['Archeops',567]],
+  [['Trubbish',568],['Garbodor',569]],
+  [['Zorua',570],['Zoroark',571]],
+  [['Minccino',572],['Cinccino',573]],
+  [['Ducklett',580],['Swanna',581]],
+  [['Deerling',585],['Sawsbuck',586]],
+  [['Karrablast',588],['Escavalier',589]],
+  [['Foongus',590],['Amoonguss',591]],
+  [['Frillish',592],['Jellicent',593]],
+  [['Joltik',595],['Galvantula',596]],
+  [['Ferroseed',597],['Ferrothorn',598]],
+  [['Elgyem',605],['Beheeyem',606]],
+  [['Cubchoo',613],['Beartic',614]],
+  [['Shelmet',616],['Accelgor',617]],
+  [['Mienfoo',619],['Mienshao',620]],
+  [['Golett',622],['Golurk',623]],
+  [['Rufflet',627],['Braviary',628]],
+  [['Vullaby',629],['Mandibuzz',630]],
+  [['Larvesta',636],['Volcarona',637]],
+  [['Bunnelby',659],['Diggersby',660]],
+  [['Litleo',667],['Pyroar',668]],
+  [['Skiddo',672],['Gogoat',673]],
+  [['Pancham',674],['Pangoro',675]],
+  [['Espurr',677],['Meowstic',678]],
+  [['Spritzee',682],['Aromatisse',683]],
+  [['Swirlix',684],['Slurpuff',685]],
+  [['Inkay',686],['Malamar',687]],
+  [['Binacle',688],['Barbaracle',689]],
+  [['Skrelp',690],['Dragalge',691]],
+  [['Clauncher',692],['Clawitzer',693]],
+  [['Helioptile',694],['Heliolisk',695]],
+  [['Tyrunt',696],['Tyrantrum',697]],
+  [['Amaura',698],['Aurorus',699]],
+  [['Phantump',708],['Trevenant',709]],
+  [['Pumpkaboo',710],['Gourgeist',711]],
+  [['Bergmite',712],['Avalugg',713]],
+  [['Noibat',714],['Noivern',715]],
+  [['Yungoos',734],['Gumshoos',735]],
+  [['Crabrawler',739],['Crabominable',740]],
+  [['Cutiefly',742],['Ribombee',743]],
+  [['Rockruff',744],['Lycanroc',745]],
+  [['Mareanie',747],['Toxapex',748]],
+  [['Mudbray',749],['Mudsdale',750]],
+  [['Dewpider',751],['Araquanid',752]],
+  [['Fomantis',753],['Lurantis',754]],
+  [['Morelull',755],['Shiinotic',756]],
+  [['Salandit',757],['Salazzle',758]],
+  [['Stufful',759],['Bewear',760]],
+  [['Wimpod',767],['Golisopod',768]],
+  [['Sandygast',769],['Palossand',770]],
+  [['Poipole',803],['Naganadel',804]],
+  [['Skwovet',819],['Greedent',820]],
+  [['Nickit',827],['Thievul',828]],
+  [['Gossifleur',829],['Eldegoss',830]],
+  [['Wooloo',831],['Dubwool',832]],
+  [['Chewtle',833],['Drednaw',834]],
+  [['Yamper',835],['Boltund',836]],
+  [['Silicobra',843],['Sandaconda',844]],
+  [['Arrokuda',846],['Barraskewda',847]],
+  [['Toxel',848],['Toxtricity',849]],
+  [['Sizzlipede',850],['Centiskorch',851]],
+  [['Clobbopus',852],['Grapploct',853]],
+  [['Sinistea',854],['Polteageist',855]],
+  [['Milcery',868],['Alcremie',869]],
+  [['Snom',872],['Frosmoth',873]],
+  [['Cufant',878],['Copperajah',879]],
+  [['Duraludon',884],['Archaludon',1018]],
+  [['Lechonk',915],['Oinkologne',916]],
+  [['Tarountula',917],['Spidops',918]],
+  [['Nymble',919],['Lokix',920]],
+  [['Tandemaus',924],['Maushold',925]],
+  [['Fidough',926],['Dachsbun',927]],
+  [['Tadbulb',938],['Bellibolt',939]],
+  [['Wattrel',940],['Kilowattrel',941]],
+  [['Maschiff',942],['Mabosstiff',943]],
+  [['Shroodle',944],['Grafaiai',945]],
+  [['Bramblin',946],['Brambleghast',947]],
+  [['Toedscool',948],['Toedscruel',949]],
+  [['Capsakid',951],['Scovillain',952]],
+  [['Rellor',953],['Rabsca',954]],
+  [['Flittle',955],['Espathra',956]],
+  [['Wiglett',960],['Wugtrio',961]],
+  [['Finizen',963],['Palafin',964]],
+  [['Varoom',965],['Revavroom',966]],
+  [['Glimmet',969],['Glimmora',970]],
+  [['Greavard',971],['Houndstone',972]],
+  [['Cetoddle',974],['Cetitan',975]],
+  [['Gimmighoul',999],['Gholdengo',1000]],
+  [['Poltchageist',1012],['Sinistcha',1013]]
+];
+var LEGENDS = [['Articuno',144],['Zapdos',145],['Moltres',146],['Mewtwo',150],['Raikou',243],['Entei',244],['Suicune',245],['Lugia',249],['Ho-Oh',250],['Celebi',251],['Regirock',377],['Regice',378],['Registeel',379],['Latias',380],['Latios',381],['Kyogre',382],['Groudon',383],['Rayquaza',384],['Jirachi',385],['Deoxys',386],['Uxie',480],['Mesprit',481],['Azelf',482],['Dialga',483],['Palkia',484],['Heatran',485],['Regigigas',486],['Giratina',487],['Cresselia',488],['Darkrai',491],['Shaymin',492],['Arceus',493],['Victini',494],['Cobalion',638],['Terrakion',639],['Virizion',640],['Tornadus',641],['Thundurus',642],['Reshiram',643],['Zekrom',644],['Landorus',645],['Kyurem',646],['Keldeo',647],['Meloetta',648],['Genesect',649],['Xerneas',716],['Yveltal',717],['Zygarde',718],['Diancie',719],['Hoopa',720],['Volcanion',721],['Tapu Koko',785],['Tapu Lele',786],['Tapu Bulu',787],['Tapu Fini',788],['Necrozma',800],['Magearna',801],['Marshadow',802],['Zeraora',807],['Zacian',888],['Zamazenta',889],['Eternatus',890],['Zarude',893],['Regieleki',894],['Regidrago',895],['Glastrier',896],['Spectrier',897],['Calyrex',898],['Enamorus',905],['Wo-Chien',1001],['Chien-Pao',1002],['Ting-Lu',1003],['Chi-Yu',1004],['Koraidon',1007],['Miraidon',1008],['Okidogi',1014],['Munkidori',1015],['Fezandipiti',1016],['Ogerpon',1017],['Terapagos',1024],['Pecharunt',1025]];
+var MEW = ['Mew', 151];                 // the platinum prize, kept out of LEGENDS
+var ROTATION_START = '2026-10-04';      // first Sunday of the no-repeat weekly rotation
+var PRIZE_ARRIVE = 2, PRIZE_EVOLVE = 5, PRIZE_CYCLE = 5;   // approved weeks in a row: 2 → prize, 5 → it evolves, then every 5
+
+// seeded shuffle, so every phone computes the same order
+function rng(seed){
+  return function(){
+    seed = seed + 0x6D2B79F5 | 0;
+    var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function shuffled(n, seed){
+  var a = [], r = rng(seed), i, j, t;
+  for(i = 0; i < n; i++) a.push(i);
+  for(i = n - 1; i > 0; i--){ j = Math.floor(r() * (i + 1)); t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+var ORDER3 = shuffled(LINES3.length, 3), ORDER2 = shuffled(LINES2.length, 2), ORDERL = shuffled(LEGENDS.length, 7);
+// both kids walk the same shuffled order from opposite halves, so they never get the same one
+function nth(list, order, i, kid){
+  var k = Math.max(0, data.kids.indexOf(kid));
+  return list[order[(i + k * Math.floor(list.length / 2)) % list.length]];
+}
+function weeksBetween(a, b){ return Math.round((Date.parse(b) - Date.parse(a)) / (7 * 864e5)); }
+function sprite(id, shiny){
+  return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (shiny ? 'shiny/' : '') + id + '.png';
+}
+function pad2(n){ return (n < 10 ? '0' : '') + n; }
+function ymdLocal(d){ return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+function sundayOf(d){ return ymdLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate() - d.getDay())); }
+function weeksWord(n){ return n === 1 ? 'שבוע אחד' : n + ' שבועות'; }
+// every line the Pokédex grid shows: the full pool, plus any pre-rotation line not in it
+var DEX_LINES = LINES3.concat(POKE_OLD.filter(function(l){
+  return !LINES3.some(function(x){ return x[0][1] === l[0][1]; });
+}));
+
+/* ---------- a kid's whole career, derived from the log and Ilana's decisions ---------- */
+var careerCache = { data: null };
+function career(kid){
+  if(careerCache.data !== data) careerCache = { data: data };
+  if(careerCache[kid]) return careerCache[kid];
+  var k = data.kids.indexOf(kid), titles = data.titles || [], cur = data.week.start;
+  var list = (data.all || []).filter(function(e){ return e[1] === k; }).map(function(e){
+    var d = new Date(e[0] * 1000);
+    return { t: e[0] * 1000, d: d, week: sundayOf(d), day: ymdLocal(d), month: d.getFullYear() + '-' + d.getMonth(), title: titles[e[2]] };
+  }).sort(function(a, b){ return a.t - b.t; });
+
+  var c = { kid: kid, total: list.length, first: list[0], perWeek: {}, perDay: {}, perTitle: {}, perWeekday: [0,0,0,0,0,0,0],
+    weekTitles: {}, caught: {}, shiny: {}, legends: [], prizes: [], events: [], streak: 0, bestStreak: 0, approved: 0,
+    early: false, late: false, maxDay: 0, dayRun: 0, fullLines: 0, lateShare: 0 };
+
+  // chores: per week / day / title, shinies (every 25th in a calendar month) and their legendaries
+  var monthCount = {}, lateCount = 0;
+  list.forEach(function(e){
+    c.perWeek[e.week] = (c.perWeek[e.week] || 0) + 1;
+    c.perDay[e.day] = (c.perDay[e.day] || 0) + 1;
+    c.perTitle[e.title] = (c.perTitle[e.title] || 0) + 1;
+    c.perWeekday[e.d.getDay()]++;
+    (c.weekTitles[e.week] = c.weekTitles[e.week] || {})[e.title] = true;
+    var h = e.d.getHours();
+    if(h < 8) c.early = true;
+    if(h >= 22) c.late = true;
+    if(h >= 20) lateCount++;
+    var m = monthCount[e.month] = (monthCount[e.month] || 0) + 1;
+    if(m % SHINY_EVERY === 0){
+      c.shiny[lineFor(e.week, kid)[stageOf(c.perWeek[e.week])][1]] = true;
+      var lg = nth(LEGENDS, ORDERL, c.legends.length, kid);
+      c.legends.push(lg);
+      c.events.push({ type: 'legend', t: e.t, p: lg });
+    }
+  });
+  c.lateShare = list.length ? lateCount / list.length : 0;
+
+  // weekly catches: 1 chore → base form, half the target → second stage, full target → final
+  var finals = {};
+  Object.keys(c.perWeek).forEach(function(w){
+    var line = lineFor(w, kid), st = stageOf(c.perWeek[w]);
+    for(var s = 0; s <= st; s++) c.caught[line[s][1]] = true;
+    if(st === 2) finals[line[2][1]] = true;
+  });
+  c.fullLines = Object.keys(finals).length;
+
+  // days: longest run of consecutive days with a chore, busiest single day
+  var days = Object.keys(c.perDay).sort(), run = 0, prevDay = null;
+  days.forEach(function(d){
+    run = prevDay && addDays(prevDay, 1) === d ? run + 1 : 1;
+    c.dayRun = Math.max(c.dayRun, run);
+    c.maxDay = Math.max(c.maxDay, c.perDay[d]);
+    prevDay = d;
+  });
+
+  // Ilana's streak: consecutive approved weeks. This week and last week don't break it while
+  // still undecided (she may tally late); any older undecided week does.
+  var weeks = [], w0 = list.length ? list[0].week : null;
+  Object.keys(data.decided || {}).forEach(function(w){ if(!w0 || w < w0) w0 = w; });
+  for(var w = w0; w && w <= cur; w = addDays(w, 7)) weeks.push(w);
+  var r = 0, prize = null;
+  weeks.forEach(function(w){
+    var dec = ((data.decided || {})[w] || {})[kid];
+    if(!dec && (w === cur || w === addDays(cur, -7))) return;
+    if(dec === 'מגיע'){
+      r++; c.approved++; c.bestStreak = Math.max(c.bestStreak, r);
+      if(r >= PRIZE_ARRIVE && (r - PRIZE_ARRIVE) % PRIZE_CYCLE === 0){
+        prize = { pair: nth(LINES2, ORDER2, c.prizes.length, kid), evolved: false, week: w };
+        c.prizes.push(prize);
+        c.events.push({ type: 'arrive', week: w, p: prize.pair[0] });
+      }
+      if(r >= PRIZE_EVOLVE && (r - PRIZE_EVOLVE) % PRIZE_CYCLE === 0 && prize && !prize.evolved){
+        prize.evolved = true;
+        c.events.push({ type: 'evolve', week: w, from: prize.pair[0], to: prize.pair[1] });
+      }
+    } else { r = 0; prize = null; }   // a broken streak freezes an unevolved prize for good
+  });
+  c.streak = r;
+  c.activePrize = prize && !prize.evolved ? prize : null;
+  var m2 = r + 1;
+  while(!(m2 >= PRIZE_ARRIVE && ((m2 - PRIZE_ARRIVE) % PRIZE_CYCLE === 0 || (m2 >= PRIZE_EVOLVE && (m2 - PRIZE_EVOLVE) % PRIZE_CYCLE === 0)))) m2++;
+  c.next = { in: m2 - r, type: (m2 - PRIZE_ARRIVE) % PRIZE_CYCLE === 0 ? 'arrive' : 'evolve' };
+  c.nextPrize = nth(LINES2, ORDER2, c.prizes.length, kid);
+
+  // variety: every listed chore at least once; all of your own chores within one week
+  var listed = data.chores.map(function(x){ return x.title; });
+  c.distinctListed = listed.filter(function(t){ return c.perTitle[t]; }).length;
+  var own = data.chores.filter(function(x){ return x.owner === kid; }).map(function(x){ return x.title; });
+  c.ownWeek = own.length > 0 && Object.keys(c.weekTitles).some(function(w){
+    return own.every(function(t){ return c.weekTitles[w][t]; });
+  });
+
+  // trophies, then platinum (all of them) which brings Mew
+  c.trophies = TROPHIES.map(function(tr){
+    var p = tr.p(c);
+    return { tr: tr, cur: Math.min(p[0], p[1]), goal: p[1], done: p[0] >= p[1] };
+  });
+  var doneCount = c.trophies.filter(function(x){ return x.done; }).length;
+  c.platinum = { tr: PLATINUM, cur: doneCount, goal: TROPHIES.length, done: doneCount === TROPHIES.length };
+  if(c.platinum.done) c.caught[MEW[1]] = true;
+
+  careerCache[kid] = c;
+  return c;
+}
+
+/* ---------- trophies ---------- */
+function titleCount(c, test){
+  var n = 0;
+  Object.keys(c.perTitle).forEach(function(t){ if(t && test(t)) n += c.perTitle[t]; });
+  return n;
+}
+function catOf(t){ var x = data.chores.filter(function(ch){ return ch.title === t; })[0]; return x ? x.cat : ''; }
+var TROPHIES = [
+  { id:'c10',  tier:1, name:'מתחיל',               d:'10 מטלות',                        p:function(c){ return [c.total, 10]; } },
+  { id:'c50',  tier:2, name:'מאמן',                d:'50 מטלות',                        p:function(c){ return [c.total, 50]; } },
+  { id:'c100', tier:3, name:'מאסטר',               d:'100 מטלות',                       p:function(c){ return [c.total, 100]; } },
+  { id:'c250', tier:3, name:'אלוף הליגה',          d:'250 מטלות',                       p:function(c){ return [c.total, 250]; } },
+  { id:'cats', tier:2, name:'המשרת האישי של מיסטיק ובסקוויט', d:'20 פעמים חול חתולים', p:function(c){ return [titleCount(c, function(t){ return t.indexOf('חול חתולים') >= 0; }), 20]; } },
+  { id:'walk', tier:2, name:'המאמן האישי של מודי',  d:'20 טיולים עם מודי',               p:function(c){ return [titleCount(c, function(t){ return t.indexOf('לטיול') >= 0; }), 20]; } },
+  { id:'dish', tier:2, name:'לורד המדיח',           d:'30 פעמים מדיח',                   p:function(c){ return [titleCount(c, function(t){ return t.indexOf('מדיח') >= 0; }), 30]; } },
+  { id:'wash', tier:2, name:'מלך הכביסה',           d:'30 מטלות כביסה',                  p:function(c){ return [titleCount(c, function(t){ return catOf(t) === 'כביסה'; }), 30]; } },
+  { id:'bin',  tier:2, name:'אוסקר מרחוב סומסום',   d:'30 פעמים הפח',                    p:function(c){ return [titleCount(c, function(t){ return t.indexOf('הפח') >= 0; }), 30]; } },
+  { id:'d3',   tier:1, name:'חימום',                d:'מטלה 3 ימים ברצף',                p:function(c){ return [c.dayRun, 3]; } },
+  { id:'d7',   tier:2, name:'שבוע רצוף',            d:'מטלה 7 ימים ברצף',                p:function(c){ return [c.dayRun, 7]; } },
+  { id:'d14',  tier:3, name:'בלתי ניתן לעצירה',     d:'מטלה 14 ימים ברצף',               p:function(c){ return [c.dayRun, 14]; } },
+  { id:'w2',   tier:1, name:'אמא מרוצה',            d:'2 שבועות מאושרים ברצף',           p:function(c){ return [c.bestStreak, 2]; } },
+  { id:'w4',   tier:2, name:'אמא מאוד מרוצה',       d:'4 שבועות מאושרים ברצף',           p:function(c){ return [c.bestStreak, 4]; } },
+  { id:'w8',   tier:3, name:'אמא בהלם',             d:'8 שבועות מאושרים ברצף',           p:function(c){ return [c.bestStreak, 8]; } },
+  { id:'all',  tier:3, name:'איש של כל המקצועות',   d:'כל מטלה ברשימה לפחות פעם אחת',    p:function(c){ return [c.distinctListed, data.chores.length]; } },
+  { id:'own',  tier:2, name:'עשיתי את שלי',         d:'כל המטלות שלך באותו שבוע',        p:function(c){ return [c.ownWeek ? 1 : 0, 1]; } },
+  { id:'bird', tier:1, name:'ציפור מוקדמת',         d:'מטלה לפני 8:00',                  p:function(c){ return [c.early ? 1 : 0, 1]; } },
+  { id:'owl',  tier:1, name:'ינשוף לילה',           d:'מטלה אחרי 22:00',                 p:function(c){ return [c.late ? 1 : 0, 1]; } },
+  { id:'x2',   tier:2, name:'משמרת כפולה',          d:'5 מטלות ביום אחד',                p:function(c){ return [c.maxDay, 5]; } },
+  { id:'fin',  tier:1, name:'התפתחות מלאה',         d:'פוקימון שהגיע לשלב האחרון',       p:function(c){ return [c.fullLines, 1]; } },
+  { id:'ten',  tier:3, name:'חוקר פוקימונים',       d:'10 פוקימונים בשלב האחרון',        p:function(c){ return [c.fullLines, 10]; } },
+  { id:'leg',  tier:2, name:'אגדה',                 d:'פוקימון אגדי ראשון',              p:function(c){ return [c.legends.length, 1]; } },
+  { id:'pat',  tier:2, name:'סבלנות משתלמת',        d:'פרס רצף שהתפתח',                  p:function(c){ return [c.prizes.filter(function(x){ return x.evolved; }).length, 1]; } }
+];
+var PLATINUM = { id:'plat', tier:4, name:'מאסטר פוקימון', d:'כל הגביעים — ו־Mew מצטרף לפוקדקס' };
+var MEDAL = { 1:'🥉', 2:'🥈', 3:'🥇', 4:'💎' };
+
+var data = null, pollTimer = null, pending = null, overlays = [], adding = false, cardTab = 'dex';
 
 /* ---------- helpers ---------- */
 function $(id){ return document.getElementById(id); }
@@ -487,7 +1064,12 @@ function tally(list){
 function target(){ return (data && data.target) || 10; }
 function stageOf(n){ return n >= target() ? 2 : n >= Math.ceil(target() / 2) ? 1 : 0; }
 // each kid gets a different line each week, fixed for the whole week
-function lineFor(week, kid){ return POKE[(hash(week) + Math.max(0, data.kids.indexOf(kid)) * 11) % POKE.length]; }
+// Weeks before the rotation keep the original hash-picked lines, so history doesn't change.
+// From ROTATION_START each kid walks a fixed shuffle of every line before any repeats.
+function lineFor(week, kid){
+  if(week < ROTATION_START) return POKE_OLD[(hash(week) + Math.max(0, data.kids.indexOf(kid)) * 11) % POKE_OLD.length];
+  return nth(LINES3, ORDER3, weeksBetween(ROTATION_START, week), kid);
+}
 function art(id, shiny){
   return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (shiny ? 'shiny/' : '') + id + '.png';
 }
@@ -527,28 +1109,32 @@ function post(body){
     .then(function(r){ return r.json(); }).then(got);
 }
 
-/* ---------- routing: #, #kid=<name>, #parent ---------- */
+/* ---------- routing: #, #kid=<name>, #card=<name>, #parent ---------- */
 function route(){
-  var kid = currentKid(), h = location.hash;
-  $('vHome').hidden = !!(kid || h === '#parent');
+  var kid = currentKid(), card = cardKid(), h = location.hash, who = kid || card;
+  $('vHome').hidden = !!(who || h === '#parent');
   $('vKid').hidden = !kid;
+  $('vCard').hidden = !card;
   $('vParent').hidden = h !== '#parent';
-  if(kid) document.documentElement.style.setProperty('--kc', KID_COLOR[kid] || 'var(--mint)');
+  if(who) document.documentElement.style.setProperty('--kc', KID_COLOR[who] || 'var(--mint)');
   else document.documentElement.style.removeProperty('--kc');
   render();
   window.scrollTo(0, 0);
 }
-function currentKid(){
+function hashValue(prefix){
   var h = decodeURIComponent(location.hash.slice(1));
-  return h.indexOf('kid=') === 0 ? h.slice(4) : '';
+  return h.indexOf(prefix) === 0 ? h.slice(prefix.length) : '';
 }
+function currentKid(){ return hashValue('kid='); }
+function cardKid(){ return hashValue('card='); }
 
 /* ---------- render ---------- */
 function render(){
   if(!data) return;
-  var kid = currentKid();
+  var kid = currentKid(), card = cardKid();
   renderHome();
   if(kid) renderKid(kid);
+  if(card) renderCard(card);
   if(location.hash === '#parent') renderParent();
 }
 
@@ -580,7 +1166,7 @@ function renderHome(){
     var b = document.createElement('button');
     b.className = 'kid'; b.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
     b.innerHTML = '<img class="pk" src="' + art(p[1]) + '" alt="">' +
-      '<div class="nm">' + esc(k) + '</div><div class="pn">' + en(p[0]) + '</div>' +
+      '<div class="nm">' + esc(k) + streakBadge(k) + '</div><div class="pn">' + en(p[0]) + '</div>' +
       '<div class="big">' + n + '<small>/' + target() + '</small></div>' +
       '<div class="bar"><i></i><b></b></div>' +
       '<div class="st' + (nag ? ' nag' : '') + '">' + status + '</div>' +
@@ -590,7 +1176,28 @@ function renderHome(){
     box.appendChild(b);
   });
 
+  var links = $('cardLinks'); links.innerHTML = '';
+  data.kids.forEach(function(k){
+    var c = career(k), got = Object.keys(c.caught).length + c.legends.length + c.prizes.length;
+    var a = document.createElement('button');
+    a.innerHTML = '🏆 הכרטיס של ' + esc(k) + '<small>' + got + ' פוקימונים · ' + career(k).trophies.filter(function(x){ return x.done; }).length + ' גביעים</small>';
+    a.onclick = function(){ location.hash = 'card=' + encodeURIComponent(k); };
+    links.appendChild(a);
+  });
+
   $('tip').innerHTML = '<b>תזכורת 🧠</b>' + bidi(TIP);
+}
+
+function streakBadge(kid){ var s = career(kid).streak; return s ? '<span class="fire">🔥' + s + '</span>' : ''; }
+
+// "🔥 streak 3 · 2 more weeks and Magikarp evolves" — pink from Friday while this week is still undecided
+function streakText(kid){
+  var c = career(kid), cur = weekOf(data.week.start), undecided = !(cur && cur.kids[kid] && cur.kids[kid].decision);
+  var goal = c.next.type === 'evolve' && c.activePrize
+    ? 'עוד ' + weeksWord(c.next.in) + ' ו־' + en(c.activePrize.pair[0][0]) + ' מתפתח'
+    : 'עוד ' + (c.next.in === 1 ? 'שבוע מאושר אחד' : c.next.in + ' שבועות מאושרים') + ' ומגיע פרס חדש';
+  var risk = c.streak > 0 && undecided && dow() >= 5;
+  return { risk: risk, html: (risk ? 'הרצף על הכף! ' : '') + '🔥 ' + (c.streak ? 'רצף ' + c.streak + ' · ' : '') + goal };
 }
 
 function praiseFor(c, kid){
@@ -606,14 +1213,17 @@ function choreBtn(c, kid, counts){
     (c.hint ? '<span class="h">' + bidi(c.hint) + '</span>' : '');
   b.onclick = function(){
     ask('סיימת את…', c.title, 'כן, סיימתי ✓', freshPick(SAVING, 'saving'), function(){
-      var before = countFor(kid), week = data.week.start;
+      var before = countFor(kid), week = data.week.start, legendsBefore = career(kid).legends.length;
+      adding = true;
       return post({ action:'add', kid:kid, chore:c.title }).then(function(){
         toast(praiseFor(c, kid));
-        var after = countFor(kid), line = lineFor(week, kid), m = (data.month || {})[kid] || 0;
+        var after = countFor(kid), line = lineFor(week, kid), m = (data.month || {})[kid] || 0, cr = career(kid);
         if(stageOf(after) > stageOf(before)) overlays.push(evolution(kid, line[stageOf(before)], line[stageOf(after)]));
         if(data.month && m > 0 && m % SHINY_EVERY === 0) overlays.push(shiny(kid, line[stageOf(after)], m));
+        cr.legends.slice(legendsBefore).forEach(function(lg){ overlays.push(prizeMoment(kid, { type:'legend', p:lg })); });
+        checkTrophies(kid);
         nextOverlay();
-      });
+      }).finally(function(){ adding = false; });
     });
   };
   return b;
@@ -637,6 +1247,10 @@ function renderKid(kid){
     var m = data.month[kid] || 0, r = SHINY_EVERY - (m % SHINY_EVERY);
     $('kShiny').textContent = '✨ עוד ' + chores(r) + ' החודש עד להפתעה נדירה';
   } else $('kShiny').textContent = '';
+  var sl = streakText(kid);
+  $('kStreak').innerHTML = sl.html;
+  $('kStreak').className = 'streakLine' + (sl.risk ? ' risk' : '');
+  $('kCardBtn').onclick = function(){ location.hash = 'card=' + encodeURIComponent(kid); };
 
   // Ilana's verdict — a card while it's fresh, and the big reveal once per phone
   var v = verdictFor(kid), vb = $('verdictBox');
@@ -648,8 +1262,15 @@ function renderKid(kid){
       '<div class="s">' + (yes ? 'על שבוע ' + dm(v.w.week) + '–' + dm(v.w.end) + ' · ' + chores(v.s.count)
         : 'שבוע חדש, פוקימון חדש, הזדמנות חדשה') + '</div></div></div>';
     var seenKey = 'seen:' + kid + ':' + v.w.week + ':' + v.s.decision;
-    if(!store(seenKey)){ store(seenKey, '1'); overlays.push(verdictMoment(kid, yes, vl)); nextOverlay(); }
+    if(!store(seenKey)){
+      store(seenKey, '1');
+      overlays.push(verdictMoment(kid, yes, vl));
+      // an approval can also bring or evolve a streak prize
+      career(kid).events.filter(function(e){ return e.week === v.w.week; }).forEach(function(e){ overlays.push(prizeMoment(kid, e)); });
+      nextOverlay();
+    }
   }
+  if(!adding) checkTrophies(kid);
 
   // nag: behind the week's pace → name the own chore this kid has neglected longest
   var nb = $('nagBox'); nb.innerHTML = '';
@@ -745,9 +1366,144 @@ function confetti(){
   }
 }
 
+function prizeMoment(kid, e){
+  if(e.type === 'evolve') return evolution(kid, e.from, e.to);
+  if(e.type === 'legend') return { art: '<div class="shinyArt"><img src="' + art(e.p[1]) + '" alt=""></div>', title: 'פוקימון אגדי! 👑', btn: 'וואו!',
+    text: en(e.p[0]) + ' הצטרף לפוקדקס של ' + esc(kid) + '. זה הפרס על השייני.', confetti: true };
+  return { art: '<img src="' + art(e.p[1]) + '" alt="">', title: 'פרס רצף! 🔥', btn: 'יששש!',
+    text: PRIZE_ARRIVE + ' שבועות מאושרים ברצף: ' + en(e.p[0]) + ' הצטרף לפוקדקס. אם הרצף יגיע ל־' + PRIZE_EVOLVE + ', הוא יתפתח.', confetti: true };
+}
+
+// New trophies pop up once per phone, on the kid's own screen (at most 3 at a time)
+function checkTrophies(kid){
+  var c = career(kid), key = 'trophies:' + kid, seen;
+  try{ seen = JSON.parse(store(key) || '[]'); }catch(e){ seen = []; }
+  var all = c.trophies.concat([c.platinum]).filter(function(x){ return x.done; });
+  var fresh = all.filter(function(x){ return seen.indexOf(x.tr.id) < 0; });
+  if(!fresh.length) return;
+  store(key, JSON.stringify(all.map(function(x){ return x.tr.id; })));
+  fresh.slice(0, 3).forEach(function(x){
+    var plat = x.tr.id === 'plat';
+    overlays.push({ art: plat ? '<img src="' + art(MEW[1]) + '" alt="">' : '<div class="big">' + MEDAL[x.tr.tier] + '</div>',
+      title: bidi(x.tr.name), btn: 'יאללה', confetti: true,
+      text: (plat ? 'כל הגביעים! ' : 'גביע חדש: ') + bidi(x.tr.d) });
+  });
+  if(fresh.length > 3) toast('ועוד ' + (fresh.length - 3) + ' גביעים — בכרטיס המאמן 🏆');
+  nextOverlay();
+}
+
+/* ---------- trainer card ---------- */
+function dexTile(p, got, opts){
+  opts = opts || {};
+  return '<button class="t' + (got ? '' : ' no') + (opts.shiny ? ' sh' : '') + (opts.gold ? ' gold' : '') + '" data-n="' +
+    (got ? esc(p[0]) : '???') + '"><img loading="lazy" src="' + sprite(p[1], opts.shiny) + '" alt=""></button>';
+}
+
+function renderCard(kid){
+  var c = career(kid);
+  $('cName').innerHTML = esc(kid) + streakBadge(kid);
+  $('cSince').textContent = c.first ? 'מאמן מאז ' + c.first.d.getDate() + '.' + (c.first.d.getMonth() + 1) : 'מאמן חדש';
+
+  // streak panel: count, the prize in progress (or the next one, as a silhouette)
+  var sl = streakText(kid), pz;
+  if(c.activePrize) pz = '<img src="' + sprite(c.activePrize.pair[0][1]) + '" alt=""><span class="arr">←</span><img class="sil" src="' + sprite(c.activePrize.pair[1][1]) + '" alt="">';
+  else pz = '<img class="sil" src="' + sprite(c.nextPrize[0][1]) + '" alt="">';
+  $('cStreak').innerHTML = '<div class="n">' + c.streak + '<small>שבועות ברצף</small></div>' +
+    '<div class="txt">' + sl.html + (c.activePrize ? '' : '<br><span style="color:var(--muted)">מי הפוקימון? 🤔</span>') + '</div>' +
+    '<div class="pz">' + pz + '</div>';
+
+  [].forEach.call($('cTabs').children, function(b){
+    b.className = b.dataset.t === cardTab ? 'on' : '';
+    b.onclick = function(){ cardTab = b.dataset.t; renderCard(kid); };
+  });
+
+  var body = $('cBody');
+  if(cardTab === 'dex') body.innerHTML = dexHtml(c);
+  else if(cardTab === 'trophies') body.innerHTML = trophiesHtml(c);
+  else body.innerHTML = statsHtml(c);
+  [].forEach.call(body.querySelectorAll('.dex .t'), function(t){ t.onclick = function(){ toast(t.dataset.n); }; });
+}
+
+function dexHtml(c){
+  var weekly = 0, total = 0, h = '';
+  DEX_LINES.forEach(function(l){ l.forEach(function(p){ total++; if(c.caught[p[1]]) weekly++; }); });
+  var evolvedPrizes = c.prizes.filter(function(x){ return x.evolved; }).length;
+  h += '<div class="dexSum"><div><b>' + weekly + '</b>מתוך ' + total + ' שבועיים</div>' +
+    '<div><b>' + c.legends.length + '</b>אגדיים</div><div><b>' + (c.prizes.length + evolvedPrizes) + '</b>פרסי רצף</div></div>';
+
+  // the rare shelf: platinum Mew, legendaries (from shinies), streak prizes
+  h += '<h3 class="shelfT">👑 אגדיים</h3>';
+  if(c.legends.length || c.caught[MEW[1]]){
+    h += '<div class="dex">' + (c.caught[MEW[1]] ? dexTile(MEW, true, { gold: true }) : '') +
+      c.legends.map(function(p){ return dexTile(p, true, { gold: true }); }).join('') + '</div>';
+  } else h += '<p class="empty s">כל מטלה מספר ' + SHINY_EVERY + ' בחודש מביאה פוקימון אגדי.</p>';
+
+  h += '<h3 class="shelfT">🔥 פרסי רצף</h3>';
+  if(c.prizes.length){
+    h += '<div class="dex">' + c.prizes.map(function(x){ return dexTile(x.pair[0], true) + dexTile(x.pair[1], x.evolved); }).join('') + '</div>';
+  } else h += '<p class="empty s">' + PRIZE_ARRIVE + ' שבועות מאושרים ברצף מביאים פוקימון־פרס, ו־' + PRIZE_EVOLVE + ' מפתחים אותו.</p>';
+
+  // every weekly line, in Pokédex order; a gold frame marks a shiny catch
+  h += '<h3 class="shelfT">⚡ הפוקימונים של השבוע</h3><div class="dex">' +
+    DEX_LINES.map(function(l){
+      return l.map(function(p){ return dexTile(p, c.caught[p[1]], { shiny: c.shiny[p[1]] }); }).join('');
+    }).join('') + '</div>';
+  return h;
+}
+
+function trophiesHtml(c){
+  var rows = c.trophies.slice().sort(function(a, b){ return (b.done - a.done) || (b.cur / b.goal - a.cur / a.goal); }).concat([c.platinum]);
+  var done = c.trophies.filter(function(x){ return x.done; }).length;
+  return '<div class="dexSum"><div><b>' + done + '/' + c.trophies.length + '</b>גביעים</div>' +
+    [1, 2, 3].map(function(t){
+      return '<div><b>' + c.trophies.filter(function(x){ return x.done && x.tr.tier === t; }).length + '</b>' + MEDAL[t] + '</div>';
+    }).join('') + '</div><div class="card" style="padding:4px 16px">' +
+    rows.map(function(x){
+      return '<div class="trophy' + (x.done ? '' : ' lock') + '"><div class="m">' + MEDAL[x.tr.tier] + '</div><div class="i">' +
+        '<div class="nm2">' + bidi(x.tr.name) + '</div><div class="d">' + bidi(x.tr.d) + '</div>' +
+        (x.done ? '' : '<div class="bar"><i style="width:' + (x.cur / x.goal * 100) + '%"></i><b style="display:none"></b></div>') +
+        '</div><div class="c">' + (x.done ? '✓' : x.cur + '/' + x.goal) + '</div></div>';
+    }).join('') + '</div>';
+}
+
+function statsHtml(c){
+  if(!c.total) return '<div class="card empty">עוד אין נתונים — המטלה הראשונה פותחת את הכרטיס.</div>';
+  var weeks = Object.keys(c.perWeek), best = Math.max.apply(null, weeks.map(function(w){ return c.perWeek[w]; }));
+  var h = '<div class="statGrid">' +
+    '<div class="stat"><b>' + c.total + '</b><span>מטלות בסך הכל</span></div>' +
+    '<div class="stat"><b>' + (data.earned[c.kid] || 0) + ' ₪</b><span>הרוויח</span></div>' +
+    '<div class="stat"><b>' + c.approved + '</b><span>שבועות מאושרים</span></div>' +
+    '<div class="stat"><b>' + best + '</b><span>השבוע הכי טוב</span></div>' +
+    '<div class="stat"><b>' + c.bestStreak + '</b><span>הרצף הכי ארוך</span></div>' +
+    '<div class="stat"><b>' + Object.keys(c.perDay).length + '</b><span>ימים עם מטלה</span></div></div>';
+
+  // the last 12 weeks, oldest on the right (Hebrew reads right to left)
+  var cols = [], lbl = [];
+  for(var i = 11; i >= 0; i--){
+    var w = addDays(data.week.start, -7 * i), n = c.perWeek[w] || 0;
+    cols.push('<div style="height:' + (best ? n / best * 100 : 0) + '%"><span>' + (n || '') + '</span></div>');
+    lbl.push('<span>' + dm(w) + '</span>');
+  }
+  h += '<div class="card"><h3 style="margin:0 0 4px;font-size:16px">מטלות לפי שבוע</h3>' +
+    '<div class="chart">' + cols.join('') + '</div><div class="chartX">' + lbl.join('') + '</div></div>';
+
+  var top = Object.keys(c.perTitle).sort(function(a, b){ return c.perTitle[b] - c.perTitle[a]; }).slice(0, 3);
+  var dayMax = c.perWeekday.indexOf(Math.max.apply(null, c.perWeekday));
+  var facts = [];
+  facts.push('📅 היום הכי חרוץ: יום ' + DAY_NAMES[dayMax]);
+  if(c.lateShare >= .4) facts.push('🦉 ' + Math.round(c.lateShare * 100) + '% מהמטלות אחרי 20:00. ינשוף אמיתי.');
+  else facts.push('☀️ ' + Math.round((1 - c.lateShare) * 100) + '% מהמטלות לפני 20:00. מסודר!');
+  facts.push('⚡ ' + Object.keys(c.caught).length + ' פוקימונים שבועיים נתפסו, ' + c.fullLines + ' מהם עד השלב האחרון');
+  h += '<div class="card"><h3 style="margin:0 0 6px;font-size:16px">הכי הרבה</h3><ul class="facts">' +
+    top.map(function(t, i){ return '<li>' + ['🥇','🥈','🥉'][i] + ' ' + bidi(t) + ' · ' + c.perTitle[t] + '</li>'; }).join('') +
+    '</ul></div><div class="card"><h3 style="margin:0 0 6px;font-size:16px">עובדות מעניינות</h3><ul class="facts">' +
+    facts.map(function(f){ return '<li>' + f + '</li>'; }).join('') + '</ul></div>';
+  return h;
+}
+
 /* ---------- how it works (behind the ? button) ---------- */
 function helpSlides(){
-  var t = target(), half = Math.ceil(t / 2), reward = (data && data.reward) || 10, ex = POKE[0];
+  var t = target(), half = Math.ceil(t / 2), reward = (data && data.reward) || 10, ex = POKE_OLD[0];
   var evo = ex.map(function(p){ return '<img src="' + art(p[1]) + '" alt="">'; }).join('<span class="arr">←</span>');
   return [
     { c:'var(--mint)', ill:'✅', h:'עשיתם מטלה? רושמים!',
@@ -759,11 +1515,17 @@ function helpSlides(){
         '<p>אחרי <b>' + half + '</b> מטלות הוא מתפתח פעם אחת,<br>ואחרי <b>' + t + '</b> — פעם שנייה.</p>' +
         '<p class="s">במוצאי שבת הפוקימון הולך, וביום ראשון מגיע חדש. אז לא מחכים לסוף השבוע.</p>' },
     { c:'var(--gold)', ill:'✨', h:'הפתעה נדירה',
-      body:'<p>כל מטלה מספר <b>' + SHINY_EVERY + '</b> בחודש מביאה משהו מיוחד.</p>' +
+      body:'<p>כל מטלה מספר <b>' + SHINY_EVERY + '</b> בחודש מביאה משהו מיוחד — ואיתו פוקימון <b>אגדי</b> לפוקדקס.</p>' +
         '<p class="s">מה בדיוק? תגיעו ותראו. הספירה מתחילה מחדש בכל ראשון לחודש.</p>' },
     { c:'var(--pink)', ill:'💰', h:'מוצאי שבת: הסיכום',
       body:'<p>במוצאי שבת אמא עוברת על השבוע.<br>אם היא מרוצה — <b>' + reward + ' ₪</b>. היא מחליטה, לא הספירה.</p>' +
         '<p class="s">ואם מפגרים באמצע השבוע? האפליקציה שמה לב. והיא לא שותקת.</p>' },
+    { c:'var(--ember)', ill:'🔥', h:'רצף של אישורים',
+      body:'<p><b>' + PRIZE_ARRIVE + '</b> שבועות מאושרים ברצף מביאים פוקימון־פרס.<br>הגעתם ל־<b>' + PRIZE_EVOLVE + '</b>? הוא מתפתח.</p>' +
+        '<p class="s">ככה זה ממשיך כל ' + PRIZE_CYCLE + ' שבועות. שבוע לא מאושר שובר את הרצף — ופרס שלא הספיק להתפתח נשאר ככה.</p>' },
+    { c:'var(--gold)', ill:'🏆', h:'כרטיס המאמן',
+      body:'<p>לכל אחד יש כרטיס: <b>פוקדקס</b> עם כל מה שנתפס, <b>גביעים</b> כמו בפלייסטיישן, ו<b>סטטיסטיקה</b>.</p>' +
+        '<p class="s">ואפשר להציץ גם בכרטיס של האח. רק אומרים.</p>' },
     { c:'var(--violet)', ill:'🐶', h:'זהו. זה כל הסוד.',
       body:'<p>פחות "כמה פעמים צריך לבקש", יותר זמן לדברים כיפיים.</p>' +
         '<p class="s">שאלות? תשאלו את מודי. היא לא תענה, אבל היא תקשיב.</p>' }
@@ -889,7 +1651,7 @@ $('apiSave').onclick = function(){
 
 /* ---------- nav + polling ---------- */
 $('toParent').onclick = function(){ location.hash = 'parent'; };
-$('back1').onclick = $('back2').onclick = function(){ location.hash = ''; };
+$('back1').onclick = $('back2').onclick = $('back3').onclick = function(){ location.hash = ''; };
 window.addEventListener('hashchange', route);
 function startPolling(){
   clearInterval(pollTimer);
