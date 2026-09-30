@@ -1393,10 +1393,19 @@ function checkTrophies(kid){
 }
 
 /* ---------- trainer card ---------- */
+// the official Pokédex page: "Mr. Mime" → mr-mime, "Farfetch'd" → farfetchd, "Flabébé" → flabebe
+function dexUrl(name){
+  return 'https://www.pokemon.com/us/pokedex/' + name.toLowerCase()
+    .replace(/♀/g, '-female').replace(/♂/g, '-male')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[.'’:]/g, '').trim().replace(/\s+/g, '-');
+}
+// caught tiles open the official Pokédex; silhouettes stay a mystery
 function dexTile(p, got, opts){
   opts = opts || {};
-  return '<button class="t' + (got ? '' : ' no') + (opts.shiny ? ' sh' : '') + (opts.gold ? ' gold' : '') + '" data-n="' +
-    (got ? esc(p[0]) : '???') + '"><img loading="lazy" src="' + sprite(p[1], opts.shiny) + '" alt=""></button>';
+  return '<button class="t' + (got ? '' : ' no') + (opts.shiny ? ' sh' : '') + (opts.gold ? ' gold' : '') + '"' +
+    (got ? ' data-url="' + esc(dexUrl(p[0])) + '"' : '') + '><img loading="lazy" src="' + sprite(p[1], opts.shiny) + '" alt="' +
+    (got ? esc(p[0]) : '') + '"></button>';
 }
 
 function renderCard(kid){
@@ -1421,7 +1430,12 @@ function renderCard(kid){
   if(cardTab === 'dex') body.innerHTML = dexHtml(c);
   else if(cardTab === 'trophies') body.innerHTML = trophiesHtml(c);
   else body.innerHTML = statsHtml(c);
-  [].forEach.call(body.querySelectorAll('.dex .t'), function(t){ t.onclick = function(){ toast(t.dataset.n); }; });
+  [].forEach.call(body.querySelectorAll('.dex .t'), function(t){
+    t.onclick = function(){
+      if(t.dataset.url) window.open(t.dataset.url, '_blank', 'noopener');
+      else toast('??? עוד לא נתפס');
+    };
+  });
 }
 
 function dexHtml(c){
