@@ -141,11 +141,6 @@
     position:absolute;top:10px;left:10px;background:var(--kc);color:#0A1219;font-weight:800;font-size:12px;
     border-radius:999px;padding:2px 8px;
   }
-  details.more{margin-top:14px}
-  details.more summary{list-style:none;cursor:pointer;color:var(--muted);font-size:15px;padding:12px 4px}
-  details.more summary::-webkit-details-marker{display:none}
-  details.more summary::before{content:"＋ ";color:var(--kc)}
-  details.more[open] summary::before{content:"－ "}
   .catTitle{font-size:13px;color:var(--muted);margin:14px 2px 8px}
 
   .done{list-style:none;margin:0;padding:0}
@@ -346,10 +341,10 @@
       </div>
     </div>
     <div id="nagBox"></div>
-    <h3 class="sectionTitle">המטלות שלי</h3>
+    <h3 class="sectionTitle">המטלות שאני מעדיף</h3>
     <div class="grid" id="myChores"></div>
-    <div id="sibChores"></div>
-    <details class="more" id="moreBox"><summary>מטלות נוספות</summary><div id="otherChores"></div></details>
+    <h3 class="sectionTitle">מטלות נוספות</h3>
+    <div id="otherChores"></div>
     <h3 class="sectionTitle">מה עשיתי השבוע</h3>
     <div class="card" style="padding:6px 16px"><ul class="done" id="doneList"></ul></div>
   </section>
@@ -983,7 +978,7 @@ var TROPHIES = [
   { id:'w4',   tier:2, name:'אמא מאוד מרוצה',       d:'4 שבועות מאושרים ברצף',           p:function(c){ return [c.bestStreak, 4]; } },
   { id:'w8',   tier:3, name:'אמא בהלם',             d:'8 שבועות מאושרים ברצף',           p:function(c){ return [c.bestStreak, 8]; } },
   { id:'all',  tier:3, name:'איש של כל המקצועות',   d:'כל מטלה ברשימה לפחות פעם אחת',    p:function(c){ return [c.distinctListed, data.chores.length]; } },
-  { id:'own',  tier:2, name:'עשיתי את שלי',         d:'כל המטלות שלך באותו שבוע',        p:function(c){ return [c.ownWeek ? 1 : 0, 1]; } },
+  { id:'own',  tier:2, name:'עשיתי את שלי',         d:'כל המטלות שאתה מעדיף באותו שבוע',        p:function(c){ return [c.ownWeek ? 1 : 0, 1]; } },
   { id:'bird', tier:1, name:'ציפור מוקדמת',         d:'מטלה לפני 8:00',                  p:function(c){ return [c.early ? 1 : 0, 1]; } },
   { id:'owl',  tier:1, name:'ינשוף לילה',           d:'מטלה אחרי 22:00',                 p:function(c){ return [c.late ? 1 : 0, 1]; } },
   { id:'x2',   tier:2, name:'משמרת כפולה',          d:'5 מטלות ביום אחד',                p:function(c){ return [c.maxDay, 5]; } },
@@ -1299,29 +1294,17 @@ function renderKid(kid){
   data.chores.filter(function(c){ return c.owner === kid; }).forEach(function(c){ my.appendChild(choreBtn(c, kid, counts)); });
   if(!my.children.length) my.innerHTML = '<div class="empty">עוד לא נבחרו מטלות</div>';
 
-  // the brother's picks, in plain sight: picked by him, but open to both
-  var sib = $('sibChores'); sib.innerHTML = '';
-  data.kids.filter(function(k){ return k !== kid; }).forEach(function(k){
-    var theirs = data.chores.filter(function(c){ return c.owner === k; });
-    if(!theirs.length) return;
-    var t = document.createElement('h3'); t.className = 'sectionTitle'; t.textContent = 'הבחירות של ' + k + ' — פתוחות גם לך'; sib.appendChild(t);
-    var g = document.createElement('div'); g.className = 'grid';
-    theirs.forEach(function(c){ g.appendChild(choreBtn(c, kid, counts)); });
-    sib.appendChild(g);
-  });
-
-  // chores nobody picked, grouped by category
+  // everything else — the brother's preferences included, open to both — grouped by category
   var other = $('otherChores'); other.innerHTML = '';
-  var free = data.chores.filter(function(c){ return !c.owner || data.kids.indexOf(c.owner) < 0; });
+  var rest = data.chores.filter(function(c){ return c.owner !== kid; });
   var cats = [];
-  free.forEach(function(c){ if(cats.indexOf(c.cat) < 0) cats.push(c.cat); });
+  rest.forEach(function(c){ if(cats.indexOf(c.cat) < 0) cats.push(c.cat); });
   cats.forEach(function(cat){
     var t = document.createElement('div'); t.className = 'catTitle'; t.textContent = cat; other.appendChild(t);
     var g = document.createElement('div'); g.className = 'grid';
-    free.filter(function(c){ return c.cat === cat; }).forEach(function(c){ g.appendChild(choreBtn(c, kid, counts)); });
+    rest.filter(function(c){ return c.cat === cat; }).forEach(function(c){ g.appendChild(choreBtn(c, kid, counts)); });
     other.appendChild(g);
   });
-  $('moreBox').hidden = !free.length;
 
   var ul = $('doneList'); ul.innerHTML = '';
   if(!mine.length){
@@ -1540,7 +1523,7 @@ function helpSlides(){
     { c:'var(--mint)', ill:'✅', h:'עשיתם מטלה? רושמים!',
       body:'<ol class="steps"><li><i>1</i>לוחצים על השם שלכם</li><li><i>2</i>לוחצים על המטלה שעשיתם</li>' +
         '<li><i>3</i>מאשרים — ואמא כבר יודעת</li></ol>' +
-        '<p class="s">המטלות שבחרתם מופיעות למעלה, ומתחתן הבחירות של האח — גם הן פתוחות לכם. כל השאר ב"מטלות נוספות". טעיתם? "בטל" ברשימה למטה.</p>' },
+        '<p class="s">המטלות שאתם מעדיפים מופיעות למעלה. כל השאר — פתוחות לכולם — ב"מטלות נוספות". טעיתם? "בטל" ברשימה למטה.</p>' },
     { c:'var(--sky)', ill:evo, h:'הפוקימון של השבוע',
       body:'<p>כל יום ראשון מקבלים פוקימון חדש. הוא מתאמן כשאתם עושים מטלות:</p>' +
         '<p>אחרי <b>' + half + '</b> מטלות הוא מתפתח פעם אחת,<br>ואחרי <b>' + t + '</b> — פעם שנייה.</p>' +
