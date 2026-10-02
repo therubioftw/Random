@@ -836,6 +836,11 @@ function nth(list, order, i, kid){
   var k = Math.max(0, data.kids.indexOf(kid));
   return list[order[(i + k * Math.floor(list.length / 2)) % list.length]];
 }
+// "של מי" can name several kids: "ליאם, רובי", or "שניהם" for everyone
+function isFav(c, kid){
+  var names = String(c.owner || '').split(/\s*[,،]\s*/).filter(Boolean);
+  return names.indexOf(kid) >= 0 || names.indexOf('שניהם') >= 0;
+}
 function weeksBetween(a, b){ return Math.round((Date.parse(b) - Date.parse(a)) / (7 * 864e5)); }
 function sprite(id, shiny){
   return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (shiny ? 'shiny/' : '') + id + '.png';
@@ -936,9 +941,15 @@ function career(kid){
   // variety: every listed chore at least once; all of your own chores within one week
   var listed = data.chores.map(function(x){ return x.title; });
   c.distinctListed = listed.filter(function(t){ return c.perTitle[t]; }).length;
-  var own = data.chores.filter(function(x){ return x.owner === kid; }).map(function(x){ return x.title; });
-  c.ownWeek = own.length > 0 && Object.keys(c.weekTitles).some(function(w){
-    return own.every(function(t){ return c.weekTitles[w][t]; });
+  // A favorite only counts toward a week once someone had logged it before that week began,
+  // so adding a favorite later never takes this trophy away from a week already earned.
+  var firstSeen = {};
+  (data.all || []).forEach(function(e){ var t = titles[e[2]]; if(!(firstSeen[t] <= e[0])) firstSeen[t] = e[0]; });
+  var own = data.chores.filter(function(x){ return isFav(x, kid); }).map(function(x){ return x.title; });
+  c.ownWeek = Object.keys(c.weekTitles).some(function(w){
+    var start = new Date(+w.slice(0, 4), +w.slice(5, 7) - 1, +w.slice(8, 10)).getTime() / 1000;
+    var need = own.filter(function(t){ return firstSeen[t] < start; });
+    return need.length > 0 && need.every(function(t){ return c.weekTitles[w][t]; });
   });
 
   // trophies, then platinum (all of them) which brings Mew
@@ -1274,7 +1285,7 @@ function renderKid(kid){
   // nag: behind the week's pace → name the own chore this kid has neglected longest
   var nb = $('nagBox'); nb.innerHTML = '';
   if(behind(n)){
-    var own = data.chores.filter(function(c){ return c.owner === kid; });
+    var own = data.chores.filter(function(c){ return isFav(c, kid); });
     var ld = (data.lastDone || {})[kid] || {};
     own.sort(function(a, b){ return (ld[a.title] || 0) - (ld[b.title] || 0); });
     var worst = own[0], html;
@@ -1291,12 +1302,12 @@ function renderKid(kid){
   }
 
   var my = $('myChores'); my.innerHTML = '';
-  data.chores.filter(function(c){ return c.owner === kid; }).forEach(function(c){ my.appendChild(choreBtn(c, kid, counts)); });
+  data.chores.filter(function(c){ return isFav(c, kid); }).forEach(function(c){ my.appendChild(choreBtn(c, kid, counts)); });
   if(!my.children.length) my.innerHTML = '<div class="empty">עוד לא נבחרו מטלות</div>';
 
   // everything else — the brother's preferences included, open to both — grouped by category
   var other = $('otherChores'); other.innerHTML = '';
-  var rest = data.chores.filter(function(c){ return c.owner !== kid; });
+  var rest = data.chores.filter(function(c){ return !isFav(c, kid); });
   var cats = [];
   rest.forEach(function(c){ if(cats.indexOf(c.cat) < 0) cats.push(c.cat); });
   cats.forEach(function(cat){
