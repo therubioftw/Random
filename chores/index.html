@@ -979,7 +979,7 @@ var TROPHIES = [
   { id:'c250', tier:3, name:'אלוף הליגה',          d:'250 מטלות',                       p:function(c){ return [c.total, 250]; } },
   { id:'cats', tier:2, name:'המשרת האישי של מיסטיק ובסקוויט', d:'20 פעמים חול חתולים', p:function(c){ return [titleCount(c, function(t){ return t.indexOf('חול חתולים') >= 0; }), 20]; } },
   { id:'walk', tier:2, name:'המאמן האישי של מודי',  d:'20 טיולים עם מודי',               p:function(c){ return [titleCount(c, function(t){ return t.indexOf('לטיול') >= 0; }), 20]; } },
-  { id:'dish', tier:2, name:'לורד המדיח',           d:'30 פעמים מדיח',                   p:function(c){ return [titleCount(c, function(t){ return t.indexOf('מדיח') >= 0; }), 30]; } },
+  { id:'dish', tier:2, name:'לורד המדיח',           d:'30 פעמים מדיח',                   p:function(c){ return [titleCount(c, function(t){ return t.indexOf('מדיח') >= 0 || t === 'לרוקן את הכיור'; }), 30]; } },   // the sink chore includes running the dishwasher
   { id:'wash', tier:2, name:'מלך הכביסה',           d:'30 מטלות כביסה',                  p:function(c){ return [titleCount(c, function(t){ return catOf(t) === 'כביסה'; }), 30]; } },
   { id:'bin',  tier:2, name:'אוסקר מרחוב סומסום',   d:'30 פעמים הפח',                    p:function(c){ return [titleCount(c, function(t){ return t.indexOf('הפח') >= 0; }), 30]; } },
   { id:'d3',   tier:1, name:'חימום',                d:'מטלה 3 ימים ברצף',                p:function(c){ return [c.dayRun, 3]; } },
