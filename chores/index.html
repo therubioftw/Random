@@ -117,7 +117,6 @@
   .hero .cnt{font-size:14px;color:var(--muted);margin-top:8px}
   .hero .cnt b{color:var(--ink);font-size:20px}
   .countdown{font-size:14px;line-height:1.5;margin-top:2px}
-  .shiny{font-size:12px;color:var(--gold);margin-top:6px}
   .nagbox{border-color:var(--pink);background:linear-gradient(135deg,rgba(255,107,136,.10),var(--card) 60%)}
   .nagbox .t{font-weight:700;font-size:16px}
   .nagbox .d{font-size:13px;color:var(--pink);margin:2px 0 8px}
@@ -151,9 +150,8 @@
   .empty{color:var(--muted);font-size:14px;text-align:center;padding:10px}
 
   /* streaks */
-  .fire{color:var(--ember);font-family:Rubik,sans-serif;font-size:15px;font-weight:800;margin-inline-start:6px;vertical-align:middle}
-  .streakLine{font-size:13px;margin-top:4px;color:var(--ember);line-height:1.4}
-  .streakLine.risk{color:var(--pink);font-weight:600}
+  .fire{color:var(--ember);font-family:Rubik,sans-serif;font-size:15px;font-weight:800;margin-inline-start:6px;vertical-align:middle;white-space:nowrap}
+  .kid .pn .fire{font-size:12px;margin-inline-start:4px}
   .cardLinks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
   .cardLinks button{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 6px;font-size:14px;color:var(--ink)}
   .cardLinks small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
@@ -228,15 +226,55 @@
   .pk2 .nm{font-weight:700;color:var(--kc);font-size:17px}
   .pk2 .n{color:var(--muted);font-size:14px}
   .pk2 .list{font-size:13px;color:var(--muted);margin:6px 0 10px;line-height:1.6}
-  .dec{display:flex;gap:8px}
-  .dec button{flex:1;border-radius:12px;padding:10px;font-weight:700;font-size:14px;border:1px solid var(--line);background:var(--card2)}
-  .dec .yes{background:rgba(51,214,192,.14);border-color:var(--mint);color:var(--mint)}
-  .dec .no{color:var(--muted)}
-  .verdict{display:flex;justify-content:space-between;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;font-weight:700;font-size:14px}
-  .verdict.yes{background:rgba(51,214,192,.14);color:var(--mint)}
-  .verdict.no{background:var(--card2);color:var(--muted)}
-  .verdict button{background:none;border:none;color:var(--muted);font-size:12px;font-weight:400;text-decoration:underline}
-  .linkish{background:none;border:none;color:var(--muted);font-size:13px;text-decoration:underline;margin-top:6px}
+  .linkish{background:none;border:none;color:var(--muted);font-size:13px;text-decoration:underline;margin-top:6px;min-height:44px;padding:0 4px}
+
+  /* Ilana's decisions: three states that look nothing alike — waiting, saving, decided */
+  .wk h3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .need{font-family:Rubik,sans-serif;font-size:12px;font-weight:700;color:#0A1219;background:var(--gold);border-radius:99px;padding:2px 10px}
+  .pk2 .ctx{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .state{border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:8px}
+  .state.wait{border:1px dashed var(--gold);color:var(--gold);font-weight:600}
+  .state.saving{border:1px solid var(--line);color:var(--muted)}
+  .state.saving::after{content:"";display:inline-block;width:12px;height:12px;margin-inline-start:8px;vertical-align:-1px;
+    border:2px solid var(--muted);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .choose{display:flex;gap:8px}
+  .choose button{flex:1;min-height:46px;border-radius:12px;border:1px solid var(--line);background:var(--card2);font-weight:700;font-size:15px}
+  .result{border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+  .result.yes{background:var(--mint);color:#0A1219}
+  .result.no{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
+  .result .top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:800;font-size:16px}
+  .result .note{font-size:14px;font-weight:500;line-height:1.45}
+  .result button{background:none;border:1px solid currentColor;color:inherit;border-radius:10px;padding:0 12px;min-height:40px;font-size:13px;font-weight:600;opacity:.85}
+  .panel{border:1px solid var(--kc);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:12px;background:var(--card2)}
+  .seg{display:flex;background:var(--bg);border-radius:12px;padding:3px}
+  .seg button{flex:1;border:none;background:none;border-radius:10px;min-height:42px;font-weight:700;font-size:14px;color:var(--muted)}
+  .seg button.on{background:var(--ink);color:var(--bg)}
+  .amt{display:flex;align-items:center;justify-content:center;gap:6px}
+  .amt button{min-width:44px;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-weight:700;font-size:15px}
+  .amt b{min-width:80px;text-align:center;font-size:26px;font-weight:800}
+  .panel textarea{width:100%;min-height:64px;resize:vertical;background:var(--bg);border:1px solid var(--line);border-radius:12px;
+    color:var(--ink);font:inherit;font-size:15px;padding:10px 12px}
+  .panel textarea.ask{border-color:var(--gold)}
+  .panel .acts{display:flex;gap:8px}
+  .panel .acts .btn{flex:1;min-height:46px}
+  .panel .acts .ghost2{flex:1;min-height:46px;border-radius:14px;border:1px solid var(--line);background:none;font-weight:600}
+  .panel .clear{align-self:center}
+  details.past{margin-bottom:10px}
+  details.past summary{list-style:none;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;
+    display:flex;justify-content:space-between;gap:8px;font-size:14px;min-height:44px;align-items:center}
+  details.past summary::-webkit-details-marker{display:none}
+  details.past summary span{color:var(--muted);font-size:13px}
+  details.past[open] summary{border-radius:14px 14px 0 0}
+  details.past .card{border-radius:0 0 20px 20px;border-top:none}
+  .ghost.waiting{border:1px solid var(--gold);color:var(--gold);font-weight:700}
+  .vnote{font-size:13.5px;color:var(--ink);margin-top:6px;line-height:1.45}
+
+  /* the kid's Pokémon block, kept short so the chore buttons come sooner */
+  .metaLine{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.4}
+  .metaLine.risk{color:var(--pink);font-weight:600}
+  .pill{display:inline-flex;align-items:center;min-height:36px;margin-top:8px;padding:0 12px;border-radius:99px;border:1px solid var(--line);
+    background:var(--bg);font-size:13px;color:var(--ink)}
 
   /* setup */
   .setup input{
@@ -292,7 +330,11 @@
   .toast.show{opacity:1;transform:translateX(-50%);pointer-events:auto;cursor:pointer}
   .toast.bad{background:var(--pink)}
 
-  @media (max-width:360px){ .grid{grid-template-columns:1fr} .kid .nm{font-size:24px} .kid .pk{width:50px;height:50px} }
+  @media (max-width:360px){ .kid .nm{font-size:24px} .kid .pk{width:50px;height:50px} }
+  @media (max-width:330px){ .grid{grid-template-columns:1fr} }
+  .back{min-height:44px;padding:0 4px}
+  .helpBtn{width:40px;height:40px}
+  .undo{min-height:36px;padding:0 14px}
 </style>
 </head>
 <body>
@@ -335,9 +377,8 @@
         <div class="pn" id="kPoke"></div>
         <div class="bar" id="kBar"><i></i><b></b></div>
         <div class="countdown" id="kCountdown"></div>
-        <div class="shiny" id="kShiny"></div>
-        <div class="streakLine" id="kStreak"></div>
-        <button class="linkish" id="kCardBtn">🏆 כרטיס המאמן שלי</button>
+        <div class="metaLine" id="kMeta"></div>
+        <button class="pill" id="kCardBtn">🏆 כרטיס המאמן שלי</button>
       </div>
     </div>
     <div id="nagBox"></div>
@@ -1145,7 +1186,7 @@ function render(){
   renderHome();
   if(kid) renderKid(kid);
   if(card) renderCard(card);
-  if(location.hash === '#parent') renderParent();
+  if(location.hash === '#parent' && !editing) renderParent();   // never redraw under Ilana while she's typing
 }
 
 function setBar(el, n){
@@ -1168,7 +1209,7 @@ function renderHome(){
     var prev = weekOf(addDays(data.week.start, -7)), last = '';
     if(prev && prev.kids[k]){
       var s = prev.kids[k];
-      last = s.decision === 'מגיע' ? '<br>שבוע שעבר: ✓ ' + data.reward + ' ₪'
+      last = s.decision === 'מגיע' ? '<br>שבוע שעבר: ✓ ' + amountOf(s) + ' ₪'
         : s.decision === 'לא' ? '<br>שבוע שעבר: ✗ ' + en('D\'oh')
         : s.count ? '<br>שבוע שעבר: מחכה לאמא' : '';
     }
@@ -1176,7 +1217,7 @@ function renderHome(){
     var b = document.createElement('button');
     b.className = 'kid'; b.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
     b.innerHTML = '<img class="pk" src="' + art(p[1]) + '" alt="">' +
-      '<div class="nm">' + esc(k) + streakBadge(k) + '</div><div class="pn">' + en(p[0]) + '</div>' +
+      '<div class="nm">' + esc(k) + '</div><div class="pn">' + en(p[0]) + streakBadge(k) + '</div>' +
       '<div class="big">' + n + '<small>/' + target() + '</small></div>' +
       '<div class="bar"><i></i><b></b></div>' +
       '<div class="st' + (nag ? ' nag' : '') + '">' + status + '</div>' +
@@ -1196,6 +1237,10 @@ function renderHome(){
   });
 
   $('tip').innerHTML = '<b>תזכורת 🧠</b>' + bidi(TIP);
+
+  var waiting = pendingDecisions().length, tp = $('toParent');
+  tp.textContent = '💰 הסיכום השבועי של אמא' + (waiting ? ' · ' + (waiting === 1 ? 'החלטה אחת מחכה' : waiting + ' החלטות מחכות') : '');
+  tp.className = 'ghost' + (waiting ? ' waiting' : '');
 }
 
 function streakBadge(kid){ var s = career(kid).streak; return s ? '<span class="fire">🔥' + s + '</span>' : ''; }
@@ -1253,13 +1298,12 @@ function renderKid(kid){
   $('kCountdown').innerHTML = daysLeftText() + '. ' + (st < 2
     ? 'עוד ' + chores(left) + ' ו־' + en(p[0]) + ' מתפתח ל־' + en(line[st + 1][0]) + '!'
     : en(p[0]) + ' מלא. עכשיו רק לא לבזבז את זה 😎');
-  if(data.month){
-    var m = data.month[kid] || 0, r = SHINY_EVERY - (m % SHINY_EVERY);
-    $('kShiny').textContent = '✨ עוד ' + chores(r) + ' החודש עד להפתעה נדירה';
-  } else $('kShiny').textContent = '';
-  var sl = streakText(kid);
-  $('kStreak').innerHTML = sl.html;
-  $('kStreak').className = 'streakLine' + (sl.risk ? ' risk' : '');
+  // one short line for the shiny and the streak; the full streak story lives on the trainer card
+  var cr = career(kid), sl = streakText(kid), bits = [];
+  if(data.month){ var m = data.month[kid] || 0; bits.push('✨ עוד ' + (SHINY_EVERY - (m % SHINY_EVERY)) + ' עד הפתעה'); }
+  bits.push('🔥 ' + (cr.streak ? 'רצף ' + cr.streak : 'אין רצף עדיין'));
+  $('kMeta').innerHTML = (sl.risk ? 'הרצף על הכף! ' : '') + bits.map(function(b){ return '<span style="white-space:nowrap">' + b + '</span>'; }).join(' · ');
+  $('kMeta').className = 'metaLine' + (sl.risk ? ' risk' : '');
   $('kCardBtn').onclick = function(){ location.hash = 'card=' + encodeURIComponent(kid); };
 
   // Ilana's verdict — a card while it's fresh, and the big reveal once per phone
@@ -1268,13 +1312,17 @@ function renderKid(kid){
   if(v){
     var yes = v.s.decision === 'מגיע', vl = lineFor(v.w.week, kid)[stageOf(v.s.count)];
     vb.innerHTML = '<div class="card vcard ' + (yes ? 'yes' : 'no') + '"><img src="' + art(vl[1]) + '" alt="">' +
-      '<div><div class="t">' + (yes ? 'אמא אישרה! +' + data.reward + ' ₪ 🎉' : bidi('D\'oh! הפעם לא')) + '</div>' +
+      '<div><div class="t">' + (yes ? 'אמא אישרה! +' + amountOf(v.s) + ' ₪ 🎉' : bidi('D\'oh! הפעם לא')) + '</div>' +
       '<div class="s">' + (yes ? 'על שבוע ' + dm(v.w.week) + '–' + dm(v.w.end) + ' · ' + chores(v.s.count)
-        : 'שבוע חדש, פוקימון חדש, הזדמנות חדשה') + '</div></div></div>';
-    var seenKey = 'seen:' + kid + ':' + v.w.week + ':' + v.s.decision;
+        : 'שבוע חדש, פוקימון חדש, הזדמנות חדשה') + '</div>' +
+      (v.s.note ? '<div class="vnote">💬 אמא כתבה: ' + bidi(v.s.note) + '</div>' : '') + '</div></div>';
+    // the reveal replays if Ilana changes her decision, the amount or the note
+    // (the plain key stays as it was, so a reveal already seen doesn't replay)
+    var seenKey = 'seen:' + kid + ':' + v.w.week + ':' + v.s.decision +
+      ((yes && amountOf(v.s) !== data.reward) || v.s.note ? ':' + amountOf(v.s) + ':' + hash(v.s.note || '') : '');
     if(!store(seenKey)){
       store(seenKey, '1');
-      overlays.push(verdictMoment(kid, yes, vl));
+      overlays.push(verdictMoment(kid, yes, vl, v.s));
       // an approval can also bring or evolve a streak prize
       career(kid).events.filter(function(e){ return e.week === v.w.week; }).forEach(function(e){ overlays.push(prizeMoment(kid, e)); });
       nextOverlay();
@@ -1348,12 +1396,13 @@ function shiny(kid, p, m){
     title: '✨ שייני! ✨', btn: 'וואו',
     text: 'מטלה מספר ' + m + ' החודש, ' + esc(kid) + '! ' + en(p[0]) + ' שייני — נדיר כמו חדר מסודר.', confetti: true };
 }
-function verdictMoment(kid, yes, p){
+function verdictMoment(kid, yes, p, s){
+  var note = s && s.note ? '<br><br>💬 אמא כתבה: ' + bidi(s.note) : '';
   return yes
-    ? { art: '<img src="' + art(p[1]) + '" alt="">', title: '+' + data.reward + ' ₪ 🎉', btn: 'יאללה!',
-        text: 'אמא אישרה את השבוע, ' + esc(kid) + '. ' + en(p[0]) + ' גאה בך.', confetti: true }
+    ? { art: '<img src="' + art(p[1]) + '" alt="">', title: '+' + amountOf(s) + ' ₪ 🎉', btn: 'יאללה!',
+        text: 'אמא אישרה את השבוע, ' + esc(kid) + '. ' + en(p[0]) + ' גאה בך.' + note, confetti: true }
     : { art: '<div class="big">🍩</div>', title: en('D\'oh!'), btn: 'שבוע הבא',
-        text: 'הפעם אמא לא אישרה, ' + esc(kid) + '. יש שבוע חדש ופוקימון חדש — אפשר להתחיל מחדש.', confetti: false };
+        text: 'הפעם אמא לא אישרה, ' + esc(kid) + '. יש שבוע חדש ופוקימון חדש — אפשר להתחיל מחדש.' + note, confetti: false };
 }
 function nextOverlay(){
   if(!$('ov').hidden || !overlays.length) return;
@@ -1595,48 +1644,165 @@ function renderParent(){
   if(!pin) return;
 
   $('totals').innerHTML = data.kids.map(function(k){
-    return '<div>' + esc(k) + ' הרוויח<b>' + (data.earned[k] || 0) + ' ₪</b></div>';
+    return '<div>' + esc(k) + ' הרוויח עד היום<b>' + (data.earned[k] || 0) + ' ₪</b></div>';
   }).join('');
 
+  // urgency order: weeks waiting for Ilana first, then the open week, then past weeks folded
+  var cur = data.week.start, waitingWeeks = [], open = null, past = [];
+  data.history.forEach(function(w){
+    var needs = data.kids.some(function(k){ return needsDecision(w, k); });
+    if(needs) waitingWeeks.push(w);
+    else if(w.week === cur) open = w;
+    else past.push(w);
+  });
   var box = $('weeks'); box.innerHTML = '';
-  data.history.forEach(function(w, i){
-    var card = document.createElement('div'); card.className = 'card wk';
-    card.innerHTML = '<h3>' + (i === 0 ? 'השבוע' : 'שבוע') + ' ' + dm(w.week) + '–' + dm(w.end) + '</h3>' +
-      (i === 0 ? '<div class="sub">הסיכום במוצאי שבת. אפשר להחליט כבר עכשיו ולשנות אחר כך.</div>' : '');
-    data.kids.forEach(function(k){
-      var s = w.kids[k], row = document.createElement('div');
-      row.className = 'pk2'; row.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
-      row.innerHTML = '<div class="row"><span class="nm">' + esc(k) + '</span><span class="n">' + chores(s.count) + '</span></div>' +
-        '<div class="list">' + (s.count ? tally(s.chores) : 'לא נרשמו מטלות') + '</div>';
-      var act = document.createElement('div');
-      if(s.decision){
-        var yes = s.decision === 'מגיע';
-        act.className = 'verdict ' + (yes ? 'yes' : 'no');
-        act.innerHTML = '<span>' + (yes ? '✓ מגיע ' + data.reward + ' ₪' : '✗ לא השבוע') + '</span>';
-        var ch = document.createElement('button'); ch.textContent = 'שינוי';
-        ch.onclick = function(){ decide(w.week, k, 'clear'); };
-        act.appendChild(ch);
-      } else {
-        act.className = 'dec';
-        var y = document.createElement('button'); y.className = 'yes'; y.textContent = '✓ מגיע ' + data.reward + ' ₪';
-        var n = document.createElement('button'); n.className = 'no'; n.textContent = '✗ לא השבוע';
-        y.onclick = function(){ decide(w.week, k, 'yes'); };
-        n.onclick = function(){ decide(w.week, k, 'no'); };
-        act.appendChild(y); act.appendChild(n);
-      }
-      row.appendChild(act); card.appendChild(row);
-    });
-    box.appendChild(card);
+  waitingWeeks.forEach(function(w){ box.appendChild(weekCard(w, true)); });
+  if(open) box.appendChild(weekCard(open, false));
+  past.forEach(function(w){
+    var d = document.createElement('details'); d.className = 'past';
+    d.innerHTML = '<summary>שבוע ' + dm(w.week) + '–' + dm(w.end) + '<span>' + data.kids.map(function(k){
+      var s = w.kids[k]; return esc(k) + ' ' + (s.decision === 'מגיע' ? '✓ ' + amountOf(s) + ' ₪' : s.decision === 'לא' ? '✗' : '—');
+    }).join(' · ') + '</span></summary>';
+    d.appendChild(weekCard(w, false, true));
+    box.appendChild(d);
   });
 }
 
-function decide(week, kid, decision){
-  post({ action:'decide', pin:store('parentPin'), week:week, kid:kid, decision:decision })
-    .then(function(){ toast(decision === 'yes' ? kid + ' קיבל ' + data.reward + ' ₪ 🎉' : 'נשמר'); })
-    .catch(function(e){
-      if(String(e.message).indexOf('pin') >= 0){ store('parentPin', null); renderParent(); toast('הקוד לא נכון', true); }
-      else toast('שגיאה בשמירה — נסו שוב', true);
+function amountOf(s){ return s && s.amount != null && s.decision === 'מגיע' ? s.amount : (data && data.reward) || 10; }
+// a kid's week waits for Ilana once it has ended (or on Saturday, the tally day)
+function needsDecision(w, k){
+  var s = w.kids[k];
+  return !!s && !s.decision && (w.week < data.week.start || (w.week === data.week.start && dow() === 6));
+}
+function pendingDecisions(){
+  var out = [];
+  (data.history || []).forEach(function(w){ data.kids.forEach(function(k){ if(needsDecision(w, k)) out.push(w.week + '|' + k); }); });
+  return out;
+}
+
+var editing = null, saving = {};   // the open decision panel, and decisions on their way to the sheet
+var AMOUNT_MIN = 0, AMOUNT_MAX = 30;
+
+function weekCard(w, needs, inFold){
+  var card = document.createElement('div'); card.className = 'card wk';
+  var isCur = w.week === data.week.start;
+  if(!inFold) card.innerHTML = '<h3>' + (isCur ? 'השבוע' : 'שבוע') + ' ' + dm(w.week) + '–' + dm(w.end) +
+    (needs ? '<span class="need">צריך החלטה</span>' : '') + '</h3>' +
+    (isCur && !needs ? '<div class="sub">השבוע עוד פתוח. הסיכום במוצאי שבת.</div>' : '');
+  data.kids.forEach(function(k){
+    var s = w.kids[k], key = w.week + '|' + k, row = document.createElement('div');
+    var c = career(k), prev = c.perWeek[addDays(w.week, -7)] || 0;
+    row.className = 'pk2'; row.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
+    row.innerHTML = '<div class="row"><span class="nm">' + esc(k) + '</span><span class="n">' + s.count + '/' + target() + '</span></div>' +
+      '<div class="ctx">' + en(lineFor(w.week, k)[stageOf(s.count)][0]) + ' · שלב ' + (stageOf(s.count) + 1) + ' · בשבוע שלפני: ' + prev + '</div>' +
+      '<div class="list">' + (s.count ? tally(s.chores) : 'לא נרשמו מטלות') + '</div>';
+    row.appendChild(decisionArea(w, k, s, key));
+    card.appendChild(row);
+  });
+  return card;
+}
+
+function decisionArea(w, k, s, key){
+  var box = document.createElement('div');
+  if(saving[key]){
+    var sv = saving[key];
+    box.innerHTML = '<div class="state saving">' + (sv.decision === 'yes' ? '✓ ' + sv.amount + ' ₪' : sv.decision === 'no' ? '✗ לא השבוע' : 'מבטל החלטה') + ' · שומר…</div>';
+    return box;
+  }
+  if(editing && editing.key === key) return decisionPanel(w, k, s, key);
+  if(s.decision){
+    var yes = s.decision === 'מגיע';
+    box.innerHTML = '<div class="result ' + (yes ? 'yes' : 'no') + '"><div class="top"><span>' +
+      (yes ? '✓ קיבל ' + amountOf(s) + ' ₪' : '✗ לא השבוע') + '</span></div>' +
+      (s.note ? '<div class="note">💬 ' + bidi(s.note) + '</div>' : '') + '</div>';
+    var ch = document.createElement('button'); ch.textContent = 'שינוי';
+    ch.onclick = function(){ openPanel(key, yes ? 'yes' : 'no', amountOf(s), s.note || '', true); };
+    box.querySelector('.top').appendChild(ch);
+    return box;
+  }
+  box.innerHTML = '<div class="state wait">⏳ מחכה להחלטה שלך</div>';
+  var row = document.createElement('div'); row.className = 'choose';
+  [['yes', '✓ מגיע'], ['no', '✗ לא השבוע']].forEach(function(o){
+    var b = document.createElement('button'); b.textContent = o[1];
+    b.onclick = function(){ openPanel(key, o[0], data.reward, '', false); };
+    row.appendChild(b);
+  });
+  box.appendChild(row);
+  return box;
+}
+
+function openPanel(key, decision, amount, note, existing){
+  editing = { key: key, decision: decision, amount: amount, note: note, existing: existing };
+  renderParent();
+  var ta = document.querySelector('.panel textarea'); if(ta && note) ta.focus();
+}
+
+// the panel: yes/no, the amount (when the sheet's script supports it), and a note the kid will see
+function decisionPanel(w, k, s, key){
+  var e = editing, rich = (data.version || 1) >= 2, p = document.createElement('div');
+  p.className = 'panel';
+  var seg = document.createElement('div'); seg.className = 'seg';
+  [['yes', '✓ מגיע'], ['no', '✗ לא השבוע']].forEach(function(o){
+    var b = document.createElement('button'); b.textContent = o[1]; b.className = e.decision === o[0] ? 'on' : '';
+    b.onclick = function(){ e.decision = o[0]; renderParent(); };
+    seg.appendChild(b);
+  });
+  p.appendChild(seg);
+  if(rich && e.decision === 'yes'){
+    var amt = document.createElement('div'); amt.className = 'amt';
+    [[-5, '−5'], [-1, '−'], [0, ''], [1, '+'], [5, '+5']].forEach(function(o){
+      if(!o[0]){ var v = document.createElement('b'); v.textContent = e.amount + ' ₪'; amt.appendChild(v); return; }
+      var b = document.createElement('button'); b.textContent = o[1];
+      b.onclick = function(){ e.amount = Math.max(AMOUNT_MIN, Math.min(AMOUNT_MAX, e.amount + o[0])); renderParent(); };
+      amt.appendChild(b);
     });
+    p.appendChild(amt);
+  }
+  if(rich){
+    var ta = document.createElement('textarea');
+    ta.placeholder = 'הערה ל' + k + ' (לא חובה) — הוא יראה אותה' + (e.decision === 'yes' && e.amount !== data.reward ? '. כדאי להסביר למה ' + e.amount + ' ₪' : '');
+    ta.value = e.note; ta.maxLength = 300;
+    if(e.decision === 'yes' && e.amount !== data.reward && !e.note) ta.className = 'ask';
+    ta.oninput = function(){ e.note = ta.value; };
+    p.appendChild(ta);
+  }
+  var acts = document.createElement('div'); acts.className = 'acts';
+  var ok = document.createElement('button'); ok.className = 'btn'; ok.textContent = 'שמירה';
+  ok.onclick = function(){ decide(w.week, k, e.decision, e.amount, e.note); };
+  var cancel = document.createElement('button'); cancel.className = 'ghost2'; cancel.textContent = 'ביטול';
+  cancel.onclick = function(){ editing = null; renderParent(); };
+  acts.appendChild(ok); acts.appendChild(cancel); p.appendChild(acts);
+  if(e.existing){
+    var clr = document.createElement('button'); clr.className = 'linkish clear'; clr.textContent = 'מחיקת ההחלטה';
+    clr.onclick = function(){ decide(w.week, k, 'clear'); };
+    p.appendChild(clr);
+  }
+  return p;
+}
+
+// Shows the choice at once as "saving", locks it against double taps, then confirms or rolls back.
+function decide(week, kid, decision, amount, note){
+  var key = week + '|' + kid;
+  if(saving[key]) return;
+  editing = null;
+  saving[key] = { decision: decision, amount: decision === 'yes' ? (amount == null ? data.reward : amount) : 0 };
+  renderParent();
+  post({ action:'decide', pin:store('parentPin'), week:week, kid:kid, decision:decision,
+         amount: saving[key].amount, note: (note || '').trim() })
+    .then(function(){
+      delete saving[key]; renderParent();
+      toast(decision === 'yes' ? '✓ נשמר: ' + kid + ' קיבל ' + amountNow(week, kid) + ' ₪' : decision === 'no' ? '✓ נשמר' : '✓ ההחלטה נמחקה');
+    })
+    .catch(function(err){
+      delete saving[key]; renderParent();
+      if(String(err.message).indexOf('pin') >= 0){ store('parentPin', null); renderParent(); toast('הקוד לא נכון', true); }
+      else toast('לא נשמר — נסי שוב', true);
+    });
+}
+// the amount as the sheet now has it (falls back to the default for an older script)
+function amountNow(week, kid){
+  var w = (data.history || []).filter(function(x){ return x.week === week; })[0];
+  return amountOf(w && w.kids[kid]);
 }
 
 /* ---------- confirm sheet ---------- */
@@ -1680,7 +1846,7 @@ $('back1').onclick = $('back2').onclick = $('back3').onclick = function(){ locat
 window.addEventListener('hashchange', route);
 function startPolling(){
   clearInterval(pollTimer);
-  pollTimer = setInterval(function(){ if(document.visibilityState === 'visible' && $('sheet').hidden) load(); }, POLL_MS);
+  pollTimer = setInterval(function(){ if(document.visibilityState === 'visible' && $('sheet').hidden && !editing) load(); }, POLL_MS);
 }
 document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') load(); });
 

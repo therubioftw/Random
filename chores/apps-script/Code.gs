@@ -22,6 +22,7 @@
 var TZ = 'Asia/Jerusalem';
 var KIDS = ['ליאם', 'רובי'];
 var REWARD = 10;
+var AMOUNT_MIN = 0, AMOUNT_MAX = 30;   // the range Ilana can set per week
 var HISTORY_WEEKS = 8;
 var LOG = 'יומן', CHORES = 'מטלות', WEEKS = 'שבועות', SETTINGS = 'הגדרות';
 var DEFAULT_TARGET = 10;
@@ -154,13 +155,15 @@ function sheet(name, headers, textCols) {
 }
 function logSheet() { return sheet(LOG, ['זמן', 'שבוע', 'ילד', 'קטגוריה', 'מטלה', 'מזהה'], [2, 6]); }
 function choresSheet() { return sheet(CHORES, choreHeaders()); }
-function weeksSheet() { return sheet(WEEKS, ['שבוע', 'ילד', 'מטלות', 'החלטה', 'סכום', 'עודכן'], [1]); }
+var WEEK_HEADERS = ['שבוע', 'ילד', 'מטלות', 'החלטה', 'סכום', 'עודכן', 'הערה'];
+function weeksSheet() { return sheet(WEEKS, WEEK_HEADERS, [1]); }
 function settingsSheet() { return sheet(SETTINGS, ['הגדרה', 'ערך']); }
 
 // Safe to run again: creates what's missing and fills empty praise/nag cells,
 // never overwrites anything already written in the sheet.
 function setup() {
-  logSheet(); weeksSheet();
+  logSheet();
+  weeksSheet().getRange(1, 1, 1, WEEK_HEADERS.length).setValues([WEEK_HEADERS]).setFontWeight('bold');   // adds "הערה"
 
   var ch = choresSheet(), headers = choreHeaders();
   ch.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
@@ -238,7 +241,7 @@ function state() {
   KIDS.forEach(function (k) { earned[k] = 0; });
   rows(weeksSheet()).forEach(function (r) {
     var w = ymd(r[0]), kid = String(r[1]);
-    decisions[w + '|' + kid] = { decision: String(r[3]), amount: Number(r[4]) || 0, count: Number(r[2]) || 0 };
+    decisions[w + '|' + kid] = { decision: String(r[3]), amount: Number(r[4]) || 0, count: Number(r[2]) || 0, note: String(r[6] || '') };
     if (earned[kid] !== undefined) earned[kid] += Number(r[4]) || 0;
   });
 
@@ -249,7 +252,8 @@ function state() {
       var done = log.filter(function (x) { return x.week === w && x.kid === k; });
       var d = decisions[w + '|' + k] || null;
       if (done.length || d) any = true;
-      kids[k] = { count: done.length, chores: done.map(function (x) { return x.chore; }), decision: d ? d.decision : '' };
+      kids[k] = { count: done.length, chores: done.map(function (x) { return x.chore; }), decision: d ? d.decision : '',
+        amount: d ? d.amount : null, note: d ? d.note : '' };
     });
     if (any) history.push({ week: w, end: addDays(w, 6), kids: kids });
   }
@@ -278,7 +282,7 @@ function state() {
   });
 
   return {
-    ok: true, kids: KIDS, reward: REWARD, earned: earned,
+    ok: true, version: 2, kids: KIDS, reward: REWARD, earned: earned,   // version 2: amount + note per decision
     all: all, titles: titles, decided: decided,
     target: Number(setting('יעד שבועי', DEFAULT_TARGET)) || DEFAULT_TARGET,
     now: now.getTime(), month: month, lastDone: lastDone,
@@ -328,7 +332,13 @@ function decide(b) {
   for (var i = 1; i < v.length; i++) if (ymd(v[i][0]) === w && String(v[i][1]) === b.kid) at = i + 1;
 
   if (b.decision === 'clear') { if (at > 0) sh.deleteRow(at); return; }
-  var row = [w, b.kid, count, b.decision === 'yes' ? 'מגיע' : 'לא', b.decision === 'yes' ? REWARD : 0, new Date()];
+  // Ilana can adjust the amount (0–30, default REWARD) and leave a note the kid will see
+  var amount = Number(b.amount);
+  if (b.decision !== 'yes') amount = 0;
+  else if (!isFinite(amount)) amount = REWARD;
+  amount = Math.max(AMOUNT_MIN, Math.min(AMOUNT_MAX, Math.round(amount)));
+  var note = String(b.note || '').trim().slice(0, 300);
+  var row = [w, b.kid, count, b.decision === 'yes' ? 'מגיע' : 'לא', amount, new Date(), note];
   if (at > 0) sh.getRange(at, 1, 1, row.length).setValues([row]);
   else sh.appendRow(row);
 }
