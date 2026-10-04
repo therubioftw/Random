@@ -245,6 +245,12 @@
   .result.no{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
   .result .top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:800;font-size:16px}
   .result .note{font-size:14px;font-weight:500;line-height:1.45}
+  .result.slim{background:none;border:none;padding:4px 0;color:var(--mint)}
+  .result.slim.no{color:var(--muted)}
+  .result.slim .top{font-size:15px;font-weight:700}
+  .result.slim .note{color:var(--muted);font-size:13px}
+  .need.done{background:var(--mint)}
+  .panel .reset{align-self:center;background:none;border:none;color:var(--muted);font-size:13px;text-decoration:underline;min-height:36px}
   .result button{background:none;border:1px solid currentColor;color:inherit;border-radius:10px;padding:0 12px;min-height:40px;font-size:13px;font-weight:600;opacity:.85}
   .panel{border:1px solid var(--kc);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:12px;background:var(--card2)}
   .seg{display:flex;background:var(--bg);border-radius:12px;padding:3px}
@@ -254,7 +260,7 @@
   .amt button{min-width:44px;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-weight:700;font-size:15px}
   .amt b{min-width:80px;text-align:center;font-size:26px;font-weight:800}
   .panel textarea{width:100%;min-height:64px;resize:vertical;background:var(--bg);border:1px solid var(--line);border-radius:12px;
-    color:var(--ink);font:inherit;font-size:15px;padding:10px 12px}
+    color:var(--ink);font:inherit;font-size:16px;padding:10px 12px}   /* 16px: iPhones zoom into smaller fields */
   .panel textarea.ask{border-color:var(--gold)}
   .panel .acts{display:flex;gap:8px}
   .panel .acts .btn{flex:1;min-height:46px}
@@ -1167,6 +1173,7 @@ function route(){
   $('vKid').hidden = !kid;
   $('vCard').hidden = !card;
   $('vParent').hidden = h !== '#parent';
+  if(h !== '#parent'){ stickyWeeks = {}; editing = null; }   // the next visit starts fresh
   if(who) document.documentElement.style.setProperty('--kc', KID_COLOR[who] || 'var(--mint)');
   else document.documentElement.style.removeProperty('--kc');
   render();
@@ -1648,15 +1655,18 @@ function renderParent(){
   }).join('');
 
   // urgency order: weeks waiting for Ilana first, then the open week, then past weeks folded
+  // a week that was waiting stays at the top (marked done) until Ilana leaves the screen,
+  // so it doesn't jump away under her finger right after her last decision
   var cur = data.week.start, waitingWeeks = [], open = null, past = [];
   data.history.forEach(function(w){
     var needs = data.kids.some(function(k){ return needsDecision(w, k); });
-    if(needs) waitingWeeks.push(w);
+    if(needs) stickyWeeks[w.week] = true;
+    if(needs || stickyWeeks[w.week]) waitingWeeks.push(w);
     else if(w.week === cur) open = w;
     else past.push(w);
   });
   var box = $('weeks'); box.innerHTML = '';
-  waitingWeeks.forEach(function(w){ box.appendChild(weekCard(w, true)); });
+  waitingWeeks.forEach(function(w){ box.appendChild(weekCard(w, data.kids.some(function(k){ return needsDecision(w, k); }) ? 'need' : 'done')); });
   if(open) box.appendChild(weekCard(open, false));
   past.forEach(function(w){
     var d = document.createElement('details'); d.className = 'past';
@@ -1681,14 +1691,16 @@ function pendingDecisions(){
 }
 
 var editing = null, saving = {};   // the open decision panel, and decisions on their way to the sheet
+var stickyWeeks = {};              // weeks that were waiting during this visit to Ilana's screen
 var AMOUNT_MIN = 0, AMOUNT_MAX = 30;
 
-function weekCard(w, needs, inFold){
+// status: 'need' (waiting for Ilana), 'done' (finished during this visit), or nothing
+function weekCard(w, status, inFold){
   var card = document.createElement('div'); card.className = 'card wk';
   var isCur = w.week === data.week.start;
   if(!inFold) card.innerHTML = '<h3>' + (isCur ? 'השבוע' : 'שבוע') + ' ' + dm(w.week) + '–' + dm(w.end) +
-    (needs ? '<span class="need">צריך החלטה</span>' : '') + '</h3>' +
-    (isCur && !needs ? '<div class="sub">השבוע עוד פתוח. הסיכום במוצאי שבת.</div>' : '');
+    (status === 'need' ? '<span class="need">צריך החלטה</span>' : status === 'done' ? '<span class="need done">✓ הושלם</span>' : '') + '</h3>' +
+    (isCur && !status ? '<div class="sub">השבוע עוד פתוח. הסיכום במוצאי שבת.</div>' : '');
   data.kids.forEach(function(k){
     var s = w.kids[k], key = w.week + '|' + k, row = document.createElement('div');
     var c = career(k), prev = c.perWeek[addDays(w.week, -7)] || 0;
@@ -1696,13 +1708,13 @@ function weekCard(w, needs, inFold){
     row.innerHTML = '<div class="row"><span class="nm">' + esc(k) + '</span><span class="n">' + s.count + '/' + target() + '</span></div>' +
       '<div class="ctx">' + en(lineFor(w.week, k)[stageOf(s.count)][0]) + ' · שלב ' + (stageOf(s.count) + 1) + ' · בשבוע שלפני: ' + prev + '</div>' +
       '<div class="list">' + (s.count ? tally(s.chores) : 'לא נרשמו מטלות') + '</div>';
-    row.appendChild(decisionArea(w, k, s, key));
+    row.appendChild(decisionArea(w, k, s, key, !inFold));
     card.appendChild(row);
   });
   return card;
 }
 
-function decisionArea(w, k, s, key){
+function decisionArea(w, k, s, key, compact){
   var box = document.createElement('div');
   if(saving[key]){
     var sv = saving[key];
@@ -1712,7 +1724,8 @@ function decisionArea(w, k, s, key){
   if(editing && editing.key === key) return decisionPanel(w, k, s, key);
   if(s.decision){
     var yes = s.decision === 'מגיע';
-    box.innerHTML = '<div class="result ' + (yes ? 'yes' : 'no') + '"><div class="top"><span>' +
+    // in a week that's still being worked on, a decided kid is a quiet line, so the waiting one stands out
+    box.innerHTML = '<div class="result ' + (yes ? 'yes' : 'no') + (compact ? ' slim' : '') + '"><div class="top"><span>' +
       (yes ? '✓ קיבל ' + amountOf(s) + ' ₪' : '✗ לא השבוע') + '</span></div>' +
       (s.note ? '<div class="note">💬 ' + bidi(s.note) + '</div>' : '') + '</div>';
     var ch = document.createElement('button'); ch.textContent = 'שינוי';
@@ -1757,6 +1770,11 @@ function decisionPanel(w, k, s, key){
       amt.appendChild(b);
     });
     p.appendChild(amt);
+    if(e.amount !== data.reward){
+      var reset = document.createElement('button'); reset.className = 'reset'; reset.textContent = 'חזרה ל־' + data.reward + ' ₪';
+      reset.onclick = function(){ e.amount = data.reward; renderParent(); };
+      p.appendChild(reset);
+    }
   }
   if(rich){
     var ta = document.createElement('textarea');
