@@ -100,6 +100,19 @@
   .kid .earned{font-size:12.5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);line-height:1.6}
   .kid .earned b{color:var(--gold)}
 
+  .todayBox{margin:12px 0 0;padding:14px 16px}
+  .todayBox h3{margin:0 0 6px;font-size:16px}
+  .tk{display:flex;gap:10px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line)}
+  .tk:first-of-type{border-top:none}
+  .tk b{color:var(--kc);min-width:44px;font-size:14px}
+  .tk ul{list-style:none;margin:0;padding:0;flex:1;font-size:13.5px;line-height:1.6}
+  .tk li span{color:var(--muted);font-size:12px}
+  .tk .none{color:var(--muted);font-size:13px}
+  .nudge{border-color:var(--kc);display:flex;flex-direction:column;gap:10px}
+  .nudge .q{font-size:14px;color:var(--muted)}
+  .nudge .row{display:flex;gap:8px}
+  .nudge .row .btn{flex:1;min-height:46px;background:var(--kc)}
+  .nudge .row .later{min-height:46px;border-radius:14px;border:1px solid var(--line);background:none;padding:0 14px}
   .tip{margin-top:18px;background:var(--card2);border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.5;color:var(--muted)}
   .tip b{color:var(--violet);display:block;font-weight:600;margin-bottom:2px}
   .ghost{
@@ -368,6 +381,7 @@
     <h2 class="sectionTitle" style="margin-top:0">מי סיים מטלה?</h2>
     <div class="kids" id="kidCards"></div>
     <div class="cardLinks" id="cardLinks"></div>
+    <div class="card todayBox" id="today"></div>
     <div class="tip" id="tip"></div>
     <button class="ghost" id="toParent">💰 הסיכום השבועי של אמא</button>
   </section>
@@ -376,6 +390,7 @@
   <section id="vKid" hidden>
     <button class="back" id="back1">→ חזרה</button>
     <div id="verdictBox"></div>
+    <div id="nudgeBox"></div>
     <div class="card hero">
       <img id="kArt" alt="">
       <div class="info">
@@ -1141,12 +1156,24 @@ function daysLeftText(){
   return left <= 0 ? 'הסיכום הערב' : left === 1 ? 'הסיכום מחר בערב' : 'עוד ' + left + ' ימים לסיכום';
 }
 
-// Ilana's latest verdict for this kid: this week's, or last week's through Sunday
+// Ilana's latest verdict for this kid: this week's, or last week's — on Sunday, and on any later
+// day until this phone has revealed it (Ilana sometimes decides mid-week), then for the rest of that visit
+var revealedThisVisit = {};
 function verdictFor(kid){
   var cur = weekOf(data.week.start), prev = weekOf(addDays(data.week.start, -7));
   if(cur && cur.kids[kid] && cur.kids[kid].decision) return { w: cur, s: cur.kids[kid] };
-  if(dow() === 0 && prev && prev.kids[kid] && prev.kids[kid].decision) return { w: prev, s: prev.kids[kid] };
+  if(prev && prev.kids[kid] && prev.kids[kid].decision){
+    var key = verdictKey(kid, prev, prev.kids[kid]);
+    if(dow() === 0 || !store(key) || revealedThisVisit[key]) return { w: prev, s: prev.kids[kid] };
+  }
   return null;
+}
+// one key per decision; the plain form is kept so a reveal already seen doesn't replay,
+// and a changed amount or note gets a new key so the kid sees the update
+function verdictKey(kid, w, s){
+  var yes = s.decision === 'מגיע';
+  return 'seen:' + kid + ':' + w.week + ':' + s.decision +
+    ((yes && amountOf(s) !== data.reward) || s.note ? ':' + amountOf(s) + ':' + hash(s.note || '') : '');
 }
 
 /* ---------- API ---------- */
@@ -1174,6 +1201,7 @@ function route(){
   $('vCard').hidden = !card;
   $('vParent').hidden = h !== '#parent';
   if(h !== '#parent'){ stickyWeeks = {}; editing = null; }   // the next visit starts fresh
+  if(nudge && nudge.kid !== kid) nudge = null;               // the nudge belongs to the screen it was made on
   if(who) document.documentElement.style.setProperty('--kc', KID_COLOR[who] || 'var(--mint)');
   else document.documentElement.style.removeProperty('--kc');
   render();
@@ -1245,6 +1273,16 @@ function renderHome(){
 
   $('tip').innerHTML = '<b>תזכורת 🧠</b>' + bidi(TIP);
 
+  // what each kid logged today, so nobody has to open both screens and scroll to check
+  var todayKey = ymdLocal(new Date());
+  $('today').innerHTML = '<h3>היום</h3>' + data.kids.map(function(k){
+    var done = data.entries.filter(function(e){ return e.kid === k && ymdLocal(new Date(e.ts)) === todayKey; })
+      .sort(function(a, b){ return a.ts - b.ts; });
+    return '<div class="tk" style="--kc:' + (KID_COLOR[k] || 'var(--mint)') + '"><b>' + esc(k) + '</b>' +
+      (done.length ? '<ul>' + done.map(function(e){ return '<li>' + bidi(e.chore) + ' <span>' + esc(e.time) + '</span></li>'; }).join('') + '</ul>'
+        : '<span class="none">עוד כלום היום</span>') + '</div>';
+  }).join('');
+
   var waiting = pendingDecisions().length, tp = $('toParent');
   tp.textContent = '💰 הסיכום השבועי של אמא' + (waiting ? ' · ' + (waiting === 1 ? 'החלטה אחת מחכה' : waiting + ' החלטות מחכות') : '');
   tp.className = 'ghost' + (waiting ? ' waiting' : '');
@@ -1273,28 +1311,59 @@ function choreBtn(c, kid, counts){
   b.innerHTML = (n ? '<span class="x">×' + n + '</span>' : '') +
     '<span class="em">' + esc(c.emoji) + '</span><span class="t">' + bidi(c.title) + '</span>' +
     (c.hint ? '<span class="h">' + bidi(c.hint) + '</span>' : '');
-  b.onclick = function(){
-    ask('סיימת את…', c.title, 'כן, סיימתי ✓', freshPick(SAVING, 'saving'), function(){
-      var before = countFor(kid), week = data.week.start, legendsBefore = career(kid).legends.length;
-      adding = true;
-      return post({ action:'add', kid:kid, chore:c.title }).then(function(){
-        toast(praiseFor(c, kid));
-        var after = countFor(kid), line = lineFor(week, kid), m = (data.month || {})[kid] || 0, cr = career(kid);
-        if(stageOf(after) > stageOf(before)) overlays.push(evolution(kid, line[stageOf(before)], line[stageOf(after)]));
-        if(data.month && m > 0 && m % SHINY_EVERY === 0) overlays.push(shiny(kid, line[stageOf(after)], m));
-        cr.legends.slice(legendsBefore).forEach(function(lg){ overlays.push(prizeMoment(kid, { type:'legend', p:lg })); });
-        checkTrophies(kid);
-        nextOverlay();
-      }).finally(function(){ adding = false; });
-    });
-  };
+  b.onclick = function(){ logChore(c, kid); };
   return b;
+}
+
+// confirm, save, praise, then the big moments — and a nudge toward a second chore
+function logChore(c, kid){
+  ask('סיימת את…', c.title, 'כן, סיימתי ✓', freshPick(SAVING, 'saving'), function(){
+    var before = countFor(kid), week = data.week.start, legendsBefore = career(kid).legends.length;
+    adding = true;
+    return post({ action:'add', kid:kid, chore:c.title }).then(function(){
+      toast(praiseFor(c, kid));
+      var after = countFor(kid), line = lineFor(week, kid), m = (data.month || {})[kid] || 0, cr = career(kid);
+      if(stageOf(after) > stageOf(before)) overlays.push(evolution(kid, line[stageOf(before)], line[stageOf(after)]));
+      if(data.month && m > 0 && m % SHINY_EVERY === 0) overlays.push(shiny(kid, line[stageOf(after)], m));
+      cr.legends.slice(legendsBefore).forEach(function(lg){ overlays.push(prizeMoment(kid, { type:'legend', p:lg })); });
+      checkTrophies(kid);
+      nextOverlay();
+      nudge = { kid: kid };
+      renderKid(kid);
+    }).finally(function(){ adding = false; });
+  });
+}
+
+// The next chore to suggest: one the kid prefers or usually does (most-done first),
+// that nobody has done yet today.
+var nudge = null;
+function nextSuggestion(kid){
+  var today = ymdLocal(new Date()), c = career(kid);
+  var doneToday = {};
+  data.entries.forEach(function(e){ if(ymdLocal(new Date(e.ts)) === today) doneToday[e.chore] = true; });
+  return data.chores.filter(function(ch){
+    return !doneToday[ch.title] && (isFav(ch, kid) || c.perTitle[ch.title]);
+  }).sort(function(a, b){
+    return ((c.perTitle[b.title] || 0) - (c.perTitle[a.title] || 0)) || (isFav(b, kid) - isFav(a, kid));
+  })[0] || null;
+}
+function renderNudge(kid){
+  var box = $('nudgeBox'), s = nudge && nudge.kid === kid ? nextSuggestion(kid) : null;
+  box.innerHTML = '';
+  if(!s) return;
+  box.innerHTML = '<div class="card nudge"><div class="q">⚡ עוד אחת? זו עוד לא נעשתה היום</div>' +
+    '<div class="t" style="font-weight:700;font-size:17px">' + esc(s.emoji) + ' ' + bidi(s.title) + '</div>' +
+    '<div class="row"><button class="btn" id="nudgeYes">סיימתי גם את זה ✓</button><button class="later" id="nudgeNo">אחר כך</button></div></div>';
+  $('nudgeYes').onclick = function(){ logChore(s, kid); };
+  $('nudgeNo').onclick = function(){ nudge = null; renderNudge(kid); };
 }
 
 function renderKid(kid){
   var mine = data.entries.filter(function(e){ return e.kid === kid; });
   var n = mine.length, line = lineFor(data.week.start, kid), st = stageOf(n), p = line[st];
   var counts = {}; mine.forEach(function(e){ counts[e.chore] = (counts[e.chore] || 0) + 1; });
+
+  renderNudge(kid);
 
   // hero: this week's Pokémon and the road to the next evolution
   $('kName').textContent = kid;
@@ -1323,12 +1392,11 @@ function renderKid(kid){
       '<div class="s">' + (yes ? 'על שבוע ' + dm(v.w.week) + '–' + dm(v.w.end) + ' · ' + chores(v.s.count)
         : 'שבוע חדש, פוקימון חדש, הזדמנות חדשה') + '</div>' +
       (v.s.note ? '<div class="vnote">💬 אמא כתבה: ' + bidi(v.s.note) + '</div>' : '') + '</div></div>';
-    // the reveal replays if Ilana changes her decision, the amount or the note
-    // (the plain key stays as it was, so a reveal already seen doesn't replay)
-    var seenKey = 'seen:' + kid + ':' + v.w.week + ':' + v.s.decision +
-      ((yes && amountOf(v.s) !== data.reward) || v.s.note ? ':' + amountOf(v.s) + ':' + hash(v.s.note || '') : '');
+    // the big reveal plays once per phone (again if Ilana changes the decision, amount or note)
+    var seenKey = verdictKey(kid, v.w, v.s);
     if(!store(seenKey)){
       store(seenKey, '1');
+      revealedThisVisit[seenKey] = true;   // keep the card up for the rest of this visit
       overlays.push(verdictMoment(kid, yes, vl, v.s));
       // an approval can also bring or evolve a streak prize
       career(kid).events.filter(function(e){ return e.week === v.w.week; }).forEach(function(e){ overlays.push(prizeMoment(kid, e)); });
