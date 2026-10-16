@@ -30,7 +30,7 @@
 
   header{
     position:sticky;top:0;z-index:5;background:rgba(10,18,25,.92);backdrop-filter:blur(8px);
-    padding:calc(env(safe-area-inset-top) + 14px) 16px 12px;border-bottom:1px solid var(--line);
+    padding:calc(env(safe-area-inset-top) + 10px) 16px 8px;border-bottom:1px solid var(--line);
   }
   .hrow{max-width:560px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
   header h1{margin:0;font-size:22px;flex:1}
@@ -72,8 +72,11 @@
   .dot.live{background:var(--mint)} .dot.err{background:var(--pink)}
   .wrap{max-width:560px;margin:0 auto;padding:16px}
 
-  .weekbar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin:4px 0 18px}
-  .weekbar b{color:var(--gold);font-weight:600}
+  /* the title and the week share one row, so the kid cards start higher */
+  .homeTop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:2px 0 12px}
+  .homeTop h2{margin:0;font-size:20px}
+  .wk2{display:flex;flex-direction:column;align-items:flex-end;font-size:12.5px;color:var(--muted);line-height:1.35;text-align:left}
+  .wk2 b{color:var(--gold);font-weight:600}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
   .sectionTitle{font-size:20px;margin:22px 0 12px}
@@ -86,23 +89,28 @@
   /* kid picker */
   .kids{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .kid{
-    position:relative;text-align:right;background:var(--card);border:2px solid var(--kc);border-radius:22px;padding:16px 14px;
+    position:relative;text-align:right;background:var(--card);border:2px solid var(--kc);border-radius:22px;padding:14px 12px;
     transition:transform .12s ease;display:flex;flex-direction:column;
   }
   .kid:active{transform:scale(.97)}
   .kid .pk{position:absolute;top:8px;left:6px;width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
   .kid .nm{font-family:"Secular One",sans-serif;font-size:28px;color:var(--kc);line-height:1.1}
   .kid .pn{font-size:12px;color:var(--muted);margin-top:2px}
-  .kid .big{font-size:38px;font-weight:800;margin-top:12px;line-height:1}
+  .kid .big{font-size:38px;font-weight:800;margin-top:8px;line-height:1}
   .kid .big small{font-size:16px;color:var(--muted);font-weight:600}
   .kid .st{font-size:12.5px;line-height:1.4;color:var(--muted);min-height:36px}
   .kid .st.nag{color:var(--pink)}
-  .kid .earned{font-size:12.5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);line-height:1.6}
+  .kid .earned{font-size:12.5px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);color:var(--muted);line-height:1.6}
   .kid .earned b{color:var(--gold)}
 
-  .todayBox{margin:12px 0 0;padding:14px 16px}
-  .todayBox h3{margin:0 0 6px;font-size:16px}
-  .tk{display:flex;gap:10px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line)}
+  /* "today": one compact row per kid, at most two lines, so its height stays fixed all day */
+  .todayBox{margin:10px 0 0;padding:10px 14px}
+  .todayBox h3{margin:0 0 2px;font-size:14px;color:var(--muted);font-family:Rubik,sans-serif;font-weight:600}
+  .tk{display:flex;gap:10px;align-items:baseline;padding:5px 0;border-top:1px solid var(--line)}
+  .tk ul{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  .tk b i{font-style:normal;font-size:11px;font-weight:700;color:#0A1219;background:var(--kc);border-radius:99px;padding:0 6px;margin-inline-start:4px}
+  .tk li{display:inline}
+  .tk li + li::before{content:" · ";color:var(--muted)}
   .tk:first-of-type{border-top:none}
   .tk b{color:var(--kc);min-width:44px;font-size:14px}
   .tk ul{list-style:none;margin:0;padding:0;flex:1;font-size:13.5px;line-height:1.6}
@@ -113,10 +121,10 @@
   .nudge .row{display:flex;gap:8px}
   .nudge .row .btn{flex:1;min-height:46px;background:var(--kc)}
   .nudge .row .later{min-height:46px;border-radius:14px;border:1px solid var(--line);background:none;padding:0 14px}
-  .tip{margin-top:18px;background:var(--card2);border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.5;color:var(--muted)}
-  .tip b{color:var(--violet);display:block;font-weight:600;margin-bottom:2px}
+  .tip{margin-top:10px;background:var(--card2);border-radius:14px;padding:10px 14px;font-size:13.5px;line-height:1.45;color:var(--muted)}
+  .tip b{color:var(--violet);font-weight:600}
   .ghost{
-    display:block;width:100%;margin-top:18px;background:none;border:1px dashed var(--line);border-radius:16px;
+    display:block;width:100%;margin-top:10px;background:none;border:1px dashed var(--line);border-radius:16px;
     padding:14px;color:var(--muted);font-size:15px
   }
 
@@ -351,6 +359,7 @@
 
   @media (max-width:360px){ .kid .nm{font-size:24px} .kid .pk{width:50px;height:50px} }
   @media (max-width:330px){ .grid{grid-template-columns:1fr} }
+  @media (max-width:360px){ .hero img{width:72px;height:72px} .hero{gap:10px} }   /* more room for the text on narrow phones */
   .back{min-height:44px;padding:0 4px}
   .helpBtn{width:40px;height:40px}
   .undo{min-height:36px;padding:0 14px}
@@ -377,8 +386,10 @@
 
   <!-- home: both brothers, then pick your name -->
   <section id="vHome">
-    <div class="weekbar"><span id="weekRange"></span><b id="countdown"></b></div>
-    <h2 class="sectionTitle" style="margin-top:0">מי סיים מטלה?</h2>
+    <div class="homeTop">
+      <h2>מי סיים מטלה?</h2>
+      <div class="wk2"><span id="weekRange"></span><b id="countdown"></b></div>
+    </div>
     <div class="kids" id="kidCards"></div>
     <div class="cardLinks" id="cardLinks"></div>
     <div class="card todayBox" id="today"></div>
@@ -1271,14 +1282,15 @@ function renderHome(){
     links.appendChild(a);
   });
 
-  $('tip').innerHTML = '<b>תזכורת 🧠</b>' + bidi(TIP);
+  $('tip').innerHTML = '<b>🧠 תזכורת:</b> ' + bidi(TIP);
 
   // what each kid logged today, so nobody has to open both screens and scroll to check
   var todayKey = ymdLocal(new Date());
   $('today').innerHTML = '<h3>היום</h3>' + data.kids.map(function(k){
+    // newest first, so the one line that fits shows the latest; the badge counts them all
     var done = data.entries.filter(function(e){ return e.kid === k && ymdLocal(new Date(e.ts)) === todayKey; })
-      .sort(function(a, b){ return a.ts - b.ts; });
-    return '<div class="tk" style="--kc:' + (KID_COLOR[k] || 'var(--mint)') + '"><b>' + esc(k) + '</b>' +
+      .sort(function(a, b){ return b.ts - a.ts; });
+    return '<div class="tk" style="--kc:' + (KID_COLOR[k] || 'var(--mint)') + '"><b>' + esc(k) + (done.length ? '<i>' + done.length + '</i>' : '') + '</b>' +
       (done.length ? '<ul>' + done.map(function(e){ return '<li>' + bidi(e.chore) + ' <span>' + esc(e.time) + '</span></li>'; }).join('') + '</ul>'
         : '<span class="none">עוד כלום היום</span>') + '</div>';
   }).join('');
@@ -1406,8 +1418,9 @@ function renderKid(kid){
   if(!adding) checkTrophies(kid);
 
   // nag: behind the week's pace → name the own chore this kid has neglected longest
+  // one call to action at a time: while a "one more?" nudge is up, the nag box waits
   var nb = $('nagBox'); nb.innerHTML = '';
-  if(behind(n)){
+  if(behind(n) && !(nudge && nudge.kid === kid && nextSuggestion(kid))){
     var own = data.chores.filter(function(c){ return isFav(c, kid); });
     var ld = (data.lastDone || {})[kid] || {};
     own.sort(function(a, b){ return (ld[a.title] || 0) - (ld[b.title] || 0); });
