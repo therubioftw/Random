@@ -282,7 +282,7 @@ function state() {
   });
 
   return {
-    ok: true, version: 2, kids: KIDS, reward: REWARD, earned: earned,   // version 2: amount + note per decision
+    ok: true, version: 3, kids: KIDS, reward: REWARD, earned: earned,   // 2: amount + note per decision; 3: client ids + caching
     all: all, titles: titles, decided: decided,
     target: Number(setting('יעד שבועי', DEFAULT_TARGET)) || DEFAULT_TARGET,
     now: now.getTime(), month: month, lastDone: lastDone,
@@ -298,8 +298,15 @@ function add(b) {
   if (KIDS.indexOf(b.kid) < 0) throw 'unknown-kid';
   var c = chores().filter(function (x) { return x.title === b.chore; })[0];
   if (!c) throw 'unknown-chore';
-  var now = new Date();
-  logSheet().appendRow([now, weekOf(now), b.kid, c.cat, c.title, Utilities.getUuid().slice(0, 8)]);
+  // The app saves in the background and retries, so it sends its own id (a retry of a chore
+  // that already arrived is ignored) and the moment the chore was logged (so a late retry
+  // still lands in the right week). Times more than 3 days back or in the future are not trusted.
+  var now = new Date(), t = Number(b.ts);
+  var when = isFinite(t) && t <= now.getTime() + 5 * 60000 && t >= now.getTime() - 3 * 864e5 ? new Date(t) : now;
+  var id = b.id ? String(b.id).slice(0, 40) : Utilities.getUuid().slice(0, 8);
+  var sh = logSheet();
+  if (b.id && rows(sh).some(function (r) { return String(r[5]) === id; })) return;
+  sh.appendRow([when, weekOf(when), b.kid, c.cat, c.title, id]);
 }
 
 function remove(b) {
@@ -344,12 +351,23 @@ function decide(b) {
 }
 
 /* ---------- web app ---------- */
-function json(o) {
-  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+function json(o) { return text(JSON.stringify(o)); }
+function text(s) { return ContentService.createTextOutput(s).setMimeType(ContentService.MimeType.JSON); }
+
+// The last answer is kept for a couple of minutes, so most views skip reading and
+// recalculating the whole sheet. Every write through the app refreshes it at once;
+// edits made directly in the sheet show up once it expires.
+var CACHE_KEY = 'state', CACHE_SECONDS = 120;
+function cachedState(fresh) {
+  var cache = CacheService.getScriptCache();
+  if (!fresh) { var hit = cache.get(CACHE_KEY); if (hit) return hit; }
+  var s = JSON.stringify(state());
+  try { cache.put(CACHE_KEY, s, CACHE_SECONDS); } catch (e) { /* over the cache's 100 KB limit: just don't cache */ }
+  return s;
 }
 
 function doGet() {
-  try { return json(state()); } catch (e) { return json({ ok: false, error: String(e) }); }
+  try { return text(cachedState(false)); } catch (e) { return json({ ok: false, error: String(e) }); }
 }
 
 function doPost(e) {
@@ -362,7 +380,7 @@ function doPost(e) {
     else if (b.action === 'decide') decide(b);
     else if (b.action === 'checkPin') checkPin(b.pin);
     else throw 'unknown-action';
-    return json(state());
+    return text(cachedState(true));
   } catch (err) {
     return json({ ok: false, error: String(err) });
   } finally {

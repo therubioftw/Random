@@ -1134,9 +1134,13 @@ function toast(msg, bad){
   clearTimeout(toast.t); toast.t = setTimeout(function(){ t.className = 'toast' + (bad ? ' bad' : ''); }, 3200);
 }
 $('toast').onclick = function(){ clearTimeout(toast.t); this.className = 'toast'; };   // tap to dismiss
+var lastSync = '';
 function setSync(s){
-  $('dot').className = 'dot ' + (s === 'live' ? 'live' : s === 'err' ? 'err' : '');
-  $('syncText').textContent = s === 'live' ? 'מסונכרן' : s === 'err' ? 'אין חיבור' : 'מתחבר…';
+  lastSync = s;
+  var waiting = (typeof outbox !== 'undefined' && outbox.length) || 0;   // chores not yet confirmed by the sheet
+  $('dot').className = 'dot ' + (waiting ? '' : s === 'live' ? 'live' : s === 'err' ? 'err' : '');
+  $('syncText').textContent = waiting ? '⏳ ' + (waiting === 1 ? 'מטלה אחת נשמרת' : waiting + ' מטלות נשמרות')
+    : s === 'live' ? 'מסונכרן' : s === 'err' ? 'אין חיבור' : 'מתחבר…';
 }
 function tally(list){
   var m = {}; list.forEach(function(t){ m[t] = (m[t] || 0) + 1; });
@@ -1190,19 +1194,70 @@ function verdictKey(kid, w, s){
 /* ---------- API ---------- */
 function got(d){
   if(!d || d.ok === false) throw new Error(d && d.error || 'bad response');
-  data = d; setSync('live'); render();
   store('cachedData', JSON.stringify(d));
+  data = d;
+  outbox.forEach(applyLocal);   // chores still on their way stay on screen
+  setSync('live'); render();
+  if(outbox.length) sendOutbox();
   return d;
 }
 function load(){
   if(!API_URL){ showSetup(); return; }
   fetch(API_URL).then(function(r){ return r.json(); }).then(got).catch(function(){ setSync('err'); });
 }
-function post(body){
+function send(body){
   // text/plain keeps it a "simple" request, so Apps Script needs no CORS preflight
   return fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body) })
-    .then(function(r){ return r.json(); }).then(got);
+    .then(function(r){ return r.json(); });
 }
+function post(body){ return send(body).then(got); }
+
+/* ---------- the outbox: chores show at once, then reach the sheet in the background ---------- */
+// Each logged chore waits here (and survives closing the app) until the sheet confirms it.
+// Its id lets the sheet ignore a retry of a chore that already arrived.
+var outbox = []; try{ outbox = JSON.parse(store('outbox') || '[]'); }catch(e){ outbox = []; }
+var sendingOutbox = false;
+function saveOutbox(){ store('outbox', JSON.stringify(outbox)); setSync(lastSync); }
+
+function addLocal(kid, c){
+  var item = { id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), kid: kid, chore: c.title, ts: Date.now() };
+  outbox.push(item); saveOutbox();
+  applyLocal(item);
+  return item;
+}
+// put a not-yet-confirmed chore into the data the screens are drawn from
+function applyLocal(item){
+  if(!data || !data.entries) return;
+  var d = new Date(item.ts), sec = Math.round(item.ts / 1000), k = data.kids.indexOf(item.kid);
+  if(data.entries.some(function(e){ return e.id === item.id; })) return;
+  if(sundayOf(d) === data.week.start)
+    data.entries.push({ ts: item.ts, week: data.week.start, kid: item.kid, cat: '', chore: item.chore, id: item.id,
+      day: d.getDay(), time: pad2(d.getHours()) + ':' + pad2(d.getMinutes()), pending: true });
+  data.titles = data.titles || []; data.all = data.all || [];
+  var ti = data.titles.indexOf(item.chore);
+  if(ti < 0){ ti = data.titles.length; data.titles.push(item.chore); }
+  if(!data.all.some(function(e){ return e[0] === sec && e[1] === k && e[2] === ti; })) data.all.push([sec, k, ti]);
+  if(data.month && ymdLocal(d).slice(0, 7) === ymdLocal(new Date()).slice(0, 7)) data.month[item.kid] = (data.month[item.kid] || 0) + 1;
+  careerCache = { data: null };
+}
+function sendOutbox(){
+  if(sendingOutbox || !outbox.length || !API_URL) return;
+  sendingOutbox = true;
+  var item = outbox[0];
+  send({ action:'add', kid:item.kid, chore:item.chore, id:item.id, ts:item.ts })
+    .then(function(d){
+      sendingOutbox = false;
+      if(d && d.ok === false){
+        // the sheet refused it for good (e.g. the chore was removed meanwhile): drop it, say so
+        if(/unknown-chore|unknown-kid/.test(d.error)){ outbox.shift(); saveOutbox(); toast('"' + item.chore + '" לא נשמר — המטלה כבר לא ברשימה', true); }
+        return;
+      }
+      outbox = outbox.filter(function(x){ return x.id !== item.id; }); saveOutbox();
+      got(d);   // carries on with the next one, if any
+    })
+    .catch(function(){ sendingOutbox = false; setSync('err'); });   // retried on the next refresh
+}
+window.addEventListener('online', sendOutbox);
 
 /* ---------- routing: #, #kid=<name>, #card=<name>, #parent ---------- */
 function route(){
@@ -1331,18 +1386,19 @@ function choreBtn(c, kid, counts){
 function logChore(c, kid){
   ask('סיימת את…', c.title, 'כן, סיימתי ✓', freshPick(SAVING, 'saving'), function(){
     var before = countFor(kid), week = data.week.start, legendsBefore = career(kid).legends.length;
-    adding = true;
-    return post({ action:'add', kid:kid, chore:c.title }).then(function(){
-      toast(praiseFor(c, kid));
-      var after = countFor(kid), line = lineFor(week, kid), m = (data.month || {})[kid] || 0, cr = career(kid);
-      if(stageOf(after) > stageOf(before)) overlays.push(evolution(kid, line[stageOf(before)], line[stageOf(after)]));
-      if(data.month && m > 0 && m % SHINY_EVERY === 0) overlays.push(shiny(kid, line[stageOf(after)], m));
-      cr.legends.slice(legendsBefore).forEach(function(lg){ overlays.push(prizeMoment(kid, { type:'legend', p:lg })); });
-      checkTrophies(kid);
-      nextOverlay();
-      nudge = { kid: kid };
-      renderKid(kid);
-    }).finally(function(){ adding = false; });
+    // instant: the chore counts on screen right away; the outbox gets it to the sheet
+    addLocal(kid, c);
+    toast(praiseFor(c, kid));
+    var after = countFor(kid), line = lineFor(week, kid), m = (data.month || {})[kid] || 0, cr = career(kid);
+    if(stageOf(after) > stageOf(before)) overlays.push(evolution(kid, line[stageOf(before)], line[stageOf(after)]));
+    if(data.month && m > 0 && m % SHINY_EVERY === 0) overlays.push(shiny(kid, line[stageOf(after)], m));
+    cr.legends.slice(legendsBefore).forEach(function(lg){ overlays.push(prizeMoment(kid, { type:'legend', p:lg })); });
+    checkTrophies(kid);
+    nextOverlay();
+    nudge = { kid: kid };
+    render();
+    sendOutbox();
+    return Promise.resolve();
   });
 }
 
@@ -1461,10 +1517,20 @@ function renderKid(kid){
   }
   mine.slice().sort(function(a, b){ return b.ts - a.ts; }).forEach(function(e){
     var li = document.createElement('li');
-    li.innerHTML = '<div><div>' + bidi(e.chore) + '</div><div class="when">יום ' + DAYS[e.day] + ' · ' + esc(e.time) + '</div></div>';
+    li.innerHTML = '<div><div>' + bidi(e.chore) + '</div><div class="when">יום ' + DAYS[e.day] + ' · ' + esc(e.time) +
+      (e.pending ? ' · ⏳ נשמר…' : '') + '</div></div>';
     var u = document.createElement('button'); u.className = 'undo'; u.textContent = 'בטל';
     u.onclick = function(){
       ask('למחוק מהרשימה?', e.chore, 'כן, למחוק', 'מוחק…', function(){
+        var waiting = outbox.filter(function(x){ return x.id === e.id; })[0];
+        if(waiting && !(sendingOutbox && outbox[0] === waiting)){
+          // not in the sheet yet: just take it out of the outbox and redraw from the last confirmed data
+          outbox = outbox.filter(function(x){ return x !== waiting; }); saveOutbox();
+          try{ data = JSON.parse(store('cachedData')); }catch(err){}
+          outbox.forEach(applyLocal); careerCache = { data: null }; render(); toast('נמחק');
+          return Promise.resolve();
+        }
+        if(waiting){ toast('רגע, זה בדיוק נשמר — נסו שוב בעוד כמה שניות'); return Promise.resolve(); }
         return post({ action:'delete', id:e.id }).then(function(){ toast('נמחק'); });
       });
     };
@@ -1950,7 +2016,7 @@ function startPolling(){
 document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') load(); });
 
 /* ---------- boot ---------- */
-try{ var c = JSON.parse(store('cachedData') || 'null'); if(c) data = c; }catch(e){}
+try{ var c = JSON.parse(store('cachedData') || 'null'); if(c){ data = c; outbox.forEach(applyLocal); } }catch(e){}
 route();
 load();
 startPolling();
