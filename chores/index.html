@@ -886,6 +886,8 @@ var LINES2 = [
   [['Poltchageist',1012],['Sinistcha',1013]]
 ];
 var LEGENDS = [['Articuno',144],['Zapdos',145],['Moltres',146],['Mewtwo',150],['Raikou',243],['Entei',244],['Suicune',245],['Lugia',249],['Ho-Oh',250],['Celebi',251],['Regirock',377],['Regice',378],['Registeel',379],['Latias',380],['Latios',381],['Kyogre',382],['Groudon',383],['Rayquaza',384],['Jirachi',385],['Deoxys',386],['Uxie',480],['Mesprit',481],['Azelf',482],['Dialga',483],['Palkia',484],['Heatran',485],['Regigigas',486],['Giratina',487],['Cresselia',488],['Darkrai',491],['Shaymin',492],['Arceus',493],['Victini',494],['Cobalion',638],['Terrakion',639],['Virizion',640],['Tornadus',641],['Thundurus',642],['Reshiram',643],['Zekrom',644],['Landorus',645],['Kyurem',646],['Keldeo',647],['Meloetta',648],['Genesect',649],['Xerneas',716],['Yveltal',717],['Zygarde',718],['Diancie',719],['Hoopa',720],['Volcanion',721],['Tapu Koko',785],['Tapu Lele',786],['Tapu Bulu',787],['Tapu Fini',788],['Necrozma',800],['Magearna',801],['Marshadow',802],['Zeraora',807],['Zacian',888],['Zamazenta',889],['Eternatus',890],['Zarude',893],['Regieleki',894],['Regidrago',895],['Glastrier',896],['Spectrier',897],['Calyrex',898],['Enamorus',905],['Wo-Chien',1001],['Chien-Pao',1002],['Ting-Lu',1003],['Chi-Yu',1004],['Koraidon',1007],['Miraidon',1008],['Okidogi',1014],['Munkidori',1015],['Fezandipiti',1016],['Ogerpon',1017],['Terapagos',1024],['Pecharunt',1025]];
+// SUPER: single-stage Pokémon that are neither legendary nor mythical (the 'super week' prize). Append only.
+var SUPER = [['Kangaskhan',115],['Pinsir',127],['Tauros',128],['Lapras',131],['Ditto',132],['Aerodactyl',142],['Unown',201],['Shuckle',213],['Heracross',214],['Delibird',225],['Skarmory',227],['Smeargle',235],['Miltank',241],['Sableye',302],['Mawile',303],['Plusle',311],['Minun',312],['Volbeat',313],['Illumise',314],['Torkoal',324],['Spinda',327],['Zangoose',335],['Seviper',336],['Lunatone',337],['Solrock',338],['Castform',351],['Kecleon',352],['Tropius',357],['Absol',359],['Relicanth',369],['Luvdisc',370],['Pachirisu',417],['Chatot',441],['Spiritomb',442],['Carnivine',455],['Rotom',479],['Audino',531],['Throh',538],['Sawk',539],['Maractus',556],['Sigilyph',561],['Emolga',587],['Alomomola',594],['Cryogonal',615],['Stunfisk',618],['Druddigon',621],['Bouffalant',626],['Heatmor',631],['Durant',632],['Furfrou',676],['Hawlucha',701],['Dedenne',702],['Carbink',703],['Klefki',707],['Oricorio',741],['Wishiwashi',746],['Comfey',764],['Oranguru',765],['Passimian',766],['Pyukumuku',771],['Minior',774],['Komala',775],['Turtonator',776],['Togedemaru',777],['Mimikyu',778],['Bruxish',779],['Drampa',780],['Dhelmise',781],['Nihilego',793],['Buzzwole',794],['Pheromosa',795],['Xurkitree',796],['Celesteela',797],['Kartana',798],['Guzzlord',799],['Stakataka',805],['Blacephalon',806],['Cramorant',845],['Falinks',870],['Pincurchin',871],['Stonjourner',874],['Eiscue',875],['Indeedee',876],['Morpeko',877],['Dracozolt',880],['Arctozolt',881],['Dracovish',882],['Arctovish',883],['Squawkabilly',931],['Klawf',950],['Bombirdier',962],['Cyclizar',967],['Orthworm',968],['Flamigo',973],['Veluza',976],['Dondozo',977],['Tatsugiri',978],['Great Tusk',984],['Scream Tail',985],['Brute Bonnet',986],['Flutter Mane',987],['Slither Wing',988],['Sandy Shocks',989],['Iron Treads',990],['Iron Bundle',991],['Iron Hands',992],['Iron Jugulis',993],['Iron Moth',994],['Iron Thorns',995],['Roaring Moon',1005],['Iron Valiant',1006],['Walking Wake',1009],['Iron Leaves',1010],['Gouging Fire',1020],['Raging Bolt',1021],['Iron Boulder',1022],['Iron Crown',1023]];
 var MEW = ['Mew', 151];                 // the platinum prize, kept out of LEGENDS
 var ROTATION_START = '2026-10-04';      // first Sunday of the no-repeat weekly rotation
 var PRIZE_ARRIVE = 2, PRIZE_EVOLVE = 5, PRIZE_CYCLE = 5;   // approved weeks in a row: 2 → prize, 5 → it evolves, then every 5
@@ -906,6 +908,9 @@ function shuffled(n, seed){
   return a;
 }
 var ORDER3 = shuffled(LINES3.length, 3), ORDER2 = shuffled(LINES2.length, 2), ORDERL = shuffled(LEGENDS.length, 7);
+var ORDERS = shuffled(SUPER.length, 11);
+// a "super week": double the weekly target (20) brings a special Pokémon
+function superAt(){ return target() * 2; }
 // both kids walk the same shuffled order from opposite halves, so they never get the same one
 function nth(list, order, i, kid){
   var k = Math.max(0, data.kids.indexOf(kid));
@@ -974,6 +979,17 @@ function career(kid){
     if(st === 2) finals[line[2][1]] = true;
   });
   c.fullLines = Object.keys(finals).length;
+
+  // super weeks, oldest first: each brings the kid's next special Pokémon
+  c.supers = []; c.bestWeek = 0;
+  Object.keys(c.perWeek).sort().forEach(function(w){
+    c.bestWeek = Math.max(c.bestWeek, c.perWeek[w]);
+    if(c.perWeek[w] >= superAt()){
+      var sp = nth(SUPER, ORDERS, c.supers.length, kid);
+      c.supers.push({ p: sp, week: w });
+      c.events.push({ type: 'super', week: w, p: sp });
+    }
+  });
 
   // days: longest run of consecutive days with a chore, busiest single day
   var days = Object.keys(c.perDay).sort(), run = 0, prevDay = null;
@@ -1071,7 +1087,8 @@ var TROPHIES = [
   { id:'fin',  tier:1, name:'התפתחות מלאה',         d:'פוקימון שהגיע לשלב האחרון',       p:function(c){ return [c.fullLines, 1]; } },
   { id:'ten',  tier:3, name:'חוקר פוקימונים',       d:'10 פוקימונים בשלב האחרון',        p:function(c){ return [c.fullLines, 10]; } },
   { id:'leg',  tier:2, name:'אגדה',                 d:'פוקימון אגדי ראשון',              p:function(c){ return [c.legends.length, 1]; } },
-  { id:'pat',  tier:2, name:'סבלנות משתלמת',        d:'פרס רצף שהתפתח',                  p:function(c){ return [c.prizes.filter(function(x){ return x.evolved; }).length, 1]; } }
+  { id:'pat',  tier:2, name:'סבלנות משתלמת',        d:'פרס רצף שהתפתח',                  p:function(c){ return [c.prizes.filter(function(x){ return x.evolved; }).length, 1]; } },
+  { id:'sup',  tier:3, name:'שבוע־על',              d:'20 מטלות בשבוע אחד',              p:function(c){ return [c.bestWeek, superAt()]; } }
 ];
 var PLATINUM = { id:'plat', tier:4, name:'מאסטר פוקימון', d:'כל הגביעים — ו־Mew מצטרף לפוקדקס' };
 var MEDAL = { 1:'🥉', 2:'🥈', 3:'🥇', 4:'💎' };
@@ -1292,9 +1309,17 @@ function render(){
   if(location.hash === '#parent' && !editing) renderParent();   // never redraw under Ilana while she's typing
 }
 
+// up to the target the bar tracks the evolutions; after it, a gold second lap runs to the super week
 function setBar(el, n){
-  el.querySelector('i').style.width = Math.min(100, n / target() * 100) + '%';
-  el.querySelector('b').style.right = (Math.ceil(target() / 2) / target() * 100) + '%';
+  var t = target(), lap2 = n >= t && n < superAt();
+  el.querySelector('i').style.width = (lap2 ? (n - t) / (superAt() - t) * 100 : Math.min(100, n / t * 100)) + '%';
+  el.querySelector('i').style.background = n >= t ? 'var(--gold)' : '';
+  el.querySelector('b').style.display = n >= t ? 'none' : '';
+  el.querySelector('b').style.right = (Math.ceil(t / 2) / t * 100) + '%';
+}
+function superLine(n, pName){
+  return n >= superAt() ? '⭐ שבוע־על! ' + en(pName) + ' בשיא'
+    : en(pName) + ' מלא · עוד ' + chores(superAt() - n) + ' לשבוע־על ⭐';
 }
 
 function renderHome(){
@@ -1307,7 +1332,7 @@ function renderHome(){
     var status, nag = false;
     if(behind(n)){ status = paceNag(k, n, p[0]); nag = true; }
     else if(st < 2) status = 'עוד ' + chores(toNext(n)) + ' עד ' + en(line[st + 1][0]);
-    else status = en(p[0]) + ' מלא 🔥';
+    else status = superLine(n, p[0]);
 
     var prev = weekOf(addDays(data.week.start, -7)), last = '';
     if(prev && prev.kids[k]){
@@ -1332,7 +1357,7 @@ function renderHome(){
 
   var links = $('cardLinks'); links.innerHTML = '';
   data.kids.forEach(function(k){
-    var c = career(k), got = Object.keys(c.caught).length + c.legends.length + c.prizes.length;
+    var c = career(k), got = Object.keys(c.caught).length + c.legends.length + c.prizes.length + c.supers.length;
     var a = document.createElement('button');
     a.innerHTML = '🏆 הכרטיס של ' + esc(k) + '<small>' + got + ' פוקימונים · ' + career(k).trophies.filter(function(x){ return x.done; }).length + ' גביעים</small>';
     a.onclick = function(){ location.hash = 'card=' + encodeURIComponent(k); };
@@ -1395,6 +1420,10 @@ function logChore(c, kid){
     if(stageOf(after) > stageOf(before)) overlays.push(evolution(kid, line[stageOf(before)], line[stageOf(after)]));
     if(data.month && m > 0 && m % SHINY_EVERY === 0) overlays.push(shiny(kid, line[stageOf(after)], m));
     cr.legends.slice(legendsBefore).forEach(function(lg){ overlays.push(prizeMoment(kid, { type:'legend', p:lg })); });
+    if(before < superAt() && after >= superAt()){
+      var sw = cr.supers.filter(function(s){ return s.week === week; })[0];
+      if(sw) overlays.push(prizeMoment(kid, { type:'super', p: sw.p }));
+    }
     checkTrophies(kid);
     nextOverlay();
     nudge = { kid: kid };
@@ -1443,7 +1472,7 @@ function renderKid(kid){
   var left = toNext(n);
   $('kCountdown').innerHTML = daysLeftText() + '. ' + (st < 2
     ? 'עוד ' + chores(left) + ' ו־' + en(p[0]) + ' מתפתח ל־' + en(line[st + 1][0]) + '!'
-    : en(p[0]) + ' מלא. עכשיו רק לא לבזבז את זה 😎');
+    : superLine(n, p[0]));
   // one short line for the shiny and the streak; the full streak story lives on the trainer card
   var cr = career(kid), sl = streakText(kid), bits = [];
   if(data.month){ var m = data.month[kid] || 0; bits.push('✨ עוד ' + (SHINY_EVERY - (m % SHINY_EVERY)) + ' עד הפתעה'); }
@@ -1469,7 +1498,8 @@ function renderKid(kid){
       revealedThisVisit[seenKey] = true;   // keep the card up for the rest of this visit
       overlays.push(verdictMoment(kid, yes, vl, v.s));
       // an approval can also bring or evolve a streak prize
-      career(kid).events.filter(function(e){ return e.week === v.w.week; }).forEach(function(e){ overlays.push(prizeMoment(kid, e)); });
+      career(kid).events.filter(function(e){ return e.week === v.w.week && (e.type === 'arrive' || e.type === 'evolve'); })
+        .forEach(function(e){ overlays.push(prizeMoment(kid, e)); });
       nextOverlay();
     }
   }
@@ -1584,6 +1614,8 @@ function confetti(){
 
 function prizeMoment(kid, e){
   if(e.type === 'evolve') return evolution(kid, e.from, e.to);
+  if(e.type === 'super') return { art: '<div class="shinyArt"><img src="' + art(e.p[1]) + '" alt=""></div>', title: 'שבוע־על! ⭐', btn: 'מטורף!',
+    text: superAt() + ' מטלות בשבוע אחד, ' + esc(kid) + '! ' + en(e.p[0]) + ' הצטרף לפוקדקס. פוקימון מיוחד רק לשבועות־על.', confetti: true };
   if(e.type === 'legend') return { art: '<div class="shinyArt"><img src="' + art(e.p[1]) + '" alt=""></div>', title: 'פוקימון אגדי! 👑', btn: 'וואו!',
     text: en(e.p[0]) + ' הצטרף לפוקדקס של ' + esc(kid) + '. זה הפרס על השייני.', confetti: true };
   return { art: '<img src="' + art(e.p[1]) + '" alt="">', title: 'פרס רצף! 🔥', btn: 'יששש!',
@@ -1668,6 +1700,11 @@ function dexHtml(c){
       c.legends.map(function(p){ return dexTile(p, true, { gold: true }); }).join('') + '</div>';
   } else h += '<p class="empty s">כל מטלה מספר ' + SHINY_EVERY + ' בחודש מביאה פוקימון אגדי.</p>';
 
+  h += '<h3 class="shelfT">⭐ שבועות־על</h3>';
+  if(c.supers.length){
+    h += '<div class="dex">' + c.supers.map(function(x){ return dexTile(x.p, true, { gold: true }); }).join('') + '</div>';
+  } else h += '<p class="empty s">שבוע עם ' + superAt() + ' מטלות מביא פוקימון מיוחד שאי אפשר להשיג אחרת.</p>';
+
   h += '<h3 class="shelfT">🔥 פרסי רצף</h3>';
   if(c.prizes.length){
     h += '<div class="dex">' + c.prizes.map(function(x){ return dexTile(x.pair[0], true) + dexTile(x.pair[1], x.evolved); }).join('') + '</div>';
@@ -1742,7 +1779,7 @@ function helpSlides(){
         '<p class="s">המטלות שאתם מעדיפים מופיעות למעלה. כל השאר — פתוחות לכולם — ב"מטלות נוספות". טעיתם? "בטל" ברשימה למטה.</p>' },
     { c:'var(--sky)', ill:evo, h:'הפוקימון של השבוע',
       body:'<p>כל יום ראשון מקבלים פוקימון חדש. הוא מתאמן כשאתם עושים מטלות:</p>' +
-        '<p>אחרי <b>' + half + '</b> מטלות הוא מתפתח פעם אחת,<br>ואחרי <b>' + t + '</b> — פעם שנייה.</p>' +
+        '<p>אחרי <b>' + half + '</b> מטלות הוא מתפתח פעם אחת,<br>ואחרי <b>' + t + '</b> — פעם שנייה.<br>ומי שמגיע ל־<b>' + superAt() + '</b>? שבוע־על ⭐ ופוקימון מיוחד.</p>' +
         '<p class="s">במוצאי שבת הפוקימון הולך, וביום ראשון מגיע חדש. אז לא מחכים לסוף השבוע.</p>' },
     { c:'var(--gold)', ill:'✨', h:'הפתעה נדירה',
       body:'<p>כל מטלה מספר <b>' + SHINY_EVERY + '</b> בחודש מביאה משהו מיוחד — ואיתו פוקימון <b>אגדי</b> לפוקדקס.</p>' +
