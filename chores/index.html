@@ -103,11 +103,13 @@
   .kid .earned{font-size:12.5px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);color:var(--muted);line-height:1.6}
   .kid .earned b{color:var(--gold)}
 
-  /* "today": one compact row per kid, at most two lines, so its height stays fixed all day */
+  /* "today": per kid, one line per chore with its time, newest first */
   .todayBox{margin:10px 0 0;padding:10px 14px}
   .todayBox h3{margin:0 0 2px;font-size:14px;color:var(--muted);font-family:Rubik,sans-serif;font-weight:600}
   .tk{display:flex;gap:10px;align-items:baseline;padding:5px 0;border-top:1px solid var(--line)}
-  .tk ul{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  .tk ul{display:block}   /* the whole day's list — Roy wants to see every chore */
+  .tk li{display:flex !important;justify-content:space-between;gap:8px}
+  .tk li + li::before{content:none !important}
   .tk b i{font-style:normal;font-size:11px;font-weight:700;color:#0A1219;background:var(--kc);border-radius:99px;padding:0 6px;margin-inline-start:4px}
   .tk li{display:inline}
   .tk li + li::before{content:" · ";color:var(--muted)}
