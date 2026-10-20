@@ -1309,11 +1309,15 @@ function render(){
   if(location.hash === '#parent' && !editing) renderParent();   // never redraw under Ilana while she's typing
 }
 
-// up to the target the bar tracks the evolutions; after it, a gold second lap runs to the super week
+// Up to the target the bar tracks the evolutions. At the target it stays full, and on the way
+// to the super week it turns gold from the start (right, in Hebrew): half gold at 15, all gold at 20.
 function setBar(el, n){
-  var t = target(), lap2 = n >= t && n < superAt();
-  el.querySelector('i').style.width = (lap2 ? (n - t) / (superAt() - t) * 100 : Math.min(100, n / t * 100)) + '%';
-  el.querySelector('i').style.background = n >= t ? 'var(--gold)' : '';
+  var t = target(), i = el.querySelector('i');
+  i.style.width = Math.min(100, n / t * 100) + '%';
+  if(n >= t){
+    var g = Math.min(100, (n - t) / (superAt() - t) * 100);
+    i.style.background = 'linear-gradient(to left, var(--gold) ' + g + '%, var(--kc) ' + g + '%)';
+  } else i.style.background = '';
   el.querySelector('b').style.display = n >= t ? 'none' : '';
   el.querySelector('b').style.right = (Math.ceil(t / 2) / t * 100) + '%';
 }
@@ -1860,6 +1864,9 @@ function renderParent(){
       var s = w.kids[k]; return esc(k) + ' ' + (s.decision === 'מגיע' ? '✓ ' + amountOf(s) + ' ₪' : s.decision === 'לא' ? '✗' : '—');
     }).join(' · ') + '</span></summary>';
     d.appendChild(weekCard(w, false, true));
+    // the screen redraws every few seconds; a week Ilana opened stays open
+    d.open = !!openPast[w.week];
+    d.ontoggle = function(){ if(d.open) openPast[w.week] = true; else delete openPast[w.week]; };
     box.appendChild(d);
   });
 }
@@ -1878,6 +1885,7 @@ function pendingDecisions(){
 
 var editing = null, saving = {};   // the open decision panel, and decisions on their way to the sheet
 var stickyWeeks = {};              // weeks that were waiting during this visit to Ilana's screen
+var openPast = {};                 // past weeks Ilana unfolded, kept open across redraws
 var AMOUNT_MIN = 0, AMOUNT_MAX = 30;
 
 // status: 'need' (waiting for Ilana), 'done' (finished during this visit), or nothing
