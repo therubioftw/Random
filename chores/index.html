@@ -1087,7 +1087,8 @@ var TROPHIES = [
   { id:'fin',  tier:1, name:'התפתחות מלאה',         d:'פוקימון שהגיע לשלב האחרון',       p:function(c){ return [c.fullLines, 1]; } },
   { id:'ten',  tier:3, name:'חוקר פוקימונים',       d:'10 פוקימונים בשלב האחרון',        p:function(c){ return [c.fullLines, 10]; } },
   { id:'leg',  tier:2, name:'אגדה',                 d:'פוקימון אגדי ראשון',              p:function(c){ return [c.legends.length, 1]; } },
-  { id:'pat',  tier:2, name:'סבלנות משתלמת',        d:'פרס רצף שהתפתח',                  p:function(c){ return [c.prizes.filter(function(x){ return x.evolved; }).length, 1]; } },
+  // a streak prize evolves exactly at PRIZE_EVOLVE approved weeks in a row, so the best streak shows how close they are
+  { id:'pat',  tier:2, name:'סבלנות משתלמת',        d:PRIZE_EVOLVE + ' שבועות מאושרים ברצף — ופרס הרצף מתפתח', p:function(c){ return [c.bestStreak, PRIZE_EVOLVE]; } },
   { id:'sup',  tier:3, name:'שבוע־על',              d:'20 מטלות בשבוע אחד',              p:function(c){ return [c.bestWeek, superAt()]; } }
 ];
 var PLATINUM = { id:'plat', tier:4, name:'מאסטר פוקימון', d:'כל הגביעים — ו־Mew מצטרף לפוקדקס' };
