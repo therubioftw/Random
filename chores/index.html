@@ -219,6 +219,31 @@
   .trophy .bar{height:6px;margin:7px 0 0}
   .trophy .c{font-size:12px;color:var(--muted);flex:none}
   .statGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .moneyCard h3{margin:0 0 10px;font-size:16px}
+  .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .mc{background:var(--card2);border-radius:12px;padding:10px 12px}
+  .mc b{display:block;font-size:22px;font-weight:800;line-height:1.15}
+  .mc span{font-size:12px;color:var(--muted)}
+  .mc.big b{color:var(--gold)}
+  .mc.gold{outline:1px solid var(--gold)}
+  .mnote{margin:8px 2px 0;font-size:11.5px;color:var(--muted)}
+
+  /* Ilana's payments */
+  .payKid{border-top:1px solid var(--line);padding:12px 0}
+  .payKid:first-of-type{border-top:none;padding-top:4px}
+  .payKid .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .payKid .nm{font-weight:700;color:var(--kc);font-size:17px}
+  .payKid .owe{font-size:13px;color:var(--muted)}
+  .payKid .owe b{color:var(--gold);font-size:18px}
+  .payKid .figs{font-size:12.5px;color:var(--muted);margin:4px 0 8px}
+  .payKid .payBtn{width:100%;min-height:44px;border-radius:12px;border:1px solid var(--kc);background:none;color:var(--kc);font-weight:700}
+  .panel input[type=number],.panel input[type=date]{width:100%;min-height:46px;background:var(--bg);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:inherit;font-size:16px;padding:8px 12px}
+  .panel label{font-size:12.5px;color:var(--muted);margin-bottom:-6px}
+  .payList{list-style:none;margin:0;padding:0;font-size:13.5px}
+  .payList li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+  .payList li:first-child{border-top:none}
+  .payList .d{color:var(--muted);font-size:12px}
+  .payList button{background:none;border:1px solid var(--line);border-radius:10px;color:var(--muted);min-height:36px;padding:0 12px;font-size:12px}
   .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
   .stat b{display:block;font-size:26px;font-weight:800;line-height:1.1}
   .stat span{font-size:12.5px;color:var(--muted)}
@@ -239,6 +264,7 @@
   }
   .btn{border:none;border-radius:14px;padding:12px 18px;font-weight:700;font-size:15px;background:var(--mint);color:#0A1219}
   .btn:disabled{opacity:.5}
+  .pastHead{margin:4px 2px 8px;font-size:15px;color:var(--muted);font-weight:600}
   .totals{display:flex;gap:10px}
   .totals div{flex:1;background:var(--card2);border-radius:14px;padding:12px;text-align:center;font-size:13px;color:var(--muted)}
   .totals b{display:block;font-size:22px;color:var(--gold);margin-top:2px}
@@ -444,8 +470,9 @@
       <div class="pin"><input id="pinInput" type="password" inputmode="numeric" autocomplete="off"><button class="btn" id="pinBtn">כניסה</button></div>
     </div>
     <div id="parentBody" hidden>
-      <div class="totals" id="totals"></div>
-      <div id="weeks" style="margin-top:14px"></div>
+      <div id="weeks"></div>
+      <div class="totals" id="totals" style="margin-top:14px"></div>
+      <div id="pastWeeks" style="margin-top:14px"></div>
       <button class="linkish" id="logout">יציאה ממצב הורה</button>
     </div>
   </section>
@@ -1286,7 +1313,7 @@ function route(){
   $('vKid').hidden = !kid;
   $('vCard').hidden = !card;
   $('vParent').hidden = h !== '#parent';
-  if(h !== '#parent'){ stickyWeeks = {}; editing = null; }   // the next visit starts fresh
+  if(h !== '#parent'){ stickyWeeks = {}; editing = null; payEditing = null; }   // the next visit starts fresh
   if(nudge && nudge.kid !== kid) nudge = null;               // the nudge belongs to the screen it was made on
   if(who) document.documentElement.style.setProperty('--kc', KID_COLOR[who] || 'var(--mint)');
   else document.documentElement.style.removeProperty('--kc');
@@ -1307,7 +1334,7 @@ function render(){
   renderHome();
   if(kid) renderKid(kid);
   if(card) renderCard(card);
-  if(location.hash === '#parent' && !editing) renderParent();   // never redraw under Ilana while she's typing
+  if(location.hash === '#parent' && !editing && !payEditing) renderParent();   // never redraw under Ilana while she's typing
 }
 
 // Up to the target the bar tracks the evolutions. At the target it stays full, and on the way
@@ -1354,7 +1381,7 @@ function renderHome(){
       '<div class="big">' + n + '<small>/' + target() + '</small></div>' +
       '<div class="bar"><i></i><b></b></div>' +
       '<div class="st' + (nag ? ' nag' : '') + '">' + status + '</div>' +
-      '<div class="earned">הרוויח עד היום <b>' + (data.earned[k] || 0) + ' ₪</b>' + last + '</div>';
+      '<div class="earned">הרוויח עד היום <b>' + (data.earned[k] || 0) + ' ₪</b>' + paidLine(k) + last + '</div>';
     setBar(b.querySelector('.bar'), n);
     b.onclick = function(){ location.hash = 'kid=' + encodeURIComponent(k); };
     box.appendChild(b);
@@ -1385,6 +1412,12 @@ function renderHome(){
   var waiting = pendingDecisions().length, tp = $('toParent');
   tp.textContent = '💰 הסיכום השבועי של אמא' + (waiting ? ' · ' + (waiting === 1 ? 'החלטה אחת מחכה' : waiting + ' החלטות מחכות') : '');
   tp.className = 'ghost' + (waiting ? ' waiting' : '');
+}
+
+// once Ilana has paid anything: what's been paid and what's still owed (the earned total keeps counting)
+function paidLine(kid){
+  var m = money(kid);
+  return m.tracked && m.paid ? '<br>שולם <b>' + m.paid + ' ₪</b><br>נשאר לקבל <b>' + owedText(m) + '</b>' : '';
 }
 
 function streakBadge(kid){ var s = career(kid).streak; return s ? '<span class="fire">🔥' + s + '</span>' : ''; }
@@ -1738,16 +1771,27 @@ function trophiesHtml(c){
     }).join('') + '</div>';
 }
 
+// the money card on the trainer card: earned keeps counting up; bonus, paid and still-owed beside it
+function moneyCard(kid){
+  var m = money(kid);
+  var cell = function(v, label, cls){ return '<div class="mc' + (cls ? ' ' + cls : '') + '"><b>' + v + '</b><span>' + label + '</span></div>'; };
+  return '<div class="card moneyCard"><h3>💰 הכסף</h3><div class="mgrid">' +
+    cell(m.earned + ' ₪', 'הרוויח עד היום', 'big') +
+    cell(m.bonus + ' ₪', 'בונוסים מאמא') +
+    (m.tracked ? cell(m.paid + ' ₪', 'אמא שילמה') + cell(owedText(m), 'נשאר לקבל', 'gold') : '') +
+    '</div><p class="mnote">בונוס = מה שאמא נתנה מעבר למספר המטלות של אותו שבוע.</p></div>';
+}
+
 function statsHtml(c){
   if(!c.total) return '<div class="card empty">עוד אין נתונים — המטלה הראשונה פותחת את הכרטיס.</div>';
   var weeks = Object.keys(c.perWeek), best = Math.max.apply(null, weeks.map(function(w){ return c.perWeek[w]; }));
-  var h = '<div class="statGrid">' +
+  var h = moneyCard(c.kid) + '<div class="statGrid">' +
     '<div class="stat"><b>' + c.total + '</b><span>מטלות בסך הכל</span></div>' +
-    '<div class="stat"><b>' + (data.earned[c.kid] || 0) + ' ₪</b><span>הרוויח</span></div>' +
     '<div class="stat"><b>' + c.approved + '</b><span>שבועות מאושרים</span></div>' +
     '<div class="stat"><b>' + best + '</b><span>השבוע הכי טוב</span></div>' +
     '<div class="stat"><b>' + c.bestStreak + '</b><span>הרצף הכי ארוך</span></div>' +
-    '<div class="stat"><b>' + Object.keys(c.perDay).length + '</b><span>ימים עם מטלה</span></div></div>';
+    '<div class="stat"><b>' + Object.keys(c.perDay).length + '</b><span>ימים עם מטלה</span></div>' +
+    '<div class="stat"><b>' + c.supers.length + '</b><span>שבועות־על</span></div></div>';
 
   // the last 12 weeks, oldest on the right (Hebrew reads right to left)
   var cols = [], lbl = [];
@@ -1841,11 +1885,10 @@ function renderParent(){
   $('parentBody').hidden = !pin;
   if(!pin) return;
 
-  $('totals').innerHTML = data.kids.map(function(k){
-    return '<div>' + esc(k) + ' הרוויח עד היום<b>' + (data.earned[k] || 0) + ' ₪</b></div>';
-  }).join('');
+  renderPayments();
 
-  // urgency order: weeks waiting for Ilana first, then the open week, then past weeks folded
+  // urgency order: weeks waiting for Ilana first, then the open week, then payments (only touched
+  // every few weeks), then the settled past weeks folded at the bottom
   // a week that was waiting stays at the top (marked done) until Ilana leaves the screen,
   // so it doesn't jump away under her finger right after her last decision
   var cur = data.week.start, waitingWeeks = [], open = null, past = [];
@@ -1859,6 +1902,9 @@ function renderParent(){
   var box = $('weeks'); box.innerHTML = '';
   waitingWeeks.forEach(function(w){ box.appendChild(weekCard(w, data.kids.some(function(k){ return needsDecision(w, k); }) ? 'need' : 'done')); });
   if(open) box.appendChild(weekCard(open, false));
+  var pastBox = $('pastWeeks'); pastBox.innerHTML = '';
+  if(past.length) pastBox.insertAdjacentHTML('beforeend', '<h3 class="pastHead">שבועות קודמים</h3>');
+  box = pastBox;
   past.forEach(function(w){
     var d = document.createElement('details'); d.className = 'past';
     d.innerHTML = '<summary>שבוע ' + dm(w.week) + '–' + dm(w.end) + '<span>' + data.kids.map(function(k){
@@ -1872,7 +1918,99 @@ function renderParent(){
   });
 }
 
+/* ---------- Ilana's payments: what she handed over, so the app knows what's still owed ---------- */
+var payEditing = null, paySaving = {};
+function renderPayments(){
+  var box = $('totals');
+  if((data.version || 1) < 4){   // the sheet's script doesn't store payments yet: the plain totals
+    box.className = 'totals';
+    box.innerHTML = data.kids.map(function(k){ return '<div>' + esc(k) + ' הרוויח עד היום<b>' + (data.earned[k] || 0) + ' ₪</b></div>'; }).join('');
+    return;
+  }
+  box.className = 'card';
+  box.innerHTML = '<h3 style="margin:0 0 6px;font-size:17px">💸 תשלומים</h3>';
+  data.kids.forEach(function(k){
+    var m = money(k), row = document.createElement('div');
+    row.className = 'payKid'; row.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
+    row.innerHTML = '<div class="row"><span class="nm">' + esc(k) + '</span><span class="owe">נשאר לשלם <b>' + owedText(m) + '</b></span></div>' +
+      '<div class="figs">הרוויח עד היום ' + m.earned + ' ₪ · שולם ' + m.paid + ' ₪</div>';
+    if(paySaving[k]) row.insertAdjacentHTML('beforeend', '<div class="state saving">רושם תשלום של ' + paySaving[k].amount + ' ₪ · שומר…</div>');
+    else if(payEditing && payEditing.kid === k) row.appendChild(payPanel(k, m));
+    else {
+      var b = document.createElement('button'); b.className = 'payBtn'; b.textContent = '💸 רישום תשלום ל' + k;
+      b.onclick = function(){ payEditing = { kid: k, amount: Math.max(m.owed, 0) || data.reward, date: ymdLocal(new Date()), note: '' }; renderParent(); };
+      row.appendChild(b);
+    }
+    // this kid's payments, newest first
+    var mine = (data.payments || []).filter(function(p){ return p.kid === k; });
+    if(mine.length){
+      var d = document.createElement('details'); d.className = 'past'; d.style.marginTop = '8px';
+      d.innerHTML = '<summary>תשלומים קודמים<span>' + mine.length + '</span></summary>';
+      var ul = document.createElement('ul'); ul.className = 'payList card'; ul.style.margin = '0';
+      mine.forEach(function(p){
+        var li = document.createElement('li');
+        li.innerHTML = '<div><b>' + p.amount + ' ₪</b> <span class="d">· ' + dm(p.date) + (p.note ? ' · ' + bidi(p.note) : '') + '</span></div>';
+        var del = document.createElement('button'); del.textContent = 'מחיקה';
+        del.onclick = function(){
+          ask('למחוק את התשלום?', p.amount + ' ₪ ל' + k + ' · ' + dm(p.date), 'כן, למחוק', 'מוחק…', function(){
+            return post({ action:'unpay', pin:store('parentPin'), id:p.id }).then(function(){ toast('התשלום נמחק'); });
+          });
+        };
+        li.appendChild(del); ul.appendChild(li);
+      });
+      d.appendChild(ul);
+      var key = 'pay:' + k;
+      d.open = !!openPast[key];
+      d.ontoggle = function(){ if(d.open) openPast[key] = true; else delete openPast[key]; };
+      row.appendChild(d);
+    }
+    box.appendChild(row);
+  });
+}
+function payPanel(k, m){
+  var e = payEditing, p = document.createElement('div'); p.className = 'panel'; p.style.setProperty('--kc', KID_COLOR[k] || 'var(--mint)');
+  p.innerHTML = '<label>סכום ששולם ל' + esc(k) + ' (₪)</label><input type="number" inputmode="numeric" min="1" max="1000" id="payAmt">' +
+    '<label>מתי</label><input type="date" id="payDate">' +
+    '<textarea id="payNote" maxlength="200" placeholder="הערה (לא חובה), למשל: מזומן, העברה בביט"></textarea>' +
+    '<div class="acts"><button class="btn" id="paySave">שמירה</button><button class="ghost2" id="payCancel">ביטול</button></div>';
+  var amt = p.querySelector('#payAmt'), dt = p.querySelector('#payDate'), note = p.querySelector('#payNote');
+  amt.value = e.amount; dt.value = e.date; note.value = e.note;
+  amt.oninput = function(){ e.amount = amt.value; }; dt.oninput = function(){ e.date = dt.value; }; note.oninput = function(){ e.note = note.value; };
+  p.querySelector('#paySave').onclick = function(){
+    var a = Math.round(Number(e.amount));
+    if(!(a > 0 && a <= 1000)){ toast('סכום לא תקין', true); return; }
+    recordPayment(k, a, e.date || ymdLocal(new Date()), (e.note || '').trim());
+  };
+  p.querySelector('#payCancel').onclick = function(){ payEditing = null; renderParent(); };
+  return p;
+}
+function recordPayment(k, amount, date, note){
+  payEditing = null;
+  paySaving[k] = { amount: amount };
+  renderParent();
+  var id = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  post({ action:'pay', pin:store('parentPin'), kid:k, amount:amount, date:date, note:note, id:id })
+    .then(function(){ delete paySaving[k]; renderParent(); toast('✓ נרשם: ' + amount + ' ₪ ל' + k); })
+    .catch(function(err){
+      delete paySaving[k]; renderParent();
+      if(String(err.message).indexOf('pin') >= 0){ store('parentPin', null); renderParent(); toast('הקוד לא נכון', true); }
+      else toast('לא נשמר — נסי שוב', true);
+    });
+}
+
 function amountOf(s){ return s && s.amount != null && s.decision === 'מגיע' ? s.amount : (data && data.reward) || 10; }
+
+/* ---------- money: earned (Ilana's weekly amounts), bonus, paid (what she handed over), still owed ---------- */
+// bonus = per approved week, whatever Ilana gave above the number of chores that week (never below 0)
+function money(kid){
+  var earned = (data.earned || {})[kid] || 0, paid = (data.paid || {})[kid] || 0, bonus = 0, c = career(kid);
+  Object.keys(data.amounts || {}).forEach(function(w){
+    var amt = data.amounts[w][kid], dec = ((data.decided || {})[w] || {})[kid];
+    if(dec === 'מגיע' && amt != null) bonus += Math.max(0, amt - (c.perWeek[w] || 0));
+  });
+  return { earned: earned, paid: paid, owed: earned - paid, bonus: bonus, tracked: (data.version || 1) >= 4 };
+}
+function owedText(m){ return m.owed >= 0 ? m.owed + ' ₪' : 'שולם מראש ' + (-m.owed) + ' ₪'; }
 // a kid's week waits for Ilana once it has ended (or on Saturday, the tally day)
 function needsDecision(w, k){
   var s = w.kids[k];
@@ -2059,7 +2197,7 @@ $('back1').onclick = $('back2').onclick = $('back3').onclick = function(){ locat
 window.addEventListener('hashchange', route);
 function startPolling(){
   clearInterval(pollTimer);
-  pollTimer = setInterval(function(){ if(document.visibilityState === 'visible' && $('sheet').hidden && !editing) load(); }, POLL_MS);
+  pollTimer = setInterval(function(){ if(document.visibilityState === 'visible' && $('sheet').hidden && !editing && !payEditing) load(); }, POLL_MS);
 }
 document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') load(); });
 

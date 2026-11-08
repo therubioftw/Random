@@ -24,7 +24,7 @@ var KIDS = ['ליאם', 'רובי'];
 var REWARD = 10;
 var AMOUNT_MIN = 0, AMOUNT_MAX = 30;   // the range Ilana can set per week
 var HISTORY_WEEKS = 8;
-var LOG = 'יומן', CHORES = 'מטלות', WEEKS = 'שבועות', SETTINGS = 'הגדרות';
+var LOG = 'יומן', CHORES = 'מטלות', WEEKS = 'שבועות', SETTINGS = 'הגדרות', PAYMENTS = 'תשלומים';
 var DEFAULT_TARGET = 10;
 var PRAISE_COLS = 5, NAG_COLS = 3;   // columns F–J and K–M of the chores tab
 
@@ -158,11 +158,13 @@ function choresSheet() { return sheet(CHORES, choreHeaders()); }
 var WEEK_HEADERS = ['שבוע', 'ילד', 'מטלות', 'החלטה', 'סכום', 'עודכן', 'הערה'];
 function weeksSheet() { return sheet(WEEKS, WEEK_HEADERS, [1]); }
 function settingsSheet() { return sheet(SETTINGS, ['הגדרה', 'ערך']); }
+// money Ilana actually handed over: date (text, YYYY-MM-DD), kid, amount, note, id, when it was recorded
+function paymentsSheet() { return sheet(PAYMENTS, ['תאריך', 'ילד', 'סכום', 'הערה', 'מזהה', 'נרשם'], [1, 5]); }
 
 // Safe to run again: creates what's missing and fills empty praise/nag cells,
 // never overwrites anything already written in the sheet.
 function setup() {
-  logSheet();
+  logSheet(); paymentsSheet();
   weeksSheet().getRange(1, 1, 1, WEEK_HEADERS.length).setValues([WEEK_HEADERS]).setFontWeight('bold');   // adds "הערה"
 
   var ch = choresSheet(), headers = choreHeaders();
@@ -274,16 +276,26 @@ function state() {
     if (i === undefined) { i = titleAt[x.chore] = titles.length; titles.push(x.chore); }
     return [Math.round(x.ts / 1000), KIDS.indexOf(x.kid), i];
   });
-  // every decision Ilana ever made: { week: { kid: 'מגיע' | 'לא' } }
-  var decided = {};
+  // every decision Ilana ever made: { week: { kid: 'מגיע' | 'לא' } }, and the amounts: { week: { kid: ₪ } }
+  var decided = {}, amounts = {};
   Object.keys(decisions).forEach(function (key) {
     var p = key.split('|');
     (decided[p[0]] = decided[p[0]] || {})[p[1]] = decisions[key].decision;
+    (amounts[p[0]] = amounts[p[0]] || {})[p[1]] = decisions[key].amount;
   });
 
+  // payments Ilana recorded, newest first, and the total paid per kid
+  var paid = {};
+  KIDS.forEach(function (k) { paid[k] = 0; });
+  var payments = rows(paymentsSheet()).filter(function (r) { return r[1]; }).map(function (r) {
+    var amt = Number(r[2]) || 0, kid = String(r[1]);
+    if (paid[kid] !== undefined) paid[kid] += amt;
+    return { date: ymd(r[0]), kid: kid, amount: amt, note: String(r[3] || ''), id: String(r[4]) };
+  }).sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
+
   return {
-    ok: true, version: 3, kids: KIDS, reward: REWARD, earned: earned,   // 2: amount + note per decision; 3: client ids + caching
-    all: all, titles: titles, decided: decided,
+    ok: true, version: 4, kids: KIDS, reward: REWARD, earned: earned,   // 2: amount + note per decision; 3: client ids + caching; 4: payments
+    all: all, titles: titles, decided: decided, amounts: amounts, payments: payments, paid: paid,
     target: Number(setting('יעד שבועי', DEFAULT_TARGET)) || DEFAULT_TARGET,
     now: now.getTime(), month: month, lastDone: lastDone,
     week: { start: week, end: addDays(week, 6) },
@@ -325,6 +337,26 @@ function checkPin(pin) {
   var real = PropertiesService.getScriptProperties().getProperty('PARENT_PIN');
   if (!real) throw 'no-pin-set';
   if (String(pin) !== String(real)) throw 'bad-pin';
+}
+
+// Ilana records money she handed over in real life (or deletes a mistaken entry)
+function pay(b) {
+  checkPin(b.pin);
+  if (KIDS.indexOf(b.kid) < 0) throw 'unknown-kid';
+  var amount = Math.round(Number(b.amount));
+  if (!isFinite(amount) || amount <= 0 || amount > 1000) throw 'bad-amount';
+  var date = String(b.date || '');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) date = Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd');
+  var id = b.id ? String(b.id).slice(0, 40) : Utilities.getUuid().slice(0, 8);
+  var sh = paymentsSheet();
+  if (rows(sh).some(function (r) { return String(r[4]) === id; })) return;   // a retry of a payment already saved
+  sh.appendRow([date, b.kid, amount, String(b.note || '').trim().slice(0, 200), id, new Date()]);
+}
+function unpay(b) {
+  checkPin(b.pin);
+  var sh = paymentsSheet(), v = sh.getDataRange().getValues();
+  for (var i = 1; i < v.length; i++) if (String(v[i][4]) === String(b.id)) { sh.deleteRow(i + 1); return; }
+  throw 'not-found';
 }
 
 function decide(b) {
@@ -379,6 +411,8 @@ function doPost(e) {
     else if (b.action === 'delete') remove(b);
     else if (b.action === 'decide') decide(b);
     else if (b.action === 'checkPin') checkPin(b.pin);
+    else if (b.action === 'pay') pay(b);
+    else if (b.action === 'unpay') unpay(b);
     else throw 'unknown-action';
     return text(cachedState(true));
   } catch (err) {
